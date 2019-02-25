@@ -15,6 +15,11 @@ Route::get('/', 'HomeController@get_index');
 Route::get('/index', 'HomeController@get_index');
 Route::get('/home', 'HomeController@get_index');
 
+Route::group(['prefix'=>'/roles'], function () {
+    Route::get('/', 'RoleController@get_roles');
+    Route::post('/', 'RoleController@post_roles');
+});
+
 Auth::routes();
 
 Route::get('/logout', 'Auth\LoginController@logout');

@@ -1,6 +1,6 @@
 @extends('backend.app')
 @section('content')
-    Home page
+   <h1>Home page</h1>
 @endsection
 
 @section('css')

@@ -27,4 +27,14 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function deleted_value() {
+        return $this->deleted;
+    }
+
+    public function role() {
+        $role = $this->role_id;
+
+        return $role;
+    }
 }

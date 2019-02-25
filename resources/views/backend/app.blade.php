@@ -5,6 +5,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{csrf_token()}}">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
     <link href="assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
@@ -162,6 +163,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/"><i class="fa fa-home"></i> Home</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/roles"><i class="fa fa-globe"></i> Roles</a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -186,7 +190,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                        Copyright © 2019. All rights reserved. By <a href="https://facebook.com/sahib.fermanli">Sahib Farmanli</a>.
+                        Copyright © 2019. All rights reserved. By <a target="_blank" href="https://facebook.com/sahib.fermanli">Sahib Farmanli</a>.
                     </div>
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
                         <div class="text-md-right footer-links d-none d-sm-block">
