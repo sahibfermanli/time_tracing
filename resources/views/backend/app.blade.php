@@ -166,6 +166,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/roles"><i class="fa fa-globe"></i> Roles</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/categories"><i class="fa fa-list-alt"></i> Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/users"><i class="fa fa-users"></i> Users</a>
+                        </li>
                     </ul>
                 </div>
             </nav>

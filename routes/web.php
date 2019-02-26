@@ -20,6 +20,16 @@ Route::group(['prefix'=>'/roles'], function () {
     Route::post('/', 'RoleController@post_roles');
 });
 
+Route::group(['prefix'=>'/users'], function () {
+    Route::get('/', 'UserController@get_users');
+    Route::post('/', 'UserController@post_users');
+});
+
+Route::group(['prefix'=>'/categories'], function () {
+    Route::get('/', 'CategoryController@get_categories');
+    Route::post('/', 'CategoryController@post_categories');
+});
+
 Auth::routes();
 
 Route::get('/logout', 'Auth\LoginController@logout');
