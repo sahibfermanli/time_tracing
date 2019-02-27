@@ -174,6 +174,9 @@
                             <a class="nav-link" href="/clients"><i class="fa fa-user-secret"></i> Clients</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="/projects"><i class="fa fa-procedures"></i> Projects</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="/users"><i class="fa fa-users"></i> Users</a>
                         </li>
                     </ul>

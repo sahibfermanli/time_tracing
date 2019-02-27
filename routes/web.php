@@ -35,6 +35,11 @@ Route::group(['prefix'=>'/clients'], function () {
     Route::post('/', 'ClientController@post_clients');
 });
 
+Route::group(['prefix'=>'/projects'], function () {
+    Route::get('/', 'ProjectController@get_projects');
+    Route::post('/', 'ProjectController@post_projects');
+});
+
 Auth::routes();
 
 Route::get('/logout', 'Auth\LoginController@logout');
