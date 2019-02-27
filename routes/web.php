@@ -30,6 +30,11 @@ Route::group(['prefix'=>'/categories'], function () {
     Route::post('/', 'CategoryController@post_categories');
 });
 
+Route::group(['prefix'=>'/clients'], function () {
+    Route::get('/', 'ClientController@get_clients');
+    Route::post('/', 'ClientController@post_clients');
+});
+
 Auth::routes();
 
 Route::get('/logout', 'Auth\LoginController@logout');

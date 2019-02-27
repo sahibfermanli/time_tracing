@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="assets/vendor/charts/c3charts/c3.css">
     <link rel="stylesheet" href="assets/vendor/fonts/flag-icon-css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/main.css">
     @yield('css')
     <title>Time tracer</title>
 </head>
@@ -168,6 +169,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/categories"><i class="fa fa-list-alt"></i> Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/clients"><i class="fa fa-user-secret"></i> Clients</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/users"><i class="fa fa-users"></i> Users</a>
