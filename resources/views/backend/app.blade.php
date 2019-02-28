@@ -174,10 +174,16 @@
                             <a class="nav-link" href="/clients"><i class="fa fa-user-secret"></i> Clients</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/projects"><i class="fa fa-procedures"></i> Projects</a>
+                            <a class="nav-link" href="/projects"><i class="fa fa-list"></i> Projects</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/tasks"><i class="fa fa-tasks"></i> Tasks</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/users"><i class="fa fa-users"></i> Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/time-tracer"><i class="fa fa-tasks"></i> Time tracer</a>
                         </li>
                     </ul>
                 </div>

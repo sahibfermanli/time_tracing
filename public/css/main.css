@@ -1,3 +1,64 @@
 td, th {
     /*white-space: nowrap !important;*/
 }
+
+.card-body {
+    overflow-x: hidden;
+    overflow: overlay;
+}
+
+/*narmin*/
+
+
+
+.zaman-2 {
+    float: left;
+    width: calc(100% / 48);
+    background: #c5eace;
+    padding: 7px 3px;
+    font-size: 11px;
+    border: 0.1px solid #28a745;
+    border-left: 0;
+}
+.zaman-2 span {
+    -webkit-transform: rotate(-90deg);
+    color: #0e0c28;
+}
+@media(min-width:1200px) and (max-width:1800px){
+    .zaman-2 {
+        float: left;
+        width: calc(100% / 48);
+        background: #c5eace;
+
+        padding: 9px 2px;
+        font-size: 7px;
+        border: 0.1px solid #28a745;
+        border-left: 0;
+    }
+    .zaman-2 span {
+        -webkit-transform: rotate(-90deg);
+
+
+    }
+}
+
+.hoverWrapper:hover .hoverShow1 {
+    display: block;
+}
+
+.hoverWrapper .hoverShow1 {
+    display: none;
+    border: 0.1px solid #28a745;
+    position: absolute;
+    background: #c5eace;
+    width: 150px;
+    color: #000000;
+    top: 65px;
+    padding:10px
+}
+.zaman-2.firstchild {
+    border-left: 0.1px solid #28a745;
+}
+.ecommerce-widget {
+    width: 100%;
+}

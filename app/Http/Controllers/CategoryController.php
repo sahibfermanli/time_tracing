@@ -22,10 +22,10 @@ class CategoryController extends HomeController
         if ($request->type == 'add') {
             return $this->add_category($request);
         }
-        if ($request->type == 'update') {
+        else if ($request->type == 'update') {
             return $this->update_category($request);
         }
-        if ($request->type == 'delete') {
+        else if ($request->type == 'delete') {
             return $this->delete_category($request);
         }
         else {

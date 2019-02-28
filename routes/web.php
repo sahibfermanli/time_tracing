@@ -40,6 +40,16 @@ Route::group(['prefix'=>'/projects'], function () {
     Route::post('/', 'ProjectController@post_projects');
 });
 
+Route::group(['prefix'=>'/tasks'], function () {
+    Route::get('/', 'TaskController@get_tasks');
+    Route::post('/', 'TaskController@post_tasks');
+});
+
+Route::group(['prefix'=>'/time-tracer'], function () {
+    Route::get('/', 'TimeTracerController@get_time_tracer');
+    Route::post('/', 'TimeTracerController@post_time_tracer');
+});
+
 Auth::routes();
 
 Route::get('/logout', 'Auth\LoginController@logout');

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Categories;
+use App\Clients;
 use App\Projects;
+use App\Tasks;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,20 +15,28 @@ use Illuminate\Support\Facades\Validator;
 class ProjectController extends HomeController
 {
     public function get_projects() {
-        $projects = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')->where(['projects.deleted'=>0])->select('projects.id', 'projects.project', 'projects.description', 'projects.created_at', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
+        $projects = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')->where(['projects.deleted'=>0])->select('projects.id', 'projects.project', 'projects.description', 'projects.created_at', 'projects.client_id', 'c.name as client_name', 'c.director as client_director', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
+//        $clients = Clients::where(['deleted'=>0])->select('id', 'name')->get();
+        $up_categories = Categories::where(['deleted'=>0, 'up_category'=>0])->select('id', 'category')->get();
 
-        return view('backend.projects')->with(['projects'=>$projects]);
+        return view('backend.projects')->with(['projects'=>$projects, 'up_categories'=>$up_categories]);
     }
 
     public function post_projects(Request $request) {
         if ($request->type == 'add') {
             return $this->add_project($request);
         }
-        if ($request->type == 'update') {
+        else if ($request->type == 'update') {
             return $this->update_project($request);
         }
-        if ($request->type == 'delete') {
+        else if ($request->type == 'delete') {
             return $this->delete_project($request);
+        }
+        else if ($request->type == 'show_categories') {
+            return $this->show_categories($request);
+        }
+        else if ($request->type == 'show_clients') {
+            return $this->show_clients($request);
         }
         else {
             return response(['case' => 'error', 'title' => 'Oops!', 'content' => 'Operation not found!']);
@@ -36,7 +47,7 @@ class ProjectController extends HomeController
     private function add_project(Request $request) {
         $validator = Validator::make($request->all(), [
             'project' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:4000'],
+            'client_id' => ['required', 'integer'],
         ]);
         if ($validator->fails()) {
             return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
@@ -62,7 +73,7 @@ class ProjectController extends HomeController
         $validator = Validator::make($request->all(), [
             'id' => ['required', 'integer'],
             'project' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:4000'],
+            'client_id' => ['required', 'integer'],
         ]);
         if ($validator->fails()) {
             return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
@@ -93,9 +104,46 @@ class ProjectController extends HomeController
         try {
             $current_date = Carbon::now();
 
-            Projects::where(['id'=>$request->id])->update(['deleted'=>1, 'deleted_at'=>$current_date, 'deleted_by'=>Auth::id()]);
+            $delete = Projects::where(['id'=>$request->id])->update(['deleted'=>1, 'deleted_at'=>$current_date, 'deleted_by'=>Auth::id()]);
+            if ($delete) {
+                Tasks::where(['project_id'=>$request->id, 'deleted'=>0])->update(['deleted'=>1, 'deleted_at'=>$current_date, 'deleted_by'=>Auth::id()]);
+            }
 
             return response(['case' => 'success', 'title' => 'Success!', 'content' => 'Successful!', 'id'=>$request->id]);
+        } catch (\Exception $e) {
+            return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
+        }
+    }
+
+    //show categories
+    private function show_categories(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'up_id' => 'required|integer',
+        ]);
+        if ($validator->fails()) {
+            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Up category not found!']);
+        }
+        try {
+            $categories = Categories::where(['up_category'=>$request->up_id, 'deleted'=>0])->select('id', 'category')->get();
+
+            return response(['case' => 'success', 'categories'=>$categories]);
+        } catch (\Exception $e) {
+            return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
+        }
+    }
+
+    //show clients
+    private function show_clients(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'category_id' => 'required|integer',
+        ]);
+        if ($validator->fails()) {
+            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Category not found!']);
+        }
+        try {
+            $clients = Clients::where(['category_id'=>$request->category_id, 'deleted'=>0])->select('id', 'name')->get();
+
+            return response(['case' => 'success', 'clients'=>$clients]);
         } catch (\Exception $e) {
             return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
         }

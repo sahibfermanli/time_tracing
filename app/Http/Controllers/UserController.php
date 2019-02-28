@@ -24,10 +24,10 @@ class UserController extends HomeController
         if ($request->type == 'add') {
             return $this->add_user($request);
         }
-        if ($request->type == 'update') {
+        else if ($request->type == 'update') {
             return $this->update_user($request);
         }
-        if ($request->type == 'delete') {
+        else if ($request->type == 'delete') {
             return $this->delete_user($request);
         }
         else {

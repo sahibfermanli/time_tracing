@@ -23,6 +23,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Project</th>
                     <th scope="col">Description</th>
+                    <th scope="col">Client</th>
                     <th scope="col">Created date</th>
                     <th scope="col">Created by</th>
                 </tr>
@@ -35,6 +36,7 @@
                             <th scope="row">{{$row}}</th>
                             <td id="project_{{$project->id}}">{{$project->project}}</td>
                             <td id="description_{{$project->id}}">{{$project->description}}</td>
+                            <td id="client_{{$project->id}}" client_id="{{$project->client_id}}" title="{{$project->client_director}}">{{$project->client_name}}</td>
                             <td>{{$project->created_at}}</td>
                             <td>{{$project->created_name}} {{$project->created_surname}}</td>
                         </tr>
@@ -69,6 +71,33 @@
                                 <div class="form-group row">
                                     <label for="project">Project</label>
                                     <input id="project" type="text" required="" name="project" placeholder="project" class="form-control">
+                                </div>
+                                <div class="form-group row">
+                                    <label for="up_category_id">Up category</label>
+                                    <select id="up_category_id" class="form-control">
+                                        <option value=''>Select</option>
+                                        @foreach($up_categories as $up_category)
+                                            <option value="{{$up_category->id}}">{{$up_category->category}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="category_id">Category</label>
+                                    <select id="category_id" class="form-control">
+                                        <option value=''>Please select up category</option>
+                                        {{--@foreach($clients as $client)--}}
+                                        {{--<option value="{{$client->id}}">{{$client->name}}</option>--}}
+                                        {{--@endforeach--}}
+                                    </select>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="client_id">Client</label>
+                                    <select name="client_id" id="client_id" class="form-control" required>
+                                        <option value=''>Please select category</option>
+                                        {{--@foreach($clients as $client)--}}
+                                            {{--<option value="{{$client->id}}">{{$client->name}}</option>--}}
+                                        {{--@endforeach--}}
+                                    </select>
                                 </div>
                                 <div class="form-group row">
                                     <label for="description">Description</label>
@@ -143,6 +172,7 @@
             $('#type').val('add');
             $('#project').val('');
             $('#description').val('');
+            $('#client_id').val('');
             $('.modal-title').html('Add project');
 
             $('#add-modal').modal('show');
@@ -151,12 +181,14 @@
         function update_modal() {
             var project = $('#project_'+row_id).text();
             var description = $('#description_'+row_id).text();
+            var client_id = $('#client_'+row_id).attr('client_id');
             var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
 
             $('#project_id').html(id_input);
             $('#type').val('update');
             $('#project').val(project);
             $('#description').val(description);
+            $('#client_id').val(client_id);
             $('.modal-title').html('Update project');
 
             $('#add-modal').modal('show');
@@ -165,6 +197,7 @@
         function del() {
             swal({
                 title: 'Do you approve the deletion?',
+                text: 'If you delete this project, its tasks will also be deleted.',
                 type: 'warning',
                 showCancelButton: true,
                 cancelButtonText: 'No',
@@ -209,5 +242,106 @@
                 }
             });
         }
+
+        //show categories
+        $('#up_category_id').change(function () {
+            var up_category_id = $(this).val();
+            if (up_category_id === 0 || up_category_id === '') {
+                var category_option = "<option value=''>Please select up category</option>";
+                $('#category_id').html(category_option);
+                var client_option = "<option value=''>Please select category</option>";
+                $('#client_id').html(client_option);
+            }
+            else {
+                swal({
+                    title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                    text: 'Loading, please wait...',
+                    showConfirmButton: false
+                });
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                $.ajax({
+                    type: "Post",
+                    url: '',
+                    data: {
+                        'up_id': up_category_id,
+                        '_token': CSRF_TOKEN,
+                        'type': 'show_categories'
+                    },
+                    success: function (response) {
+                        if (response.case === 'success') {
+                            swal.close();
+                            var categories = response.categories;
+                            var options = "<option value=''>Select</option>";
+                            var option = '';
+
+                            for (var i=0; i<categories.length; i++) {
+                                var category = categories[i];
+                                option = '<option value="' + category['id'] + '">' + category['category'] + '</option>';
+                                options = options + option;
+                            }
+
+                            $('#category_id').html(options);
+                        }
+                        else {
+                            swal(
+                                response.title,
+                                response.content,
+                                response.case
+                            );
+                        }
+                    }
+                });
+            }
+        });
+
+        //show clients
+        $('#category_id').change(function () {
+            var category_id = $(this).val();
+            if (category_id === 0 || category_id === '') {
+                var client_option = "<option value=''>Please select category</option>";
+                $('#client_id').html(client_option);
+            }
+            else {
+                swal({
+                    title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                    text: 'Loading, please wait...',
+                    showConfirmButton: false
+                });
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                $.ajax({
+                    type: "Post",
+                    url: '',
+                    data: {
+                        'category_id': category_id,
+                        '_token': CSRF_TOKEN,
+                        'type': 'show_clients'
+                    },
+                    success: function (response) {
+                        if (response.case === 'success') {
+                            swal.close();
+                            var clients = response.clients;
+                            console.log(clients);
+                            var options = "<option value=''>Select</option>";
+                            var option = '';
+
+                            for (var i=0; i<clients.length; i++) {
+                                var client = clients[i];
+                                option = '<option value="' + client['id'] + '">' + client['name'] + '</option>';
+                                options = options + option;
+                            }
+
+                            $('#client_id').html(options);
+                        }
+                        else {
+                            swal(
+                                response.title,
+                                response.content,
+                                response.case
+                            );
+                        }
+                    }
+                });
+            }
+        });
     </script>
 @endsection

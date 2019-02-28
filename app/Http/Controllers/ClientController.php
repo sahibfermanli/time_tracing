@@ -23,10 +23,10 @@ class ClientController extends HomeController
         if ($request->type == 'add') {
             return $this->add_client($request);
         }
-        if ($request->type == 'update') {
+        else if ($request->type == 'update') {
             return $this->update_client($request);
         }
-        if ($request->type == 'delete') {
+        else if ($request->type == 'delete') {
             return $this->delete_client($request);
         }
         else {
