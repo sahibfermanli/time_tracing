@@ -85,18 +85,12 @@
                                     <label for="category_id">Category</label>
                                     <select id="category_id" class="form-control">
                                         <option value=''>Please select up category</option>
-                                        {{--@foreach($clients as $client)--}}
-                                        {{--<option value="{{$client->id}}">{{$client->name}}</option>--}}
-                                        {{--@endforeach--}}
                                     </select>
                                 </div>
                                 <div class="form-group row">
                                     <label for="client_id">Client</label>
                                     <select name="client_id" id="client_id" class="form-control" required>
                                         <option value=''>Please select category</option>
-                                        {{--@foreach($clients as $client)--}}
-                                            {{--<option value="{{$client->id}}">{{$client->name}}</option>--}}
-                                        {{--@endforeach--}}
                                     </select>
                                 </div>
                                 <div class="form-group row">
@@ -320,7 +314,6 @@
                         if (response.case === 'success') {
                             swal.close();
                             var clients = response.clients;
-                            console.log(clients);
                             var options = "<option value=''>Select</option>";
                             var option = '';
 

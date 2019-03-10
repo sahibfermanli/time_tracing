@@ -20,6 +20,11 @@ Route::group(['prefix'=>'/roles'], function () {
     Route::post('/', 'RoleController@post_roles');
 });
 
+Route::group(['prefix'=>'/non-billable-codes'], function () {
+    Route::get('/', 'NonBillableCodeController@get_non_billable_codes');
+    Route::post('/', 'NonBillableCodeController@post_non_billable_codes');
+});
+
 Route::group(['prefix'=>'/users'], function () {
     Route::get('/', 'UserController@get_users');
     Route::post('/', 'UserController@post_users');
@@ -43,6 +48,11 @@ Route::group(['prefix'=>'/projects'], function () {
 Route::group(['prefix'=>'/tasks'], function () {
     Route::get('/', 'TaskController@get_tasks');
     Route::post('/', 'TaskController@post_tasks');
+});
+
+Route::group(['prefix'=>'/fields'], function () {
+    Route::get('/', 'FieldController@get_fields');
+    Route::post('/', 'FieldController@post_fields');
 });
 
 Route::group(['prefix'=>'/time-tracer'], function () {
