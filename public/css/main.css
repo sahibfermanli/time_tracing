@@ -54,7 +54,8 @@ td, th {
     width: 150px;
     color: #000000;
     top: 75px;
-    padding:10px
+    padding:10px;
+    z-index: 9999;
 }
 .zaman-2.firstchild {
     border-left: 0.1px solid #28a745;

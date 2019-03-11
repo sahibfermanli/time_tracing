@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 class FieldController extends HomeController
 {
     public function get_fields() {
-        $fields = Fields::leftJoin('users as created', 'fields.created_by', '=', 'created.id')->where(['fields.deleted'=>0])->select('fields.id', 'fields.title', 'fields.time', 'fields.created_at', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
+        $fields = Fields::leftJoin('users as created', 'fields.created_by', '=', 'created.id')->where(['fields.deleted'=>0])->select('fields.id', 'fields.start_time', 'fields.end_time', 'fields.created_at', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
 
         return view('backend.fields')->with(['fields'=>$fields]);
     }
@@ -35,8 +35,8 @@ class FieldController extends HomeController
     //add field
     private function add_field(Request $request) {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:100',
-            'time' => 'required|integer',
+            'start_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
         ]);
         if ($validator->fails()) {
             return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
@@ -60,9 +60,9 @@ class FieldController extends HomeController
     //update field
     private function update_field(Request $request) {
         $validator = Validator::make($request->all(), [
-            'id' => 'required|integer',
-            'title' => 'required|string|max:100',
-            'time' => 'required|integer',
+            'id' => ['required', 'integer'],
+            'start_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
         ]);
         if ($validator->fails()) {
             return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);

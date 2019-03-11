@@ -21,8 +21,8 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Time</th>
+                    <th scope="col">Start</th>
+                    <th scope="col">End</th>
                     <th scope="col">Created date</th>
                     <th scope="col">Created by</th>
                 </tr>
@@ -33,8 +33,8 @@
                         @php($row++)
                         <tr onclick="row_select({{$field->id}});" id="row_{{$field->id}}" class="rows">
                             <th scope="row">{{$row}}</th>
-                            <td id="title_{{$field->id}}">{{$field->title}}</td>
-                            <td id="time_{{$field->id}}">{{$field->time}}</td>
+                            <td id="start_time_{{$field->id}}">{{substr($field->start_time, 0, 5)}}</td>
+                            <td id="end_time_{{$field->id}}">{{substr($field->end_time, 0, 5)}}</td>
                             <td>{{$field->created_at}}</td>
                             <td>{{$field->created_name}} {{$field->created_surname}}</td>
                         </tr>
@@ -67,15 +67,15 @@
                                 <input type="hidden" id="type" name="type" value="add">
                                 <div id="field_id"></div>
                                 <div class="form-group row">
-                                    <label for="title" class="col-3 col-lg-2 col-form-label text-right">Title</label>
+                                    <label for="start_time" class="col-3 col-lg-2 col-form-label text-right">Start</label>
                                     <div class="col-9 col-lg-10">
-                                        <input id="title" type="text" required="" name="title" placeholder="title" class="form-control">
+                                        <input id="start_time" type="text" required="" name="start_time" placeholder="start" class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="time" class="col-3 col-lg-2 col-form-label text-right">Time</label>
+                                    <label for="end_time" class="col-3 col-lg-2 col-form-label text-right">End</label>
                                     <div class="col-9 col-lg-10">
-                                        <input id="time" type="number" required="" name="time" placeholder="time" class="form-control">
+                                        <input id="end_time" type="text" required="" name="end_time" placeholder="end" class="form-control">
                                     </div>
                                 </div>
                                 <div class="row pt-2 pt-sm-5 mt-1">
@@ -145,22 +145,22 @@
 
         function add_modal() {
             $('#type').val('add');
-            $('#title').val('');
-            $('#time').val('10');
+            $('#start_time').val('');
+            $('#end_time').val('');
             $('.modal-title').html('Add field');
 
             $('#add-modal').modal('show');
         }
 
         function update_modal() {
-            var title = $('#title_'+row_id).text();
-            var time = $('#time_'+row_id).text();
+            var start_time = $('#start_time_'+row_id).text();
+            var end_time = $('#end_time_'+row_id).text();
             var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
 
             $('#field_id').html(id_input);
             $('#type').val('update');
-            $('#title').val(title);
-            $('#time').val(time);
+            $('#start_time').val(start_time);
+            $('#end_time').val(end_time);
             $('.modal-title').html('Update field');
 
             $('#add-modal').modal('show');
