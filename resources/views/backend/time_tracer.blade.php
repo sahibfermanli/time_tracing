@@ -82,40 +82,58 @@
                     <div class="form-group col-lg-3" style="display: inline-block; padding-left: 0 !important;">
                         <input type="date" class="form-control form-control-sm" id="date_where" oninput="get_works_where(this, 'date');">
                     </div>
+                    <div class="form-group col-lg-2" style="display: inline-block; padding-left: 0 !important;" id="chart-btn">
+                        <button type="button" class="btn btn-primary btn-xs" onclick="show_chart();">Show chart</button>
+                    </div>
                 </div>
-                <table class="table table-bordered">
-                    <thead>
-                    <tr style="background-color: green; color: black;">
-                        <th scope="col">#</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Interval</th>
-                        <th scope="col">Project</th>
-                        <th scope="col">Task</th>
-                        <th scope="col">Work</th>
-                    </tr>
-                    </thead>
-                    <tbody id="works_table">
-                    @php($row = 0)
-                    @foreach($works as $work)
-                        @php($row++)
-                        @php($start_time = substr($work->start_time, 0, 5))
-                        @php($end_time = substr($work->end_time, 0, 5))
-                        @if(strlen($work->work) > 40)
-                            @php($work_text = substr($work->work, 0, 40) . '...')
-                        @else
-                            @php($work_text = $work->work)
-                        @endif
-                        <tr style="background-color: {{$work->color}}; color: black;">
-                            <th scope="row">{{$row}}</th>
-                            <td>{{date_format($work->created_at, "Y-m-d")}}</td>
-                            <td>{{$start_time}} - {{$end_time}}</td>
-                            <td title="{{$work->project_desc}}">{{$work->project}}</td>
-                            <td title="{{$work->task_desc}}">{{$work->task}}</td>
-                            <td title="{{$work->work}}">{{$work_text}}</td>
+                <div class="card col-lg-6" id="chart-area" style="display: none;">
+                    <div class="card-body" id="chart-body">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr style="background-color: green; color: black;">
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Interval</th>
+                            <th scope="col">Project</th>
+                            <th scope="col">Task</th>
+                            <th scope="col">Work</th>
                         </tr>
-                    @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody id="works_table">
+                        @php($row = 0)
+                        @php($yellow_count = 0)
+                        @php($red_count = 0)
+                        @foreach($works as $work)
+                            @php($row++)
+                            @php($start_time = substr($work->start_time, 0, 5))
+                            @php($end_time = substr($work->end_time, 0, 5))
+                            @if(strlen($work->work) > 40)
+                                @php($work_text = substr($work->work, 0, 40) . '...')
+                            @else
+                                @php($work_text = $work->work)
+                            @endif
+
+                            @if($work->color == 'yellow')
+                                @php($yellow_count++)
+                            @elseif($work->color == 'red')
+                                @php($red_count++)
+                            @endif
+                            <tr style="background-color: {{$work->color}}; color: black;">
+                                <th scope="row">{{$row}}</th>
+                                <td>{{date_format($work->created_at, "Y-m-d")}}</td>
+                                <td>{{$start_time}} - {{$end_time}}</td>
+                                <td title="{{$work->project_desc}}">{{$work->project}}</td>
+                                <td title="{{$work->task_desc}}">{{$work->task}}</td>
+                                <td title="{{$work->work}}">{{$work_text}}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -143,12 +161,18 @@
                                 </div>
                                 <div id="form_type"></div>
                                 <div class="form-group row">
-                                    <label for="task_id">Task</label>
-                                    <select name="task_id" id="task_id" class="form-control" required>
-                                        <option value="">Select task</option>
-                                        @foreach($tasks as $task)
-                                            <option value="{{$task->id}}">{{$task->task}}</option>
+                                    <label for="project_id">Project</label>
+                                    <select id="project_id" class="form-control" required oninput="select_project();">
+                                        <option value="">Select project</option>
+                                        @foreach($projects as $project)
+                                            <option value="{{$project->id}}">{{$project->project}}</option>
                                         @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="task_id">Task</label>
+                                    <select name="task_id" id="task_id" class="form-control" required disabled>
+                                        <option value="">Select task</option>
                                     </select>
                                 </div>
                                 <label class="custom-control custom-checkbox" id="work_type" oninput="change_work_type();">
@@ -191,6 +215,41 @@
     <script src="/js/jquery.validate.min.js"></script>
     <script src="/js/sweetalert2.min.js"></script>
 
+    <script src="/js/Chart.bundle.js"></script>
+
+    <script>
+        var red_count = {{$red_count}};
+        var yellow_count = {{$yellow_count}};
+
+        function show_chart() {
+            $('#chart-area').css('display', 'block');
+            $('#chart-btn').html('<button type="button" class="btn btn-warning btn-xs" onclick="hide_chart();">Hide chart</button>');
+        }
+
+        function hide_chart() {
+            $('#chart-area').css('display', 'none');
+            $('#chart-btn').html('<button type="button" class="btn btn-primary btn-xs" onclick="show_chart();">Show chart</button>');
+        }
+
+        //pie
+        var ctxP = document.getElementById("pieChart").getContext('2d');
+        var myPieChart = new Chart(ctxP, {
+            type: 'pie',
+            data: {
+                labels: ["Billable", "Non billable"],
+                datasets: [{
+                    data: [red_count, yellow_count],
+                    backgroundColor: ["#F7464A", "#FDB45C"],
+                    hoverBackgroundColor: ["#FF5A5E", "#FFC870"]
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+    </script>
+
     <script>
         var field_id;
         var work_type = false;
@@ -221,6 +280,54 @@
                 }
             });
         });
+
+        function select_project() {
+            var project_id = $('#project_id').val();
+            if (project_id === '' || project_id === 0) {
+                $('#task_id').html('<option value="">Select task</option>').prop('disabled', true);
+                return false;
+            }
+            else {
+                swal({
+                    title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                    text: 'Loading, please wait...',
+                    showConfirmButton: false
+                });
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                $.ajax({
+                    type: "Post",
+                    url: '',
+                    data: {
+                        'project_id': project_id,
+                        '_token': CSRF_TOKEN,
+                        'type': 'select_project_for_tasks'
+                    },
+                    success: function (response) {
+                        if (response.case === 'success') {
+                            swal.close();
+                            var tasks = response.tasks;
+                            var options = "<option value=''>Select task</option>";
+                            var option = '';
+
+                            for (var i=0; i<tasks.length; i++) {
+                                var task = tasks[i];
+                                option = '<option value="' + task['id'] + '">' + task['task'] + '</option>';
+                                options = options + option;
+                            }
+
+                            $('#task_id').html(options).prop('disabled', false);
+                        }
+                        else {
+                            swal(
+                                response.title,
+                                response.content,
+                                response.case
+                            );
+                        }
+                    }
+                });
+            }
+        }
 
         function add_work_modal(show_modal, id, start_time, end_time) {
             if (show_modal === 1) {
@@ -388,10 +495,19 @@
                         var table = '';
                         var tr = '';
                         var row = 0;
+                        var new_red_count = 0;
+                        var new_yellow_count = 0;
 
                         for (var i=0; i<works.length; i++) {
                             row++;
                             var work = works[i];
+
+                            if (work['color'] === 'red') {
+                                new_red_count++;
+                            } else if (work['color'] === 'yellow') {
+                                new_yellow_count++;
+                            }
+
                             tr = '<tr style="background-color: ' + work['color'] + '; color: black;">';
                             var row_id = '<th scope="row">' + row + '</th>';
                             var date = '<td>' + work['created_at'].substr(0, 10) + '</td>';
@@ -414,6 +530,24 @@
                         }
 
                         $('#works_table').html(table);
+
+                        $('#chart-body').html('<canvas id="pieChart"></canvas>');
+
+                        var ctxP = document.getElementById("pieChart").getContext('2d');
+                        var myPieChart = new Chart(ctxP, {
+                            type: 'pie',
+                            data: {
+                                labels: ["Billable", "Non billable"],
+                                datasets: [{
+                                    data: [new_red_count, new_yellow_count],
+                                    backgroundColor: ["#F7464A", "#FDB45C"],
+                                    hoverBackgroundColor: ["#FF5A5E", "#FFC870"]
+                                }]
+                            },
+                            options: {
+                                responsive: true
+                            }
+                        });
                     }
                     else {
                         swal(

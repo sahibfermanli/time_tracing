@@ -168,7 +168,7 @@
                         @if(Auth::user()->role() == 1)
                             {{--Chief--}}
                             <li class="nav-item">
-                                <a class="nav-link" href="/chief/tracer"><i class="fa fa-tasks"></i> Chief tracer</a>
+                                <a class="nav-link" href="/chief/tracer"><i class="fa fa-tasks"></i> Tracer</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/chief/clients"><i class="fa fa-user-secret"></i> Clients</a>
@@ -182,7 +182,7 @@
                         @elseif(Auth::user()->role() == 2)
                             {{--User--}}
                             <li class="nav-item">
-                                <a class="nav-link" href="/user/tracer"><i class="fa fa-tasks"></i> Time tracer</a>
+                                <a class="nav-link" href="/user/tracer"><i class="fa fa-tasks"></i> Tracer</a>
                             </li>
                         @elseif(Auth::user()->role() == 3)
                             {{--Admin--}}

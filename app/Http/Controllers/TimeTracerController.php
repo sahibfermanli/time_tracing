@@ -41,6 +41,9 @@ class TimeTracerController extends HomeController
         else if ($request->type == 'get_works_where') {
             return $this->get_works_where($request);
         }
+        else if ($request->type == 'select_project_for_tasks') {
+            return $this->select_project_for_tasks($request);
+        }
         else {
             return response(['case' => 'error', 'title' => 'Oops!', 'content' => 'Operation not found!']);
         }
@@ -164,13 +167,13 @@ class TimeTracerController extends HomeController
         }
         try {
             if ($request->column == 'date') {
-                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id'=>Auth::id(), 'works.deleted'=>0])->whereDate('works.created_at', $request->value)->orderBy('works.created_at')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 't.description as task_desc', 'works.color', 'works.work', 'works.created_at')->get();
+                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id'=>Auth::id(), 'works.deleted'=>0])->whereDate('works.created_at', $request->value)->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 't.description as task_desc', 'works.color', 'works.work', 'works.created_at')->get();
             }
             else if ($request->column == 'task') {
-                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id'=>Auth::id(), 'works.deleted'=>0, 'works.task_id' => $request->value])->orderBy('works.created_at')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 't.description as task_desc', 'works.color', 'works.work', 'works.created_at')->get();
+                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id'=>Auth::id(), 'works.deleted'=>0, 'works.task_id' => $request->value])->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 't.description as task_desc', 'works.color', 'works.work', 'works.created_at')->get();
             }
             else if ($request->column == 'project') {
-                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id'=>Auth::id(), 'works.deleted'=>0, 't.project_id' => $request->value])->orderBy('works.created_at')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 't.description as task_desc', 'works.color', 'works.work', 'works.created_at')->get();
+                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id'=>Auth::id(), 'works.deleted'=>0, 't.project_id' => $request->value])->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 't.description as task_desc', 'works.color', 'works.work', 'works.created_at')->get();
             }
             else {
                 return response(['case' => 'error', 'title' => 'Error!', 'content' => 'Column not found!']);
@@ -192,22 +195,39 @@ class TimeTracerController extends HomeController
         }
         try {
             if ($request->column == 'date') {
-                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->leftJoin('users as u', 't.user_id', '=', 'u.id')->where(['works.deleted'=>0])->whereDate('works.created_at', $request->value)->orderBy('works.created_at')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 't.description as task_desc', 'works.color', 'works.work', 'works.created_at', 'u.name', 'u.surname')->get();
+                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->leftJoin('users as u', 't.user_id', '=', 'u.id')->where(['works.deleted'=>0])->whereDate('works.created_at', $request->value)->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 't.description as task_desc', 'works.color', 'works.work', 'works.created_at', 'u.name', 'u.surname')->get();
             }
             else if ($request->column == 'task') {
-                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->leftJoin('users as u', 't.user_id', '=', 'u.id')->where(['works.deleted'=>0, 'works.task_id' => $request->value])->orderBy('works.created_at')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 't.description as task_desc', 'works.color', 'works.work', 'works.created_at', 'u.name', 'u.surname')->get();
+                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->leftJoin('users as u', 't.user_id', '=', 'u.id')->where(['works.deleted'=>0, 'works.task_id' => $request->value])->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 't.description as task_desc', 'works.color', 'works.work', 'works.created_at', 'u.name', 'u.surname')->get();
             }
             else if ($request->column == 'project') {
-                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->leftJoin('users as u', 't.user_id', '=', 'u.id')->where(['works.deleted'=>0, 't.project_id' => $request->value])->orderBy('works.created_at')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 't.description as task_desc', 'works.color', 'works.work', 'works.created_at', 'u.name', 'u.surname')->get();
+                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->leftJoin('users as u', 't.user_id', '=', 'u.id')->where(['works.deleted'=>0, 't.project_id' => $request->value])->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 't.description as task_desc', 'works.color', 'works.work', 'works.created_at', 'u.name', 'u.surname')->get();
             }
             else if ($request->column == 'user') {
-                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->leftJoin('users as u', 't.user_id', '=', 'u.id')->where(['works.deleted'=>0, 'works.user_id' => $request->value])->orderBy('works.created_at')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 't.description as task_desc', 'works.color', 'works.work', 'works.created_at', 'u.name', 'u.surname')->get();
+                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->leftJoin('users as u', 't.user_id', '=', 'u.id')->where(['works.deleted'=>0, 'works.user_id' => $request->value])->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 't.description as task_desc', 'works.color', 'works.work', 'works.created_at', 'u.name', 'u.surname')->get();
             }
             else {
                 return response(['case' => 'error', 'title' => 'Error!', 'content' => 'Column not found!']);
             }
 
             return response(['case' => 'success', 'works'=>$works]);
+        } catch (\Exception $e) {
+            return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
+        }
+    }
+
+    //select project for tasks
+    private function select_project_for_tasks(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'project_id' => ['required', 'integer'],
+        ]);
+        if ($validator->fails()) {
+            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Project not found!']);
+        }
+        try {
+            $tasks = Tasks::where(['project_id'=>$request->project_id, 'user_id'=>Auth::id(), 'deleted'=>0])->orderBy('task')->select('id', 'task')->get();
+
+            return response(['case' => 'success', 'tasks'=>$tasks]);
         } catch (\Exception $e) {
             return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
         }
