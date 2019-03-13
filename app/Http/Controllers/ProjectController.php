@@ -6,6 +6,7 @@ use App\Categories;
 use App\Clients;
 use App\Projects;
 use App\Tasks;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,11 +16,11 @@ use Illuminate\Support\Facades\Validator;
 class ProjectController extends HomeController
 {
     public function get_projects() {
-        $projects = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')->where(['projects.deleted'=>0])->select('projects.id', 'projects.project', 'projects.description', 'projects.created_at', 'projects.client_id', 'c.name as client_name', 'c.director as client_director', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
-//        $clients = Clients::where(['deleted'=>0])->select('id', 'name')->get();
+        $projects = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')->leftJoin('users as pm', 'projects.project_manager_id', '=', 'pm.id')->where(['projects.deleted'=>0])->select('projects.id', 'projects.project', 'projects.description', 'projects.created_at', 'projects.client_id', 'c.name as client_name', 'c.director as client_director', 'created.name as created_name', 'created.surname as created_surname', 'projects.project_manager_id', 'pm.name as pm_name', 'pm.surname as pm_surname')->paginate(30);
         $up_categories = Categories::where(['deleted'=>0, 'up_category'=>0])->select('id', 'category')->get();
+        $project_managers = User::where(['deleted'=>0, 'role_id'=>4])->select('id', 'name', 'surname')->get();
 
-        return view('backend.projects')->with(['projects'=>$projects, 'up_categories'=>$up_categories]);
+        return view('backend.projects')->with(['projects'=>$projects, 'up_categories'=>$up_categories, 'project_managers'=>$project_managers]);
     }
 
     public function post_projects(Request $request) {

@@ -21,8 +21,8 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
+                    <th scope="col">Industry</th>
                     <th scope="col">Category</th>
-                    <th scope="col">Up category</th>
                     <th scope="col">Created date</th>
                     <th scope="col">Created by</th>
                 </tr>
@@ -33,8 +33,8 @@
                         @php($row++)
                         <tr onclick="row_select({{$category->id}});" id="row_{{$category->id}}" class="rows">
                             <th scope="row">{{$row}}</th>
-                            <td id="category_{{$category->id}}">{{$category->category}}</td>
                             <td id="up_category_{{$category->id}}" up_id="{{$category->up_id}}">{{$category->up_category}}</td>
+                            <td id="category_{{$category->id}}">{{$category->category}}</td>
                             <td>{{$category->created_at}}</td>
                             <td>{{$category->created_name}} {{$category->created_surname}}</td>
                         </tr>
@@ -68,19 +68,19 @@
                                 <div id="category_id"></div>
                                 <div class="form-group row">
                                     <div class="col-9 col-lg-10">
-                                        <label for="category">Category</label>
-                                        <input id="category" type="text" required="" name="category" placeholder="category" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-9 col-lg-10">
-                                        <label for="up_category">Up category </label>
+                                        <label for="up_category">Industry </label>
                                         <select name="up_category" id="up_category" class="form-control">
                                             <option value="0">None</option>
                                             @foreach($up_categories as $up_category)
                                                 <option value="{{$up_category->id}}">{{$up_category->category}}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-9 col-lg-10">
+                                        <label for="category">Category</label>
+                                        <input id="category" type="text" required="" name="category" placeholder="category" class="form-control">
                                     </div>
                                 </div>
                                 <div class="row pt-2 pt-sm-5 mt-1">

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Validator;
 class TaskController extends HomeController
 {
     public function get_tasks() {
-        $tasks = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')->leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->leftJoin('users as u', 'tasks.user_id', '=', 'u.id')->where(['tasks.deleted'=>0])->select('tasks.id', 'tasks.task', 'tasks.description', 'tasks.created_at', 'tasks.project_id', 'p.project', 'tasks.user_id', 'tasks.user_date', 'u.name as user_name', 'u.surname as user_surname', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
+        $tasks = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')->leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->leftJoin('users as u', 'tasks.user_id', '=', 'u.id')->where(['tasks.deleted'=>0])->select('tasks.id', 'tasks.task', 'tasks.description', 'tasks.created_at', 'tasks.deadline', 'tasks.project_id', 'p.project', 'tasks.user_id', 'tasks.user_date', 'u.name as user_name', 'u.surname as user_surname', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
         $projects = Projects::where(['deleted'=>0])->select('id', 'project')->get();
         $users = User::where(['deleted'=>0, 'role_id'=>2])->select('id', 'name', 'surname')->get();
 
@@ -40,6 +40,7 @@ class TaskController extends HomeController
     private function add_task(Request $request) {
         $validator = Validator::make($request->all(), [
             'project_id' => ['required', 'integer'],
+            'deadline' => ['required', 'integer'],
             'task' => ['required', 'string', 'max:255'],
         ]);
         if ($validator->fails()) {
@@ -75,6 +76,7 @@ class TaskController extends HomeController
         $validator = Validator::make($request->all(), [
             'id' => ['required', 'integer'],
             'project_id' => ['required', 'integer'],
+            'deadline' => ['required', 'integer'],
             'task' => ['required', 'string', 'max:255'],
         ]);
         if ($validator->fails()) {

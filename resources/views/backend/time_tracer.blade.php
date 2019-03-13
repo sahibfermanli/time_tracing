@@ -104,35 +104,64 @@
                         </tr>
                         </thead>
                         <tbody id="works_table">
-                        @php($row = 0)
-                        @php($yellow_count = 0)
-                        @php($red_count = 0)
-                        @foreach($works as $work)
-                            @php($row++)
-                            @php($start_time = substr($work->start_time, 0, 5))
-                            @php($end_time = substr($work->end_time, 0, 5))
-                            @if(strlen($work->work) > 40)
-                                @php($work_text = substr($work->work, 0, 40) . '...')
-                            @else
-                                @php($work_text = $work->work)
-                            @endif
+                        <?php
+                        $row = 0;
+                        $yellow_count = 0;
+                        $red_count = 0;
+                        $same_work = '';
+                        $start_time = '??:??';
+                        $end_time = '??:??';
+                        $tr = '';
+                        $completed = false;
 
-                            @if($work->color == 'yellow')
-                                @php($yellow_count++)
-                            @elseif($work->color == 'red')
-                                @php($red_count++)
-                            @endif
-                            <tr style="background-color: {{$work->color}}; color: black;">
-                                <th scope="row">{{$row}}</th>
-                                <td>{{date_format($work->created_at, "Y-m-d")}}</td>
-                                <td>{{$start_time}} - {{$end_time}}</td>
-                                <td title="{{$work->project_desc}}">{{$work->project}}</td>
-                                <td title="{{$work->task_desc}}">{{$work->task}}</td>
-                                <td title="{{$work->work}}">{{$work_text}}</td>
-                            </tr>
-                        @endforeach
+                        foreach ($works as $work) {
+                            if ($work->completed == 1) {
+                                $completed = true;
+                            }
+
+                            $end_time = substr($work->end_time, 0, 5);
+                            if ($same_work != $work->same_work) {
+                                $same_work = $work->same_work;
+                                $start_time = substr($work->start_time, 0, 5);
+
+                                $row++;
+                                echo $tr;
+                            }
+
+                            if (strlen($work->work) > 40) {
+                                $work_text = substr($work->work, 0, 40) . '...';
+                            } else {
+                                $work_text = $work->work;
+                            }
+
+                            if ($work->color == 'yellow') {
+                                $yellow_count++;
+                            } else {
+                                $red_count++;
+                            }
+
+                            $tr = '<tr style="background-color:' . $work->color . '; color: black;">';
+                            $tr .= '<th scope="row">' . $row . '</th>';
+                            $tr .= '<td>' . date_format($work->created_at, "Y-m-d") . '</td>';
+                            $tr .= '<td>' . $start_time . ' - ' . $end_time . '</td>';
+                            $tr .= '<td title="' . $work->project_desc . '">' . $work->project . '</td>';
+                            $tr .= '<td title="' . $work->task_desc . '">' . $work->task . '</td>';
+                            $tr .= '<td title="' . $work->work . '">' . $work_text . '</td>';
+                            $tr .= '</tr>';
+                        }
+
+                        echo $tr;
+                        ?>
                         </tbody>
                     </table>
+                </div>
+                <br>
+                <div id="complete-btn">
+                    @if(!$completed)
+                        <button type="button" class="btn btn-success btn-xs" style="float: right;" onclick="complete_works();">Complete</button>
+                    @else
+                        <button type="button" class="btn btn-warning btn-xs" style="float: right;" disabled>Complete</button>
+                    @endif
                 </div>
             </div>
         </div>
@@ -280,6 +309,34 @@
                 }
             });
         });
+
+        function complete_works() {
+            swal({
+                title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                text: 'Loading, please wait...',
+                showConfirmButton: false
+            });
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                type: "Post",
+                url: '',
+                data: {
+                    '_token': CSRF_TOKEN,
+                    'type': 'complete_works'
+                },
+                success: function (response) {
+                    if (response.case === 'success') {
+                        $('#complete-btn').html('<button type="button" class="btn btn-warning btn-xs" style="float: right;" disabled>Complete</button>');
+                    }
+
+                    swal(
+                        response.title,
+                        response.content,
+                        response.case
+                    );
+                }
+            });
+        }
 
         function select_project() {
             var project_id = $('#project_id').val();
@@ -455,6 +512,8 @@
                 return false;
             }
 
+            $('#complete-btn').html('');
+
             if (column === 'date') {
                 $('#task_id_where').val('');
                 $('#project_id_where').val('');
@@ -497,10 +556,21 @@
                         var row = 0;
                         var new_red_count = 0;
                         var new_yellow_count = 0;
+                        var same_work = '';
+                        var start_time = '??:??';
+                        var end_time = '??:??';
 
                         for (var i=0; i<works.length; i++) {
-                            row++;
                             var work = works[i];
+
+                            end_time = work['end_time'].substr(0, 5);
+                            if (same_work !== work['same_work']) {
+                                same_work = work['same_work'];
+                                start_time = work['start_time'].substr(0, 5);
+
+                                row++;
+                                table = table + tr;
+                            }
 
                             if (work['color'] === 'red') {
                                 new_red_count++;
@@ -511,7 +581,7 @@
                             tr = '<tr style="background-color: ' + work['color'] + '; color: black;">';
                             var row_id = '<th scope="row">' + row + '</th>';
                             var date = '<td>' + work['created_at'].substr(0, 10) + '</td>';
-                            var interval = '<td>' + work['start_time'].substr(0, 5) + ' - ' + work['end_time'].substr(0, 5) + '</td>';
+                            var interval = '<td>' + start_time + ' - ' + end_time + '</td>';
                             var project = '<td title="' + work['project_desc'] + '">' + work['project'] + '</td>';
                             var task = '<td title="' + work['task_desc'] + '">' + work['task'] + '</td>';
                             var work_text = work['work'];
@@ -526,8 +596,9 @@
 
                             tr = tr + row_id + date + interval + project + task + work_td;
                             tr = tr + '</tr>';
-                            table = table + tr;
                         }
+
+                        table = table + tr;
 
                         $('#works_table').html(table);
 

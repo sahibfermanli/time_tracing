@@ -25,6 +25,7 @@
                     <th scope="col">Description</th>
                     <th scope="col">Project</th>
                     <th scope="col">User</th>
+                    <th scope="col">Deadline</th>
                     <th scope="col">Created date</th>
                     <th scope="col">Created by</th>
                 </tr>
@@ -37,6 +38,7 @@
                             <td id="description_{{$task->id}}">{{$task->description}}</td>
                             <td id="project_{{$task->id}}" project_id="{{$task->project_id}}">{{$task->project}}</td>
                             <td id="user_{{$task->id}}" user_id="{{$task->user_id}}" title="{{$task->user_date}}">{{$task->user_name}} {{$task->user_surname}}</td>
+                            <td id="deadline_{{$task->id}}">{{$task->deadline}}</td>
                             <td>{{$task->created_at}}</td>
                             <td>{{$task->created_name}} {{$task->created_surname}}</td>
                         </tr>
@@ -93,6 +95,10 @@
                                             <option value="{{$user->id}}">{{$user->name}} {{$user->surname}}</option>
                                         @endforeach
                                     </select>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="deadline">Deadline (day)</label>
+                                    <input id="deadline" type="number" required="" name="deadline" placeholder="deadline (day)" class="form-control">
                                 </div>
                                 <div class="row pt-2 pt-sm-5 mt-1">
                                     <div class="col-sm-6 pl-0">
@@ -165,6 +171,7 @@
             $('#description').val('');
             $('#project_id').val('');
             $('#user_id').val('');
+            $('#deadline').val('');
             $('.modal-title').html('Add task');
 
             $('#add-modal').modal('show');
@@ -175,6 +182,7 @@
             var description = $('#description_'+row_id).text();
             var project_id = $('#project_'+row_id).attr('project_id');
             var user_id = $('#user_'+row_id).attr('user_id');
+            var deadline = $('#deadline_'+row_id).text();
             var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
 
             $('#task_id').html(id_input);
@@ -183,6 +191,7 @@
             $('#description').val(description);
             $('#project_id').val(project_id);
             $('#user_id').val(user_id);
+            $('#deadline').val(deadline);
             $('.modal-title').html('Update task');
 
             $('#add-modal').modal('show');
