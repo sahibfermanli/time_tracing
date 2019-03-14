@@ -24,6 +24,7 @@
                     <th scope="col">Name</th>
                     <th scope="col">Surname</th>
                     <th scope="col">E-mail</th>
+                    <th scope="col">Username</th>
                     <th scope="col">Role</th>
                     <th scope="col">Created date</th>
                     <th scope="col">Created by</th>
@@ -36,6 +37,7 @@
                             <td id="name_{{$user->id}}">{{$user->name}}</td>
                             <td id="surname_{{$user->id}}">{{$user->surname}}</td>
                             <td id="email_{{$user->id}}">{{$user->email}}</td>
+                            <td id="username_{{$user->id}}">{{$user->username}}</td>
                             <td id="role_{{$user->id}}" role_id="{{$user->role_id}}" title="{{$user->description}}">{{$user->role}}</td>
                             <td>{{$user->created_at}}</td>
                             <td>{{$user->created_name}} {{$user->created_surname}}</td>
@@ -84,6 +86,12 @@
                                     <label for="email" class="col-3 col-lg-2 col-form-label text-right">E-mail</label>
                                     <div class="col-9 col-lg-10">
                                         <input id="email" type="email" required="" name="email" placeholder="e-mail" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="username" class="col-3 col-lg-2 col-form-label text-right">Username</label>
+                                    <div class="col-9 col-lg-10">
+                                        <input id="username" type="text" required="" name="username" placeholder="username" class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -172,6 +180,7 @@
             $('#name').val('');
             $('#surname').val('');
             $('#email').val('');
+            $('#username').val('');
             $('#password').val('');
             $('#role_id').val(1);
             $('.modal-title').html('Add user');
@@ -183,6 +192,7 @@
             var name = $('#name_'+row_id).text();
             var surname = $('#surname_'+row_id).text();
             var email = $('#email_'+row_id).text();
+            var username = $('#username_'+row_id).text();
             var role_id = $('#role_'+row_id).attr('role_id');
             var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
 
@@ -191,6 +201,7 @@
             $('#name').val(name);
             $('#surname').val(surname);
             $('#email').val(email);
+            $('#username').val(username);
             $('#password').val('');
             $('#role_id').val(role_id);
             $('.modal-title').html('Update user');

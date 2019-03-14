@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends HomeController
 {
     public function get_users() {
-        $users = User::leftJoin('users as created', 'users.created_by', '=', 'created.id')->leftJoin('roles as r', 'users.role_id', '=', 'r.id')->where(['users.deleted'=>0])->select('users.id', 'users.name', 'users.surname', 'users.email', 'users.role_id', 'r.role', 'r.description', 'users.created_at', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
+        $users = User::leftJoin('users as created', 'users.created_by', '=', 'created.id')->leftJoin('roles as r', 'users.role_id', '=', 'r.id')->where(['users.deleted'=>0])->select('users.id', 'users.name', 'users.surname', 'users.email', 'users.username', 'users.role_id', 'r.role', 'r.description', 'users.created_at', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
         $roles = Roles::where(['deleted'=>0])->select('id', 'role')->get();
 
         return view('backend.users')->with(['users'=>$users, 'roles'=>$roles]);
@@ -41,11 +41,12 @@ class UserController extends HomeController
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'username' => ['required', 'string', 'max:50', 'unique:users'],
             'password' => ['required', 'string', 'min:6'],
             'role_id' => ['required', 'integer'],
         ]);
         if ($validator->fails()) {
-            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
+            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields! Or this user already exists.']);
         }
         try {
             unset($request['id']);
@@ -74,6 +75,7 @@ class UserController extends HomeController
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
+            'username' => ['required', 'string', 'max:50'],
             'role_id' => ['required', 'integer'],
         ]);
         if ($validator->fails()) {
