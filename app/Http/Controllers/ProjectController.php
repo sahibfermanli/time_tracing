@@ -58,6 +58,7 @@ class ProjectController extends HomeController
         $validator = Validator::make($request->all(), [
             'project' => ['required', 'string', 'max:255'],
             'client_id' => ['required', 'integer'],
+            'project_manager_id' => ['required', 'integer'],
         ]);
         if ($validator->fails()) {
             return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
@@ -67,7 +68,23 @@ class ProjectController extends HomeController
 
             $request->merge(['created_by'=>Auth::id()]);
 
-            Projects::create($request->all());
+            $add = Projects::create($request->all());
+
+            if ($add) {
+                $project_manager = User::where(['id'=>$request->project_manager_id])->select('send_mail', 'email', 'name', 'surname')->first();
+
+                if ($project_manager->send_mail == 1) {
+                    //send email
+                    $email = $project_manager['email'];
+                    $to = $project_manager['name'] . ' ' . $project_manager['surname'];
+                    $message = "You have a new project:";
+                    $message .= "<br>";
+                    $message .= "<b>" . $request->project . "</b>";
+                    $title = 'New project';
+
+                    app('App\Http\Controllers\MailController')->get_send($email, $to, $title, $message);
+                }
+            }
 
             Session::flash('message', 'Success!');
             Session::flash('class', 'success');
@@ -84,6 +101,7 @@ class ProjectController extends HomeController
             'id' => ['required', 'integer'],
             'project' => ['required', 'string', 'max:255'],
             'client_id' => ['required', 'integer'],
+            'project_manager_id' => ['required', 'integer'],
         ]);
         if ($validator->fails()) {
             return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
