@@ -71,7 +71,25 @@ class TaskController extends HomeController
 
             $request->merge(['created_by'=>Auth::id()]);
 
-            Tasks::create($request->all());
+            $add = Tasks::create($request->all());
+
+            if ($add && !empty($request->user_id) && $request->user_id != '' && $request->user_id != 0) {
+                $user = User::where(['id'=>$request->user_id])->select('send_mail', 'email', 'name', 'surname')->first();
+
+                if ($user->send_mail == 1) {
+                    //send email
+                    $email = $user['email'];
+                    $to = $user['name'] . ' ' . $user['surname'];
+                    $message = "You have a new task:";
+                    $message .= "<br>";
+                    $message .= "<b>" . $request->task . "</b>";
+                    $message .= "<br>";
+                    $message .= "Deadline: " . $request->deadline . " day(s).";
+                    $title = 'New task';
+
+                    app('App\Http\Controllers\MailController')->get_send($email, $to, $title, $message);
+                }
+            }
 
             Session::flash('message', 'Success!');
             Session::flash('class', 'success');
@@ -96,6 +114,7 @@ class TaskController extends HomeController
         try {
             unset($request['_token']);
             unset($request['type']);
+            $send_mail = false;
 
             if ($request->project_id == 0) {
                 return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Please select project!']);
@@ -106,13 +125,34 @@ class TaskController extends HomeController
                 if ($task->user_id != $request->user_id) {
                     $current_date = Carbon::now();
                     $request->merge(['user_date'=>$current_date]);
+                    $send_mail = true;
                 }
             }
             else {
                 $request->merge(['user_date'=>null]);
             }
 
-            Tasks::where(['id'=>$request->id])->update($request->all());
+            $update = Tasks::where(['id'=>$request->id])->update($request->all());
+
+            if ($update && !empty($request->user_id) && $request->user_id != '' && $request->user_id != 0) {
+                if ($send_mail) {
+                    $user = User::where(['id'=>$request->user_id])->select('send_mail', 'email', 'name', 'surname')->first();
+
+                    if ($user->send_mail == 1) {
+                        //send email
+                        $email = $user['email'];
+                        $to = $user['name'] . ' ' . $user['surname'];
+                        $message = "You have a new task:";
+                        $message .= "<br>";
+                        $message .= "<b>" . $request->task . "</b>";
+                        $message .= "<br>";
+                        $message .= "Deadline: " . $request->deadline . " day(s).";
+                        $title = 'New task';
+
+                        app('App\Http\Controllers\MailController')->get_send($email, $to, $title, $message);
+                    }
+                }
+            }
 
             Session::flash('message', 'Success!');
             Session::flash('class', 'success');
