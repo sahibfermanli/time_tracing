@@ -53,11 +53,29 @@ class UserController extends HomeController
 
             $request->merge(['created_by'=>Auth::id()]);
 
-            $new_password = Hash::make($request->password);
+            $old_password = $request->password;
+
+            $new_password = Hash::make($old_password);
             unset($request['password']);
             $request['password'] = $new_password;
 
-            User::create($request->all());
+            $add = User::create($request->all());
+
+            if ($add) {
+                //send email
+                $email = $request->email;
+                $to = $request->name . ' ' . $request->surname;
+                $message = "You have been registered by admin.";
+                $message .= "<br>";
+                $message .= "Your username: " . $request->username;
+                $message .= "<br>";
+                $message .= "Your password: " . $old_password;
+                $message .= "<br>";
+                $message .= "Change your password after logging in.";
+                $title = 'Register';
+
+                app('App\Http\Controllers\MailController')->get_send($email, $to, $title, $message);
+            }
 
             Session::flash('message', 'Success!');
             Session::flash('class', 'success');
