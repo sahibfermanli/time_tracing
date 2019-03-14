@@ -131,7 +131,19 @@
                              aria-labelledby="navbarDropdownMenuLink2">
                             <div class="nav-user-info">
                                 <h5 class="mb-0 text-white nav-user-name">{{Auth::user()->name}} {{Auth::user()->surname}}</h5>
-                                {{--<span class="status"></span><span class="ml-2">Status</span>--}}
+                                @if(Auth::user()->role() == 1)
+                                    {{--Chief (Manager)--}}
+                                    <span class="status"></span><span class="ml-2">Manager</span>
+                                @elseif(Auth::user()->role() == 2)
+                                    {{--User--}}
+                                    <span class="status"></span><span class="ml-2">User</span>
+                                @elseif(Auth::user()->role() == 3)
+                                    {{--Admin--}}
+                                    <span class="status"></span><span class="ml-2">Admin</span>
+                                @elseif(Auth::user()->role() == 4)
+                                    {{--ProjectManager--}}
+                                    <span class="status"></span><span class="ml-2">Project Manager</span>
+                                @endif
                             </div>
                             {{--<a class="dropdown-item" href="/account"><i class="fas fa-user mr-2"></i>Account</a>--}}
                             {{--<a class="dropdown-item" href="/settings"><i class="fas fa-cog mr-2"></i>Setting</a>--}}
@@ -200,6 +212,20 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/admin/users"><i class="fa fa-users"></i> Users</a>
+                            </li>
+                        @elseif(Auth::user()->role() == 4)
+                            {{--ProjectManager--}}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/project-manager/time-tracer"><i class="fa fa-tasks"></i> Time tracer</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/project-manager/tracer"><i class="fa fa-tasks"></i> Tracer</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/project-manager/projects"><i class="fa fa-list"></i> Projects</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/project-manager/tasks"><i class="fa fa-tasks"></i> Tasks</a>
                             </li>
                         @endif
 

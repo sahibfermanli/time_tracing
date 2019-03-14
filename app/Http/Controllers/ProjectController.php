@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends HomeController
 {
+    //for manager
     public function get_projects() {
         $projects = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')->leftJoin('users as pm', 'projects.project_manager_id', '=', 'pm.id')->where(['projects.deleted'=>0])->select('projects.id', 'projects.project', 'projects.description', 'projects.created_at', 'projects.client_id', 'c.name as client_name', 'c.director as client_director', 'created.name as created_name', 'created.surname as created_surname', 'projects.project_manager_id', 'pm.name as pm_name', 'pm.surname as pm_surname')->paginate(30);
         $up_categories = Categories::where(['deleted'=>0, 'up_category'=>0])->select('id', 'category')->get();
@@ -23,6 +24,14 @@ class ProjectController extends HomeController
         return view('backend.projects')->with(['projects'=>$projects, 'up_categories'=>$up_categories, 'project_managers'=>$project_managers]);
     }
 
+    //for project manager
+    public function get_projects_for_project_manager() {
+        $projects = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')->where(['projects.deleted'=>0, 'project_manager_id'=>Auth::id()])->select('projects.id', 'projects.project', 'projects.description', 'projects.created_at', 'c.name as client_name', 'c.director as client_director', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
+
+        return view('backend.projects_for_project_manager')->with(['projects'=>$projects]);
+    }
+
+    //for manager
     public function post_projects(Request $request) {
         if ($request->type == 'add') {
             return $this->add_project($request);

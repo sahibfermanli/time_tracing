@@ -44,7 +44,7 @@ Route::group(['prefix'=>'/admin', 'middleware'=>'Admin'], function () {
     });
 });
 
-//chief
+//chief (manager)
 Route::group(['prefix'=>'/chief', 'middleware'=>'Chief'], function () {
     Route::group(['prefix'=>'/clients'], function () {
         Route::get('/', 'ClientController@get_clients');
@@ -64,6 +64,28 @@ Route::group(['prefix'=>'/chief', 'middleware'=>'Chief'], function () {
     Route::group(['prefix'=>'/tracer'], function () {
         Route::get('/', 'TimeTracerController@get_tracer_for_chief');
         Route::post('/', 'TimeTracerController@post_tracer_for_chief');
+    });
+});
+
+//project manager
+Route::group(['prefix'=>'/project-manager', 'middleware'=>'ProjectManager'], function () {
+    Route::group(['prefix'=>'/projects'], function () {
+        Route::get('/', 'ProjectController@get_projects_for_project_manager');
+    });
+
+    Route::group(['prefix'=>'/tasks'], function () {
+        Route::get('/', 'TaskController@get_tasks_for_project_manager');
+        Route::post('/', 'TaskController@post_tasks');
+    });
+
+    Route::group(['prefix'=>'/tracer'], function () {
+        Route::get('/', 'TimeTracerController@get_tracer_for_project_manager');
+        Route::post('/', 'TimeTracerController@post_tracer_for_chief');
+    });
+
+    Route::group(['prefix'=>'/time-tracer'], function () {
+        Route::get('/', 'TimeTracerController@get_time_tracer_for_project_manager');
+        Route::post('/', 'TimeTracerController@post_time_tracer');
     });
 });
 
