@@ -72,6 +72,8 @@ class UserController extends HomeController
                 $message .= "Your password: " . $old_password;
                 $message .= "<br>";
                 $message .= "Change your password after logging in.";
+                $message .= "<br>";
+                $message .= "Link: <a href='https://timetracer.edi.az/'>https://timetracer.edi.az/</a>";
                 $title = 'Register';
 
                 app('App\Http\Controllers\MailController')->get_send($email, $to, $title, $message);

@@ -8,41 +8,37 @@
 
     <div class="card">
         <h5 class="card-header">
-            Client categories
+            Form of business
             <button style="float: right;" type="button" class="btn btn-primary btn-xs" onclick="add_modal();">Add</button>
             <button disabled id="update_btn" style="float: right; margin-right: 5px;" type="button" class="btn btn-warning btn-xs" onclick="update_modal();">Update</button>
             <button disabled id="delete_btn" style="float: right; margin-right: 5px;" type="button" class="btn btn-danger btn-xs" onclick="del();">Delete</button>
         </h5>
         <div class="card-body">
             <div>
-                {!! $categories->links(); !!}
+                {!! $form_of_businesses->links(); !!}
             </div>
             <table class="table table-bordered">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Industry</th>
-                    <th scope="col">Category</th>
+                    <th scope="col">Title</th>
                     <th scope="col">Created date</th>
                     <th scope="col">Created by</th>
                 </tr>
                 </thead>
                 <tbody>
-                @php($row = 0)
-                    @foreach($categories as $category)
-                        @php($row++)
-                        <tr onclick="row_select({{$category->id}});" id="row_{{$category->id}}" class="rows">
-                            <th scope="row">{{$row}}</th>
-                            <td id="up_category_{{$category->id}}" up_id="{{$category->up_id}}">{{$category->up_category}}</td>
-                            <td id="category_{{$category->id}}">{{$category->category}}</td>
-                            <td>{{$category->created_at}}</td>
-                            <td>{{$category->created_name}} {{$category->created_surname}}</td>
+                    @foreach($form_of_businesses as $form_of_business)
+                        <tr onclick="row_select({{$form_of_business->id}});" id="row_{{$form_of_business->id}}" class="rows">
+                            <th scope="row">{{$form_of_business->id}}</th>
+                            <td id="title_{{$form_of_business->id}}">{{$form_of_business->title}}</td>
+                            <td>{{$form_of_business->created_at}}</td>
+                            <td>{{$form_of_business->created_name}} {{$form_of_business->created_surname}}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
             <div>
-                {!! $categories->links(); !!}
+                {!! $form_of_businesses->links(); !!}
             </div>
         </div>
     </div>
@@ -65,22 +61,11 @@
                             <form id="form" data-parsley-validate="" novalidate="" action="" method="post">
                                 {{csrf_field()}}
                                 <input type="hidden" id="type" name="type" value="add">
-                                <div id="category_id"></div>
+                                <div id="form_of_business_id"></div>
                                 <div class="form-group row">
+                                    <label for="title" class="col-3 col-lg-2 col-form-label text-right">Title</label>
                                     <div class="col-9 col-lg-10">
-                                        <label for="up_category">Industry </label>
-                                        <select name="up_category" id="up_category" class="form-control">
-                                            <option value="0">None</option>
-                                            @foreach($up_categories as $up_category)
-                                                <option value="{{$up_category->id}}">{{$up_category->category}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-9 col-lg-10">
-                                        <label for="category">Category</label>
-                                        <input id="category" type="text" required="" name="category" placeholder="category" class="form-control">
+                                        <input id="title" type="text" required="" name="title" placeholder="title" class="form-control">
                                     </div>
                                 </div>
                                 <div class="row pt-2 pt-sm-5 mt-1">
@@ -150,24 +135,20 @@
 
         function add_modal() {
             $('#type').val('add');
-            $('#category').val('');
-            $('#up_category').val(0);
-            $('#category_id').html('');
-            $('.modal-title').html('Add category');
+            $('#title').val('');
+            $('.modal-title').html('Add non billable code');
 
             $('#add-modal').modal('show');
         }
 
         function update_modal() {
-            var category = $('#category_'+row_id).text();
-            var up_category = $('#up_category_'+row_id).attr('up_id');
+            var title = $('#title_'+row_id).text();
             var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
 
-            $('#category_id').html(id_input);
+            $('#form_of_business_id').html(id_input);
             $('#type').val('update');
-            $('#category').val(category);
-            $('#up_category').val(up_category);
-            $('.modal-title').html('Update category');
+            $('#title').val(title);
+            $('.modal-title').html('Update non billable code');
 
             $('#add-modal').modal('show');
         }
@@ -175,7 +156,6 @@
         function del() {
             swal({
                 title: 'Do you approve the deletion?',
-                text: 'Categories of this industry will also be deleted during this process.',
                 type: 'warning',
                 showCancelButton: true,
                 cancelButtonText: 'No',
@@ -204,7 +184,7 @@
                         },
                         success: function (response) {
                             if (response.case === 'success') {
-                                location.reload();
+                                $('#row_'+response.id).remove();
                             }
                             else {
                                 swal(

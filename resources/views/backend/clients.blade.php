@@ -22,10 +22,14 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
+                    <th scope="col">Form of business</th>
                     <th scope="col">Director</th>
                     <th scope="col">Category</th>
                     <th scope="col">E-mail</th>
                     <th scope="col">Phone</th>
+                    <th scope="col">Web site</th>
+                    <th scope="col">Country</th>
+                    <th scope="col">City</th>
                     <th scope="col">Address</th>
                     <th scope="col">Zip code</th>
                     <th scope="col">TIN</th>
@@ -48,10 +52,14 @@
                         <tr onclick="row_select({{$client->id}});" id="row_{{$client->id}}" class="rows">
                             <th scope="row">{{$row}}</th>
                             <td id="name_{{$client->id}}">{{$client->name}}</td>
+                            <td id="form_of_business_{{$client->id}}" form_of_business_id="{{$client->form_of_business_id}}">{{$client->form_of_business}}</td>
                             <td id="director_{{$client->id}}">{{$client->director}}</td>
                             <td id="category_{{$client->id}}" category_id="{{$client->category_id}}">{{$client->category}}</td>
                             <td id="email_{{$client->id}}">{{$client->email}}</td>
                             <td id="phone_{{$client->id}}">{{$client->phone}}</td>
+                            <td id="web_site_{{$client->id}}"><a target="_blank" href="{{$client->web_site}}">{{$client->web_site}}</a></td>
+                            <td id="country_{{$client->id}}" country_id="{{$client->country_id}}">{{$client->country}}</td>
+                            <td id="city_{{$client->id}}">{{$client->city}}</td>
                             <td id="address_{{$client->id}}">{{$client->address}}</td>
                             <td id="zipcode_{{$client->id}}">{{$client->zipcode}}</td>
                             <td id="voen_{{$client->id}}">{{$client->voen}}</td>
@@ -97,36 +105,69 @@
 
                                 <div class="row form-group">
                                     <div class="col-md-6 ml-auto">
-                                        <input id="name" type="text" required="" name="name" placeholder="Company name" class="form-control">
+                                        <input id="name" type="text" required name="name" placeholder="Company name" class="form-control" maxlength="255">
                                     </div>
-                                    <div class="col-md-6 ml-auto">
-                                        <input id="director" type="text" name="director" placeholder="Director name" class="form-control">
+                                    <div class="col-md-6 ml-auto" id="form_of_business_type">
+                                        <select oninput="select_form_of_business();" name="form_of_business_id" id="form_of_business_id" class="form-control" required>
+                                            <option value="">Form of business</option>
+                                            @foreach($form_of_businesses as $form_of_business)
+                                                <option value="{{$form_of_business->id}}">{{$form_of_business->title}}</option>
+                                            @endforeach
+                                            <option value="other">Other</option>
+                                        </select>
+                                        <input id="form_of_business_text" type="text" name="form_of_business_text" placeholder="Form of business" class="form-control" style="display: none;">
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col-md-12 ml-auto">
-                                        <select name="category_id" id="category_id" class="form-control">
-                                            <option value="0">Category</option>
-                                            @foreach($categories as $category)
-                                                <option value="{{$category->id}}">{{$category->category}}</option>
+                                    <div class="col-md-6 ml-auto">
+                                        <select id="industry_id" class="form-control" required>
+                                            <option value="">Industry</option>
+                                            @foreach($industries as $industry)
+                                                <option value="{{$industry->id}}">{{$industry->category}}</option>
                                             @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 ml-auto">
+                                        <select name="category_id" id="category_id" class="form-control" disabled required>
+                                            <option value="">Select industry</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-6 ml-auto">
-                                        <input id="email" type="email" name="email" placeholder="E-mail" class="form-control">
+                                        <input id="director" type="text" name="director" placeholder="Director name" class="form-control" required maxlength="255">
                                     </div>
                                     <div class="col-md-6 ml-auto">
-                                        <input id="phone" type="text" name="phone" placeholder="Phone" class="form-control">
+                                        <input id="email" type="email" name="email" placeholder="E-mail" class="form-control" required maxlength="100">
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-6 ml-auto">
-                                        <input id="address" type="text" name="address" placeholder="Address" class="form-control">
+                                        <input id="web_site" type="text" name="web_site" placeholder="WEB site" class="form-control" maxlength="255" required>
                                     </div>
                                     <div class="col-md-6 ml-auto">
-                                        <input id="zipcode" type="text" name="zipcode" placeholder="Zip code" class="form-control">
+                                        <input id="phone" type="text" name="phone" placeholder="Phone" class="form-control" required maxlength="20">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-6 ml-auto">
+                                        <select name="country_id" id="country_id" class="form-control" required>
+                                            <option value="">Country</option>
+                                            @foreach($countries as $country)
+                                                <option value="{{$country->id}}">{{$country->country}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 ml-auto">
+                                        <input id="city" type="text" name="city" placeholder="city" class="form-control" required maxlength="100">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-6 ml-auto">
+                                        <input id="address" type="text" name="address" placeholder="Address" class="form-control" required maxlength="255">
+                                    </div>
+                                    <div class="col-md-6 ml-auto">
+                                        <input id="zipcode" type="text" name="zipcode" placeholder="Zip code" class="form-control" required maxlength="20">
                                     </div>
                                 </div>
                                 <div class="row form-group">
@@ -188,6 +229,20 @@
 
 @section('css')
     <link rel="stylesheet" href="/css/sweetalert2.min.css">
+
+    <style>
+        th, td {
+            white-space: nowrap;
+        }
+
+        input, textarea {
+            text-transform: uppercase;
+        }
+
+        input::placeholder {
+            text-transform: capitalize !important;
+        }
+    </style>
 @endsection
 
 @section('js')
@@ -235,13 +290,29 @@
             $('#delete_btn').prop('disabled', false);
         }
 
+        function select_form_of_business() {
+            var form_of_business_id = $('#form_of_business_id').val();
+
+            if (form_of_business_id === 'other') {
+                $('#form_of_business_id').css('display', 'none').prop('required', false);
+                $('#form_of_business_text').css('display', 'block').prop('required', true);
+            }
+        }
+
         function add_modal() {
+            $('#category_id').html('<option value="">Select industry</option>').prop('disabled', true);
+
+            $('#form_of_business_text').css('display', 'none').prop('required', false);
+            $('#form_of_business_id').css('display', 'block').prop('required', true);
+
             $('#type').val('add');
             $('#name').val('');
             $('#director').val('');
+            $('#web_site').val('');
             $('#email').val('');
             $('#phone').val('');
             $('#address').val('');
+            $('#city').val('');
             $('#zipcode').val('');
             $('#voen').val('');
             $('#account_no').val('');
@@ -252,18 +323,72 @@
             $('#bank_swift').val('');
             $('#contract_no').val('');
             $('#contract_date').val('');
-            $('#category_id').val(0);
+            $('#category_id').val('');
+            $('#industry_id').val('');
+            $('#form_of_business_id').val('');
+            $('#country_id').val('');
             $('.modal-title').html('Add client');
 
             $('#add-modal').modal('show');
         }
 
         function update_modal() {
+            var category_id = $('#category_'+row_id).attr('category_id');
+            swal({
+                title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                text: 'Loading, please wait...',
+                showConfirmButton: false
+            });
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                type: "Post",
+                url: '',
+                data: {
+                    '_token': CSRF_TOKEN,
+                    'type': 'show_all_categories'
+                },
+                success: function (response) {
+                    if (response.case === 'success') {
+                        swal.close();
+                        var categories = response.categories;
+                        var options = "";
+                        var option = '';
+
+                        for (var i=0; i<categories.length; i++) {
+                            var category = categories[i];
+                            if (category_id == category['id']) {
+                                option = '<option selected value="' + category['id'] + '">' + category['category'] + '</option>';
+                            } else {
+                                option = '<option value="' + category['id'] + '">' + category['category'] + '</option>';
+                            }
+                            options = options + option;
+                        }
+
+                        $('#category_id').html(options).prop('disabled', false);
+                    }
+                    else {
+                        swal(
+                            response.title,
+                            response.content,
+                            response.case
+                        );
+                        return false;
+                    }
+                }
+            });
+
+            $('#form_of_business_text').css('display', 'none').prop('required', false);
+            $('#form_of_business_id').css('display', 'block').prop('required', true);
+
+            $('#industry_id').prop('required', false);
+
             var name = $('#name_'+row_id).text();
             var director = $('#director_'+row_id).text();
+            var web_site = $('#web_site_'+row_id).text();
             var email = $('#email_'+row_id).text();
             var phone = $('#phone_'+row_id).text();
             var address = $('#address_'+row_id).text();
+            var city = $('#city_'+row_id).text();
             var zipcode = $('#zipcode_'+row_id).text();
             var voen = $('#voen_'+row_id).text();
             var account_no = $('#account_no_'+row_id).text();
@@ -274,16 +399,19 @@
             var bank_swift = $('#bank_swift_'+row_id).text();
             var contract_no = $('#contract_no_'+row_id).text();
             var contract_date = $('#contract_date_'+row_id).text();
-            var category_id = $('#category_'+row_id).attr('category_id');
+            var form_of_business_id = $('#form_of_business_'+row_id).attr('form_of_business_id');
+            var country_id = $('#country_'+row_id).attr('country_id');
             var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
 
             $('#client_id').html(id_input);
             $('#type').val('update');
             $('#name').val(name);
             $('#director').val(director);
+            $('#web_site').val(web_site);
             $('#email').val(email);
             $('#phone').val(phone);
             $('#address').val(address);
+            $('#city').val(city);
             $('#zipcode').val(zipcode);
             $('#voen').val(voen);
             $('#account_no').val(account_no);
@@ -294,7 +422,8 @@
             $('#bank_swift').val(bank_swift);
             $('#contract_no').val(contract_no);
             $('#contract_date').val(contract_date);
-            $('#category_id').val(category_id);
+            $('#form_of_business_id').val(form_of_business_id);
+            $('#country_id').val(country_id);
             $('.modal-title').html('Update client');
 
             $('#add-modal').modal('show');
@@ -303,7 +432,6 @@
         function del() {
             swal({
                 title: 'Do you approve the deletion?',
-                text: 'Subcategories of this category will also be deleted during this process.',
                 type: 'warning',
                 showCancelButton: true,
                 cancelButtonText: 'No',
@@ -348,5 +476,54 @@
                 }
             });
         }
+
+        //show categories
+        $('#industry_id').change(function () {
+            var up_category_id = $(this).val();
+            if (up_category_id === 0 || up_category_id === '') {
+                var category_option = "<option value=''>Select industry</option>";
+                $('#category_id').html(category_option);
+            }
+            else {
+                swal({
+                    title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                    text: 'Loading, please wait...',
+                    showConfirmButton: false
+                });
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                $.ajax({
+                    type: "Post",
+                    url: '',
+                    data: {
+                        'up_id': up_category_id,
+                        '_token': CSRF_TOKEN,
+                        'type': 'show_categories'
+                    },
+                    success: function (response) {
+                        if (response.case === 'success') {
+                            swal.close();
+                            var categories = response.categories;
+                            var options = "<option value=''>Category</option>";
+                            var option = '';
+
+                            for (var i=0; i<categories.length; i++) {
+                                var category = categories[i];
+                                option = '<option value="' + category['id'] + '">' + category['category'] + '</option>';
+                                options = options + option;
+                            }
+
+                            $('#category_id').html(options).prop('disabled', false);
+                        }
+                        else {
+                            swal(
+                                response.title,
+                                response.content,
+                                response.case
+                            );
+                        }
+                    }
+                });
+            }
+        });
     </script>
 @endsection

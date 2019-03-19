@@ -32,7 +32,7 @@
                 </thead>
                 <tbody>
                     @foreach($tasks as $task)
-                        <tr onclick="row_select({{$task->id}});" id="row_{{$task->id}}" class="rows">
+                        <tr onclick="row_select({{$task->id}}, {{$task->project_id}});" id="row_{{$task->id}}" class="rows">
                             <th scope="row">{{$task->id}}</th>
                             <td id="task_{{$task->id}}">{{$task->task}}</td>
                             <td id="description_{{$task->id}}">{{$task->description}}</td>
@@ -71,7 +71,7 @@
                                 <input type="hidden" id="type" name="type" value="add">
                                 <div class="form-group row">
                                     <label for="project_id">Project</label>
-                                    <select name="project_id" id="project_id" class="form-control" required>
+                                    <select name="project_id" id="project_id" class="form-control" required oninput="change_project();">
                                         <option value=''>Select</option>
                                         @foreach($projects as $project)
                                             <option value="{{$project->id}}">{{$project->project}}</option>
@@ -91,14 +91,11 @@
                                     <label for="user_id">User</label>
                                     <select name="user_id" id="user_id" class="form-control">
                                         <option value=''>None</option>
-                                        @foreach($users as $user)
-                                            <option value="{{$user->id}}">{{$user->name}} {{$user->surname}}</option>
-                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group row">
                                     <label for="deadline">Deadline (day)</label>
-                                    <input id="deadline" type="number" required="" name="deadline" placeholder="deadline (day)" class="form-control">
+                                    <input id="deadline" type="number" required="" name="deadline" placeholder="deadline (day)" class="form-control" min="0">
                                 </div>
                                 <div class="row pt-2 pt-sm-5 mt-1">
                                     <div class="col-sm-6 pl-0">
@@ -127,6 +124,7 @@
 
     <script>
         var row_id = 0;
+        var p_id = 0;
 
         $(document).ready(function () {
             $('form').validate();
@@ -155,8 +153,9 @@
             });
         });
 
-        function row_select(id) {
+        function row_select(id, project_id) {
             row_id = id;
+            p_id = project_id;
 
             $(".rows").css('background-color', 'white');
             $('#row_'+row_id).css('background-color', 'rgba(230, 230, 242, .5)');
@@ -165,7 +164,52 @@
             $('#delete_btn').prop('disabled', false);
         }
 
+        function change_project() {
+            p_id = $('#project_id').val();
+
+            swal({
+                title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                text: 'Loading, please wait...',
+                showConfirmButton: false
+            });
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                type: "Post",
+                url: '',
+                data: {
+                    'project_id': p_id,
+                    '_token': CSRF_TOKEN,
+                    'type': 'get_users'
+                },
+                success: function (response) {
+                    swal.close();
+                    if (response.case === 'success') {
+                        var users = response.users;
+                        var i = 0;
+                        var options = "<option value=''>None</option>";
+
+                        for (i=0; i<users.length; i++) {
+                            var user = users[i];
+                            var option = '<option value="' + user['id'] + '">' + user['name'] + ' ' + user['surname'] + '</option>';
+                            options = options + option;
+                        }
+
+                        $('#user_id').html(options);
+                    }
+                    else {
+                        swal(
+                            response.title,
+                            response.content,
+                            response.case
+                        );
+                    }
+                }
+            });
+        }
+
         function add_modal() {
+            $('#user_id').html("<option value=''>None</option>");
+
             $('#type').val('add');
             $('#task').val('');
             $('#description').val('');
@@ -178,23 +222,62 @@
         }
 
         function update_modal() {
-            var task = $('#task_'+row_id).text();
-            var description = $('#description_'+row_id).text();
-            var project_id = $('#project_'+row_id).attr('project_id');
-            var user_id = $('#user_'+row_id).attr('user_id');
-            var deadline = $('#deadline_'+row_id).text();
-            var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
+            swal({
+                title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                text: 'Loading, please wait...',
+                showConfirmButton: false
+            });
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                type: "Post",
+                url: '',
+                data: {
+                    'project_id': p_id,
+                    '_token': CSRF_TOKEN,
+                    'type': 'get_users'
+                },
+                success: function (response) {
+                    swal.close();
+                    if (response.case === 'success') {
+                        var users = response.users;
+                        var i = 0;
+                        var options = "<option value=''>None</option>";
 
-            $('#task_id').html(id_input);
-            $('#type').val('update');
-            $('#task').val(task);
-            $('#description').val(description);
-            $('#project_id').val(project_id);
-            $('#user_id').val(user_id);
-            $('#deadline').val(deadline);
-            $('.modal-title').html('Update task');
+                        for (i=0; i<users.length; i++) {
+                            var user = users[i];
+                            var option = '<option value="' + user['id'] + '">' + user['name'] + ' ' + user['surname'] + '</option>';
+                            options = options + option;
+                        }
 
-            $('#add-modal').modal('show');
+                        $('#user_id').html(options);
+
+                        var task = $('#task_'+row_id).text();
+                        var description = $('#description_'+row_id).text();
+                        var project_id = $('#project_'+row_id).attr('project_id');
+                        var user_id = $('#user_'+row_id).attr('user_id');
+                        var deadline = $('#deadline_'+row_id).text();
+                        var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
+
+                        $('#task_id').html(id_input);
+                        $('#type').val('update');
+                        $('#task').val(task);
+                        $('#description').val(description);
+                        $('#project_id').val(project_id);
+                        $('#user_id').val(user_id);
+                        $('#deadline').val(deadline);
+                        $('.modal-title').html('Update task');
+
+                        $('#add-modal').modal('show');
+                    }
+                    else {
+                        swal(
+                            response.title,
+                            response.content,
+                            response.case
+                        );
+                    }
+                }
+            });
         }
 
         function del() {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Projects;
 use App\Tasks;
+use App\Team;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -26,9 +27,8 @@ class TaskController extends HomeController
     public function get_tasks_for_project_manager() {
         $tasks = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')->leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->leftJoin('users as u', 'tasks.user_id', '=', 'u.id')->where(['tasks.deleted'=>0, 'p.deleted'=>0, 'p.project_manager_id'=>Auth::id()])->select('tasks.id', 'tasks.task', 'tasks.description', 'tasks.created_at', 'tasks.deadline', 'tasks.project_id', 'p.project', 'tasks.user_id', 'tasks.user_date', 'u.name as user_name', 'u.surname as user_surname', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
         $projects = Projects::where(['deleted'=>0, 'project_manager_id'=>Auth::id()])->select('id', 'project')->get();
-        $users = User::where(['deleted'=>0, 'role_id'=>2])->select('id', 'name', 'surname')->get();
 
-        return view('backend.tasks')->with(['tasks'=>$tasks, 'projects'=>$projects, 'users'=>$users]);
+        return view('backend.tasks')->with(['tasks'=>$tasks, 'projects'=>$projects]);
     }
 
     //for manager
@@ -36,14 +36,33 @@ class TaskController extends HomeController
         if ($request->type == 'add') {
             return $this->add_task($request);
         }
-        if ($request->type == 'update') {
+        else if ($request->type == 'update') {
             return $this->update_task($request);
         }
-        if ($request->type == 'delete') {
+        else if ($request->type == 'delete') {
             return $this->delete_task($request);
+        }
+        else if ($request->type == 'get_users') {
+            return $this->get_users($request);
         }
         else {
             return response(['case' => 'error', 'title' => 'Oops!', 'content' => 'Operation not found!']);
+        }
+    }
+
+    private function get_users(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'project_id' => 'required|integer',
+        ]);
+        if ($validator->fails()) {
+            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Task not found!']);
+        }
+        try {
+            $users = Team::leftJoin('users as u', 'team.user_id', '=', 'u.id')->where(['team.project_id'=>$request->project_id, 'team.deleted'=>0, 'u.deleted'=>0, 'u.role_id'=>2])->select('u.id', 'u.name', 'u.surname')->get();
+
+            return response(['case' => 'success', 'users'=>$users]);
+        } catch (\Exception $e) {
+            return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
         }
     }
 

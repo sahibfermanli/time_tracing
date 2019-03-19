@@ -191,6 +191,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/chief/tasks"><i class="fa fa-tasks"></i> Tasks</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/chief/categories"><i class="fa fa-list-alt"></i> Categories</a>
+                            </li>
                         @elseif(Auth::user()->role() == 2)
                             {{--User--}}
                             <li class="nav-item">
@@ -200,6 +203,9 @@
                             {{--Admin--}}
                             <li class="nav-item">
                                 <a class="nav-link" href="/admin/non-billable-codes"><i class="fa fa-list"></i> Non billable codes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/form-of-business"><i class="fa fa-list"></i> Form of business</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/admin/roles"><i class="fa fa-globe"></i> Roles</a>

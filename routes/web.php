@@ -28,6 +28,11 @@ Route::group(['prefix'=>'/admin', 'middleware'=>'Admin'], function () {
         Route::post('/', 'NonBillableCodeController@post_non_billable_codes');
     });
 
+    Route::group(['prefix'=>'/form-of-business'], function () {
+        Route::get('/', 'FormOfBusinessController@get_form_of_businesses');
+        Route::post('/', 'FormOfBusinessController@post_form_of_businesses');
+    });
+
     Route::group(['prefix'=>'/users'], function () {
         Route::get('/', 'UserController@get_users');
         Route::post('/', 'UserController@post_users');
@@ -64,6 +69,11 @@ Route::group(['prefix'=>'/chief', 'middleware'=>'Chief'], function () {
     Route::group(['prefix'=>'/tracer'], function () {
         Route::get('/', 'TimeTracerController@get_tracer_for_chief');
         Route::post('/', 'TimeTracerController@post_tracer_for_chief');
+    });
+
+    Route::group(['prefix'=>'/categories'], function () {
+        Route::get('/', 'CategoryController@get_categories');
+        Route::post('/', 'CategoryController@post_categories');
     });
 });
 

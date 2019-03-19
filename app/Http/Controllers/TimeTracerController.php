@@ -144,7 +144,29 @@ class TimeTracerController extends HomeController
                 return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'You cannot do this without filling the whole day!']);
             }
 
-            Works::where(['user_id'=>Auth::id(), 'deleted'=>0, 'completed'=>0])->whereDate('created_at', $today)->update(['completed'=>1, 'completed_at'=>$now]);
+            $complete = Works::where(['user_id'=>Auth::id(), 'deleted'=>0, 'completed'=>0])->whereDate('created_at', $today)->update(['completed'=>1, 'completed_at'=>$now]);
+
+            if ($complete) {
+                $managers = User::where(['role_id'=>1])->select('send_mail', 'email', 'name', 'surname')->get();
+                $email = array();
+                $to = array();
+                $send_mail = false;
+                foreach ($managers as $manager) {
+                    if ($manager->send_mail == 1) {
+                        $send_mail = true;
+                        array_push($email, $manager->email);
+                        array_push($to, $manager->name . ' ' . $manager->surname);
+                    }
+                }
+
+                if ($send_mail) {
+                    $message = Auth::user()->name . " " . Auth::user()->surname . " completed the day.";
+                    $title = 'Completed day';
+
+                    app('App\Http\Controllers\MailController')->get_send($email, $to, $title, $message);
+                }
+
+            }
 
             return response(['case' => 'success', 'title'=>'Success!', 'content'=>'You completed the day!']);
         } catch (\Exception $e) {
