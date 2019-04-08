@@ -22,7 +22,6 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
-                    <th scope="col">Form of business</th>
                     <th scope="col">Director</th>
                     <th scope="col">Category</th>
                     <th scope="col">E-mail</th>
@@ -51,8 +50,7 @@
                         @php($row++)
                         <tr onclick="row_select({{$client->id}});" id="row_{{$client->id}}" class="rows">
                             <th scope="row">{{$row}}</th>
-                            <td id="name_{{$client->id}}">{{$client->name}}</td>
-                            <td id="form_of_business_{{$client->id}}" form_of_business_id="{{$client->form_of_business_id}}">{{$client->form_of_business}}</td>
+                            <td id="name_{{$client->id}}" form_of_business_id="{{$client->form_of_business_id}}" company_name="{{$client->name}}">{{$client->name}} {{$client->form_of_business}}</td>
                             <td id="director_{{$client->id}}">{{$client->director}}</td>
                             <td id="category_{{$client->id}}" category_id="{{$client->category_id}}">{{$client->category}}</td>
                             <td id="email_{{$client->id}}">{{$client->email}}</td>
@@ -84,7 +82,7 @@
     </div>
 
     <!-- start add modal-->
-    <div class="modal fade" id="add-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="add-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -234,14 +232,6 @@
         th, td {
             white-space: nowrap;
         }
-
-        input, textarea {
-            text-transform: uppercase;
-        }
-
-        input::placeholder {
-            text-transform: capitalize !important;
-        }
     </style>
 @endsection
 
@@ -382,7 +372,7 @@
 
             $('#industry_id').prop('required', false);
 
-            var name = $('#name_'+row_id).text();
+            var name = $('#name_'+row_id).attr('company_name');
             var director = $('#director_'+row_id).text();
             var web_site = $('#web_site_'+row_id).text();
             var email = $('#email_'+row_id).text();
@@ -399,7 +389,7 @@
             var bank_swift = $('#bank_swift_'+row_id).text();
             var contract_no = $('#contract_no_'+row_id).text();
             var contract_date = $('#contract_date_'+row_id).text();
-            var form_of_business_id = $('#form_of_business_'+row_id).attr('form_of_business_id');
+            var form_of_business_id = $('#name_'+row_id).attr('form_of_business_id');
             var country_id = $('#country_'+row_id).attr('country_id');
             var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
 

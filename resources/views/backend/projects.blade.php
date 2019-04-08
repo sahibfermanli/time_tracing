@@ -54,7 +54,7 @@
     </div>
 
     <!-- start add modal-->
-    <div class="modal fade" id="add-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="add-modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="row pt-2 pt-sm-5 mt-1">
                                     <div class="col-sm-6 pl-0">
-                                        <button type="submit" class="btn btn-space btn-primary" onclick="test();">Submit</button>
+                                        <button type="submit" class="btn btn-space btn-primary">Submit</button>
                                         <button type="reset" class="btn btn-space btn-secondary">Clear</button>
                                     </div>
                                 </div>
@@ -129,7 +129,7 @@
     <!-- /.end add modal-->
 
     {{-- team modal --}}
-    <div class="modal fade" id="team-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="team-modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -176,10 +176,6 @@
     <script src="/js/sweetalert2.min.js"></script>
 
     <script>
-        function test() {
-            console.log($('#staff').val());
-        }
-
         var row_id = 0;
 
         $(document).ready(function () {
