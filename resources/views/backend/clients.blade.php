@@ -22,7 +22,7 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
-                    <th scope="col">Director</th>
+                    <th scope="col">Representative</th>
                     <th scope="col">Category</th>
                     <th scope="col">E-mail</th>
                     <th scope="col">Phone</th>
@@ -133,7 +133,7 @@
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-6 ml-auto">
-                                        <input id="director" type="text" name="director" placeholder="Director name" class="form-control" required maxlength="255">
+                                        <input id="director" type="text" name="director" placeholder="Representative" class="form-control" required maxlength="255">
                                     </div>
                                     <div class="col-md-6 ml-auto">
                                         <input id="email" type="email" name="email" placeholder="E-mail" class="form-control" required maxlength="100">

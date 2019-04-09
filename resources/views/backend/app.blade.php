@@ -183,6 +183,9 @@
                                 <a class="nav-link" href="/chief/tracer"><i class="fa fa-tasks"></i> Tracer</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="/chief/client-roles"><i class="fa fa-globe"></i> Client roles</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="/chief/clients"><i class="fa fa-user-secret"></i> Clients</a>
                             </li>
                             <li class="nav-item">
@@ -193,6 +196,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/chief/categories"><i class="fa fa-list-alt"></i> Categories</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/chief/users"><i class="fa fa-users"></i> Users</a>
                             </li>
                         @elseif(Auth::user()->role() == 2)
                             {{--User--}}

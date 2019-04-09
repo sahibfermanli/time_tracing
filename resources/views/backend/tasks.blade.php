@@ -21,8 +21,7 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Task</th>
-                    <th scope="col">Description</th>
+                    <th scope="col">Task description</th>
                     <th scope="col">Project</th>
                     <th scope="col">User</th>
                     <th scope="col">Deadline</th>
@@ -35,10 +34,9 @@
                         <tr onclick="row_select({{$task->id}}, {{$task->project_id}});" id="row_{{$task->id}}" class="rows">
                             <th scope="row">{{$task->id}}</th>
                             <td id="task_{{$task->id}}">{{$task->task}}</td>
-                            <td id="description_{{$task->id}}">{{$task->description}}</td>
                             <td id="project_{{$task->id}}" project_id="{{$task->project_id}}">{{$task->project}}</td>
                             <td id="user_{{$task->id}}" user_id="{{$task->user_id}}" title="{{$task->user_date}}">{{$task->user_name}} {{$task->user_surname}}</td>
-                            <td id="deadline_{{$task->id}}">{{$task->deadline}}</td>
+                            <td id="deadline_{{$task->id}}">{{substr($task->deadline, 0, 10)}}</td>
                             <td>{{$task->created_at}}</td>
                             <td>{{$task->created_name}} {{$task->created_surname}}</td>
                         </tr>
@@ -70,22 +68,24 @@
                                 {{csrf_field()}}
                                 <input type="hidden" id="type" name="type" value="add">
                                 <div class="form-group row">
-                                    <label for="project_id">Project</label>
-                                    <select name="project_id" id="project_id" class="form-control" required oninput="change_project();">
+                                    <label for="client_id">Client</label>
+                                    <select id="client_id" class="form-control" oninput="select_client(this);" required>
                                         <option value=''>Select</option>
-                                        @foreach($projects as $project)
-                                            <option value="{{$project->id}}">{{$project->project}}</option>
+                                        @foreach($clients as $client)
+                                            <option value="{{$client->id}}">{{$client->name}} {{$client->fob}}</option>
                                         @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="project_id">Project</label>
+                                    <select name="project_id" id="project_id" class="form-control" required oninput="change_project();" disabled>
+                                        <option value=''>Select client</option>
                                     </select>
                                 </div>
                                 <div id="task_id"></div>
                                 <div class="form-group row">
-                                    <label for="task">Task</label>
-                                    <input id="task" type="text" required="" name="task" placeholder="task" class="form-control">
-                                </div>
-                                <div class="form-group row">
-                                    <label for="description">Description</label>
-                                    <textarea name="description" id="description" cols="30" rows="5" class="form-control" placeholder="description"></textarea>
+                                    <label for="task">Task description</label>
+                                    <textarea name="task" id="task" cols="30" rows="5" class="form-control" placeholder="task description" required></textarea>
                                 </div>
                                 <div class="form-group row">
                                     <label for="user_id">User</label>
@@ -94,8 +94,8 @@
                                     </select>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="deadline">Deadline (day)</label>
-                                    <input id="deadline" type="number" required="" name="deadline" placeholder="deadline (day)" class="form-control" min="0">
+                                    <label for="deadline">Deadline</label>
+                                    <input id="deadline" type="date" required="" name="deadline" class="form-control">
                                 </div>
                                 <div class="row pt-2 pt-sm-5 mt-1">
                                     <div class="col-sm-6 pl-0">
@@ -125,6 +125,7 @@
     <script>
         var row_id = 0;
         var p_id = 0;
+        var c_id = 0;
 
         $(document).ready(function () {
             $('form').validate();
@@ -162,6 +163,49 @@
 
             $('#update_btn').prop('disabled', false);
             $('#delete_btn').prop('disabled', false);
+        }
+
+        function select_client(e) {
+            c_id = $(e).val();
+
+            swal({
+                title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                text: 'Loading, please wait...',
+                showConfirmButton: false
+            });
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                type: "Post",
+                url: '',
+                data: {
+                    'client_id': c_id,
+                    '_token': CSRF_TOKEN,
+                    'type': 'get_projects_selected_user'
+                },
+                success: function (response) {
+                    swal.close();
+                    if (response.case === 'success') {
+                        var projects = response.projects;
+                        var i = 0;
+                        var options = "<option value=''>Select</option>";
+
+                        for (i=0; i<projects.length; i++) {
+                            var project = projects[i];
+                            var option = '<option value="' + project['id'] + '">' + project['project'] + '</option>';
+                            options = options + option;
+                        }
+
+                        $('#project_id').html(options).prop("disabled", false);
+                    }
+                    else {
+                        swal(
+                            response.title,
+                            response.content,
+                            response.case
+                        );
+                    }
+                }
+            });
         }
 
         function change_project() {
@@ -212,11 +256,12 @@
 
             $('#type').val('add');
             $('#task').val('');
-            $('#description').val('');
+            $('#client_id').val('').prop('required', true);
             $('#project_id').val('');
             $('#user_id').val('');
             $('#deadline').val('');
             $('.modal-title').html('Add task');
+            $("#project_id").prop("disabled", true).html("<option value=''>Select client</option>");
 
             $('#add-modal').modal('show');
         }
@@ -252,8 +297,8 @@
                         $('#user_id').html(options);
 
                         var task = $('#task_'+row_id).text();
-                        var description = $('#description_'+row_id).text();
                         var project_id = $('#project_'+row_id).attr('project_id');
+                        var project = $('#project_'+row_id).text();
                         var user_id = $('#user_'+row_id).attr('user_id');
                         var deadline = $('#deadline_'+row_id).text();
                         var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
@@ -261,8 +306,8 @@
                         $('#task_id').html(id_input);
                         $('#type').val('update');
                         $('#task').val(task);
-                        $('#description').val(description);
-                        $('#project_id').val(project_id);
+                        $('#client_id').val('').prop('required', false);
+                        $('#project_id').html("<option value='" + project_id + "' selected>" + project + "</option>").prop("disabled", false);
                         $('#user_id').val(user_id);
                         $('#deadline').val(deadline);
                         $('.modal-title').html('Update task');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Clients;
 use App\Projects;
 use App\Tasks;
 use App\Team;
@@ -16,11 +17,10 @@ class TaskController extends HomeController
 {
     //for manager
     public function get_tasks() {
-        $tasks = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')->leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->leftJoin('users as u', 'tasks.user_id', '=', 'u.id')->where(['tasks.deleted'=>0, 'p.deleted'=>0])->select('tasks.id', 'tasks.task', 'tasks.description', 'tasks.created_at', 'tasks.deadline', 'tasks.project_id', 'p.project', 'tasks.user_id', 'tasks.user_date', 'u.name as user_name', 'u.surname as user_surname', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
-        $projects = Projects::where(['deleted'=>0])->select('id', 'project')->get();
-        $users = User::where(['deleted'=>0, 'role_id'=>2])->select('id', 'name', 'surname')->get();
+        $tasks = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')->leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->leftJoin('users as u', 'tasks.user_id', '=', 'u.id')->where(['tasks.deleted'=>0, 'p.deleted'=>0])->orderBy('tasks.id', 'DESC')->select('tasks.id', 'tasks.task', 'tasks.created_at', 'tasks.deadline', 'tasks.project_id', 'p.project', 'tasks.user_id', 'tasks.user_date', 'u.name as user_name', 'u.surname as user_surname', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
+        $clients = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.deleted'=>0])->orderBy('clients.name')->select('clients.id', 'clients.name', 'fob.title as fob')->get();
 
-        return view('backend.tasks')->with(['tasks'=>$tasks, 'projects'=>$projects, 'users'=>$users]);
+        return view('backend.tasks')->with(['tasks'=>$tasks, 'clients'=>$clients]);
     }
 
     //for project manager
@@ -45,6 +45,9 @@ class TaskController extends HomeController
         else if ($request->type == 'get_users') {
             return $this->get_users($request);
         }
+        else if ($request->type == 'get_projects_selected_user') {
+            return $this->get_projects_selected_user($request);
+        }
         else {
             return response(['case' => 'error', 'title' => 'Oops!', 'content' => 'Operation not found!']);
         }
@@ -66,11 +69,27 @@ class TaskController extends HomeController
         }
     }
 
+    private function get_projects_selected_user(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'client_id' => 'required|integer',
+        ]);
+        if ($validator->fails()) {
+            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Client not found!']);
+        }
+        try {
+            $projects = Projects::where(['client_id'=>$request->client_id, 'deleted'=>0])->select('id', 'project')->get();
+
+            return response(['case' => 'success', 'projects'=>$projects]);
+        } catch (\Exception $e) {
+            return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
+        }
+    }
+
     //add task
     private function add_task(Request $request) {
         $validator = Validator::make($request->all(), [
             'project_id' => ['required', 'integer'],
-            'deadline' => ['required', 'integer'],
+            'deadline' => ['required', 'date'],
             'task' => ['required', 'string', 'max:255'],
         ]);
         if ($validator->fails()) {
@@ -124,7 +143,7 @@ class TaskController extends HomeController
         $validator = Validator::make($request->all(), [
             'id' => ['required', 'integer'],
             'project_id' => ['required', 'integer'],
-            'deadline' => ['required', 'integer'],
+            'deadline' => ['required', 'date'],
             'task' => ['required', 'string', 'max:255'],
         ]);
         if ($validator->fails()) {

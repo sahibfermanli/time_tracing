@@ -20,6 +20,13 @@ class UserController extends HomeController
         return view('backend.users')->with(['users'=>$users, 'roles'=>$roles]);
     }
 
+    public function get_users_for_chief() {
+        $users = User::leftJoin('users as created', 'users.created_by', '=', 'created.id')->leftJoin('roles as r', 'users.role_id', '=', 'r.id')->where(['users.deleted'=>0])->where('users.role_id', '<>', 3)->select('users.id', 'users.name', 'users.surname', 'users.email', 'users.username', 'users.role_id', 'r.role', 'r.description', 'users.created_at', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
+        $roles = Roles::where(['deleted'=>0])->where('id', '<>', 3)->select('id', 'role')->get();
+
+        return view('backend.users')->with(['users'=>$users, 'roles'=>$roles]);
+    }
+
     public function post_users(Request $request) {
         if ($request->type == 'add') {
             return $this->add_user($request);

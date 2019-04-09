@@ -51,6 +51,11 @@ Route::group(['prefix'=>'/admin', 'middleware'=>'Admin'], function () {
 
 //chief (manager)
 Route::group(['prefix'=>'/chief', 'middleware'=>'Chief'], function () {
+    Route::group(['prefix'=>'/client-roles'], function () {
+        Route::get('/', 'ClientRoleController@get_client_roles');
+        Route::post('/', 'ClientRoleController@post_client_roles');
+    });
+
     Route::group(['prefix'=>'/clients'], function () {
         Route::get('/', 'ClientController@get_clients');
         Route::post('/', 'ClientController@post_clients');
@@ -74,6 +79,11 @@ Route::group(['prefix'=>'/chief', 'middleware'=>'Chief'], function () {
     Route::group(['prefix'=>'/categories'], function () {
         Route::get('/', 'CategoryController@get_categories');
         Route::post('/', 'CategoryController@post_categories');
+    });
+
+    Route::group(['prefix'=>'/users'], function () {
+        Route::get('/', 'UserController@get_users_for_chief');
+        Route::post('/', 'UserController@post_users');
     });
 });
 
