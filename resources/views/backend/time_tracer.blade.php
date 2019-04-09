@@ -145,7 +145,7 @@
                             $tr .= '<td>' . date_format($work->created_at, "Y-m-d") . '</td>';
                             $tr .= '<td>' . $start_time . ' - ' . $end_time . '</td>';
                             $tr .= '<td title="' . $work->project_desc . '">' . $work->project . '</td>';
-                            $tr .= '<td title="' . $work->task_desc . '">' . $work->task . '</td>';
+                            $tr .= '<td>' . $work->task . '</td>';
                             $tr .= '<td title="' . $work->work . '">' . $work_text . '</td>';
                             $tr .= '</tr>';
                         }
@@ -583,7 +583,7 @@
                             var date = '<td>' + work['created_at'].substr(0, 10) + '</td>';
                             var interval = '<td>' + start_time + ' - ' + end_time + '</td>';
                             var project = '<td title="' + work['project_desc'] + '">' + work['project'] + '</td>';
-                            var task = '<td title="' + work['task_desc'] + '">' + work['task'] + '</td>';
+                            var task = '<td>' + work['task'] + '</td>';
                             var work_text = work['work'];
                             var work_small_text = '';
                             if (work_text.length > 40) {

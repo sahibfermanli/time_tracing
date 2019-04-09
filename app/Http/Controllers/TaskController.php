@@ -25,10 +25,10 @@ class TaskController extends HomeController
 
     //for project manager
     public function get_tasks_for_project_manager() {
-        $tasks = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')->leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->leftJoin('users as u', 'tasks.user_id', '=', 'u.id')->where(['tasks.deleted'=>0, 'p.deleted'=>0, 'p.project_manager_id'=>Auth::id()])->select('tasks.id', 'tasks.task', 'tasks.description', 'tasks.created_at', 'tasks.deadline', 'tasks.project_id', 'p.project', 'tasks.user_id', 'tasks.user_date', 'u.name as user_name', 'u.surname as user_surname', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
-        $projects = Projects::where(['deleted'=>0, 'project_manager_id'=>Auth::id()])->select('id', 'project')->get();
+        $tasks = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')->leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->leftJoin('users as u', 'tasks.user_id', '=', 'u.id')->where(['tasks.deleted'=>0, 'p.deleted'=>0, 'p.project_manager_id'=>Auth::id()])->select('tasks.id', 'tasks.task', 'tasks.created_at', 'tasks.deadline', 'tasks.project_id', 'p.project', 'tasks.user_id', 'tasks.user_date', 'u.name as user_name', 'u.surname as user_surname', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
+        $clients = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.deleted'=>0])->orderBy('clients.name')->select('clients.id', 'clients.name', 'fob.title as fob')->get();
 
-        return view('backend.tasks')->with(['tasks'=>$tasks, 'projects'=>$projects]);
+        return view('backend.tasks')->with(['tasks'=>$tasks, 'clients'=>$clients]);
     }
 
     //for manager

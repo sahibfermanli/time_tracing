@@ -238,7 +238,7 @@
                                 task_billable += task['billable'];
                                 task_non_billable += task['non_billable'];
 
-                                var task_td = '<td title="' + task['description'] + '">' + task['task'] + '</td>';
+                                var task_td = '<td>' + task['task'] + '</td>';
                                 var user = '<td>' + task['name'] + ' ' + task['surname'] + '</td>';
                                 var billable_td = '<td>' + calculate_time(task['billable']) + '</td>';
                                 var non_billable_td = '<td>' + calculate_time(task['non_billable']) + '</td>';
