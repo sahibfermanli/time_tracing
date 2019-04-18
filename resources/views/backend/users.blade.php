@@ -26,6 +26,7 @@
                     <th scope="col">E-mail</th>
                     <th scope="col">Username</th>
                     <th scope="col">Role</th>
+                    <th scope="col">Level</th>
                     <th scope="col">Created date</th>
                     <th scope="col">Created by</th>
                 </tr>
@@ -39,6 +40,7 @@
                             <td id="email_{{$user->id}}">{{$user->email}}</td>
                             <td id="username_{{$user->id}}">{{$user->username}}</td>
                             <td id="role_{{$user->id}}" role_id="{{$user->role_id}}" title="{{$user->description}}">{{$user->role}}</td>
+                            <td id="level_{{$user->id}}" level_id="{{$user->level_id}}" title="{{$user->level_description}}">{{$user->level}}</td>
                             <td>{{$user->created_at}}</td>
                             <td>{{$user->created_name}} {{$user->created_surname}}</td>
                         </tr>
@@ -103,9 +105,20 @@
                                 <div class="form-group row">
                                     <label for="role_id" class="col-3 col-lg-2 col-form-label text-right">Role</label>
                                     <div class="col-9 col-lg-10">
-                                        <select name="role_id" id="role_id" class="form-control">
+                                        <select name="role_id" id="role_id" class="form-control" required>
                                             @foreach($roles as $role)
                                                 <option value="{{$role->id}}">{{$role->role}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="level_id" class="col-3 col-lg-2 col-form-label text-right">Level</label>
+                                    <div class="col-9 col-lg-10">
+                                        <select name="level_id" id="level_id" class="form-control">
+                                            <option value="">Select</option>
+                                            @foreach($levels as $level)
+                                                <option value="{{$level->id}}">{{$level->level}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -183,6 +196,7 @@
             $('#username').val('');
             $('#password').val('');
             $('#role_id').val(1);
+            $('#level_id').val('');
             $('.modal-title').html('Add user');
 
             $('#add-modal').modal('show');
@@ -194,6 +208,7 @@
             var email = $('#email_'+row_id).text();
             var username = $('#username_'+row_id).text();
             var role_id = $('#role_'+row_id).attr('role_id');
+            var level_id = $('#level_'+row_id).attr('level_id');
             var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
 
             $('#user_id').html(id_input);
@@ -204,6 +219,7 @@
             $('#username').val(username);
             $('#password').val('');
             $('#role_id').val(role_id);
+            $('#level_id').val(level_id);
             $('.modal-title').html('Update user');
 
             $('#add-modal').modal('show');

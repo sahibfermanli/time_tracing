@@ -20,6 +20,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Project</th>
                     <th scope="col">Description</th>
+                    <th scope="col">Time</th>
                     <th scope="col">Client</th>
                     <th scope="col">Created date</th>
                     <th scope="col">Created by</th>
@@ -33,6 +34,7 @@
                             <th scope="row">{{$row}}</th>
                             <td id="project_{{$project->id}}">{{$project->project}}</td>
                             <td id="description_{{$project->id}}">{{$project->description}}</td>
+                            <td id="time_{{$project->id}}">{{$project->time}}</td>
                             <td id="client_{{$project->id}}" client_id="{{$project->client_id}}" title="{{$project->client_director}}">{{$project->client_name}}</td>
                             <td>{{$project->created_at}}</td>
                             <td>{{$project->created_name}} {{$project->created_surname}}</td>

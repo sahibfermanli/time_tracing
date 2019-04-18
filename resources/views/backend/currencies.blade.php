@@ -8,37 +8,37 @@
 
     <div class="card">
         <h5 class="card-header">
-            Form of business
+            Currencies
             <button style="float: right;" type="button" class="btn btn-primary btn-xs" onclick="add_modal();">Add</button>
             <button disabled id="update_btn" style="float: right; margin-right: 5px;" type="button" class="btn btn-warning btn-xs" onclick="update_modal();">Update</button>
             <button disabled id="delete_btn" style="float: right; margin-right: 5px;" type="button" class="btn btn-danger btn-xs" onclick="del();">Delete</button>
         </h5>
         <div class="card-body">
             <div>
-                {!! $form_of_businesses->links(); !!}
+                {!! $currencies->links(); !!}
             </div>
             <table class="table table-bordered">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Title</th>
+                    <th scope="col">Currency</th>
                     <th scope="col">Created date</th>
                     <th scope="col">Created by</th>
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach($form_of_businesses as $form_of_business)
-                        <tr onclick="row_select({{$form_of_business->id}});" id="row_{{$form_of_business->id}}" class="rows">
-                            <th scope="row">{{$form_of_business->id}}</th>
-                            <td id="title_{{$form_of_business->id}}">{{$form_of_business->title}}</td>
-                            <td>{{$form_of_business->created_at}}</td>
-                            <td>{{$form_of_business->created_name}} {{$form_of_business->created_surname}}</td>
+                    @foreach($currencies as $currency)
+                        <tr onclick="row_select({{$currency->id}});" id="row_{{$currency->id}}" class="rows">
+                            <th scope="row">{{$currency->id}}</th>
+                            <td id="currency_{{$currency->id}}">{{$currency->currency}}</td>
+                            <td>{{$currency->created_at}}</td>
+                            <td>{{$currency->created_name}} {{$currency->created_surname}}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
             <div>
-                {!! $form_of_businesses->links(); !!}
+                {!! $currencies->links(); !!}
             </div>
         </div>
     </div>
@@ -61,11 +61,11 @@
                             <form id="form" data-parsley-validate="" novalidate="" action="" method="post">
                                 {{csrf_field()}}
                                 <input type="hidden" id="type" name="type" value="add">
-                                <div id="form_of_business_id"></div>
+                                <div id="currency_id"></div>
                                 <div class="form-group row">
-                                    <label for="title" class="col-3 col-lg-2 col-form-label text-right">Title</label>
+                                    <label for="currency" class="col-3 col-lg-2 col-form-label text-right">Currency</label>
                                     <div class="col-9 col-lg-10">
-                                        <input id="title" type="text" required="" name="title" placeholder="title" class="form-control">
+                                        <input id="currency" type="text" required="" name="currency" maxlength="10" placeholder="currency" class="form-control">
                                     </div>
                                 </div>
                                 <div class="row pt-2 pt-sm-5 mt-1">
@@ -135,20 +135,20 @@
 
         function add_modal() {
             $('#type').val('add');
-            $('#title').val('');
-            $('.modal-title').html('Add form of business');
+            $('#currency').val('');
+            $('.modal-title').html('Add currency');
 
             $('#add-modal').modal('show');
         }
 
         function update_modal() {
-            var title = $('#title_'+row_id).text();
+            var currency = $('#currency_'+row_id).text();
             var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
 
-            $('#form_of_business_id').html(id_input);
+            $('#currency_id').html(id_input);
             $('#type').val('update');
-            $('#title').val(title);
-            $('.modal-title').html('Update form of business');
+            $('#currency').val(currency);
+            $('.modal-title').html('Update currency');
 
             $('#add-modal').modal('show');
         }

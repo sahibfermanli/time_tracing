@@ -23,6 +23,16 @@ Route::group(['prefix'=>'/admin', 'middleware'=>'Admin'], function () {
         Route::post('/', 'RoleController@post_roles');
     });
 
+    Route::group(['prefix'=>'/levels'], function () {
+        Route::get('/', 'LevelController@get_user_levels');
+        Route::post('/', 'LevelController@post_user_levels');
+    });
+
+    Route::group(['prefix'=>'/currencies'], function () {
+        Route::get('/', 'CurrencyController@get_currencies');
+        Route::post('/', 'CurrencyController@post_currencies');
+    });
+
     Route::group(['prefix'=>'/non-billable-codes'], function () {
         Route::get('/', 'NonBillableCodeController@get_non_billable_codes');
         Route::post('/', 'NonBillableCodeController@post_non_billable_codes');
@@ -84,6 +94,16 @@ Route::group(['prefix'=>'/chief', 'middleware'=>'Chief'], function () {
     Route::group(['prefix'=>'/users'], function () {
         Route::get('/', 'UserController@get_users_for_chief');
         Route::post('/', 'UserController@post_users');
+    });
+
+    Route::group(['prefix'=>'/levels'], function () {
+        Route::get('/', 'LevelController@get_user_levels');
+        Route::post('/', 'LevelController@post_user_levels');
+    });
+
+    Route::group(['prefix'=>'/currencies'], function () {
+        Route::get('/', 'CurrencyController@get_currencies');
+        Route::post('/', 'CurrencyController@post_currencies');
     });
 });
 

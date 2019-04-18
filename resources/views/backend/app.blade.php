@@ -200,6 +200,12 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/chief/users"><i class="fa fa-users"></i> Users</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/chief/levels"><i class="fa fa-level-down-alt"></i> Levels</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/chief/currencies"><i class="fa fa-money-bill-alt"></i> Currencies</a>
+                            </li>
                         @elseif(Auth::user()->role() == 2)
                             {{--User--}}
                             <li class="nav-item">
@@ -214,7 +220,13 @@
                                 <a class="nav-link" href="/admin/form-of-business"><i class="fa fa-list"></i> Form of business</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="/admin/currencies"><i class="fa fa-money-bill-alt"></i> Currencies</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="/admin/roles"><i class="fa fa-globe"></i> Roles</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/levels"><i class="fa fa-level-down-alt"></i> Levels</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/admin/fields"><i class="fa fa-list-ul"></i> Fields</a>

@@ -8,37 +8,45 @@
 
     <div class="card">
         <h5 class="card-header">
-            Form of business
+            Levels
             <button style="float: right;" type="button" class="btn btn-primary btn-xs" onclick="add_modal();">Add</button>
             <button disabled id="update_btn" style="float: right; margin-right: 5px;" type="button" class="btn btn-warning btn-xs" onclick="update_modal();">Update</button>
             <button disabled id="delete_btn" style="float: right; margin-right: 5px;" type="button" class="btn btn-danger btn-xs" onclick="del();">Delete</button>
         </h5>
         <div class="card-body">
             <div>
-                {!! $form_of_businesses->links(); !!}
+                {!! $levels->links(); !!}
             </div>
             <table class="table table-bordered">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Title</th>
+                    <th scope="col">Level</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Percentage</th>
+                    <th scope="col">Hourly rate</th>
+                    <th scope="col">Currency</th>
                     <th scope="col">Created date</th>
                     <th scope="col">Created by</th>
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach($form_of_businesses as $form_of_business)
-                        <tr onclick="row_select({{$form_of_business->id}});" id="row_{{$form_of_business->id}}" class="rows">
-                            <th scope="row">{{$form_of_business->id}}</th>
-                            <td id="title_{{$form_of_business->id}}">{{$form_of_business->title}}</td>
-                            <td>{{$form_of_business->created_at}}</td>
-                            <td>{{$form_of_business->created_name}} {{$form_of_business->created_surname}}</td>
+                    @foreach($levels as $level)
+                        <tr onclick="row_select({{$level->id}});" id="row_{{$level->id}}" class="rows">
+                            <th scope="row">{{$level->id}}</th>
+                            <td id="level_{{$level->id}}">{{$level->level}}</td>
+                            <td id="description_{{$level->id}}">{{$level->description}}</td>
+                            <td id="percentage_{{$level->id}}">{{$level->percentage}}</td>
+                            <td id="hourly_rate_{{$level->id}}">{{$level->hourly_rate}}</td>
+                            <td id="currency_{{$level->id}}" currency_id="{{$level->currency_id}}">{{$level->currency}}</td>
+                            <td>{{$level->created_at}}</td>
+                            <td>{{$level->created_name}} {{$level->created_surname}}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
             <div>
-                {!! $form_of_businesses->links(); !!}
+                {!! $levels->links(); !!}
             </div>
         </div>
     </div>
@@ -61,11 +69,40 @@
                             <form id="form" data-parsley-validate="" novalidate="" action="" method="post">
                                 {{csrf_field()}}
                                 <input type="hidden" id="type" name="type" value="add">
-                                <div id="form_of_business_id"></div>
+                                <div id="level_id"></div>
                                 <div class="form-group row">
-                                    <label for="title" class="col-3 col-lg-2 col-form-label text-right">Title</label>
+                                    <label for="level" class="col-3 col-lg-2 col-form-label text-right">Level</label>
                                     <div class="col-9 col-lg-10">
-                                        <input id="title" type="text" required="" name="title" placeholder="title" class="form-control">
+                                        <input id="level" type="text" required="" name="level" maxlength="50" placeholder="level" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="description" class="col-3 col-lg-2 col-form-label text-right">Description</label>
+                                    <div class="col-9 col-lg-10">
+                                        <input id="description" type="text" name="description" maxlength="100" placeholder="description" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="percentage" class="col-3 col-lg-2 col-form-label text-right">Percentage (%)</label>
+                                    <div class="col-9 col-lg-10">
+                                        <input id="percentage" type="number" required="" name="percentage" min="0" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="hourly_rate" class="col-3 col-lg-2 col-form-label text-right">Hourly rate</label>
+                                    <div class="col-9 col-lg-10">
+                                        <input id="hourly_rate" type="number" required="" name="hourly_rate" min="0" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="currency_id" class="col-3 col-lg-2 col-form-label text-right">Currency</label>
+                                    <div class="col-9 col-lg-10">
+                                        <select name="currency_id" id="currency_id" class="form-control" required>
+                                            <option value="">Select</option>
+                                            @foreach($currencies as $currency)
+                                                <option value="{{$currency->id}}">{{$currency->currency}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row pt-2 pt-sm-5 mt-1">
@@ -135,20 +172,32 @@
 
         function add_modal() {
             $('#type').val('add');
-            $('#title').val('');
-            $('.modal-title').html('Add form of business');
+            $('#level').val('');
+            $('#description').val('');
+            $('#percentage').val('');
+            $('#hourly_rate').val('');
+            $('#currency_id').val('');
+            $('.modal-title').html('Add level');
 
             $('#add-modal').modal('show');
         }
 
         function update_modal() {
-            var title = $('#title_'+row_id).text();
+            var level = $('#level_'+row_id).text();
+            var description = $('#description_'+row_id).text();
+            var percentage = $('#percentage_'+row_id).text();
+            var hourly_rate = $('#hourly_rate_'+row_id).text();
+            var currency_id = $('#currency_'+row_id).attr('currency_id');
             var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
 
-            $('#form_of_business_id').html(id_input);
+            $('#level_id').html(id_input);
             $('#type').val('update');
-            $('#title').val(title);
-            $('.modal-title').html('Update form of business');
+            $('#level').val(level);
+            $('#description').val(description);
+            $('#percentage').val(percentage);
+            $('#hourly_rate').val(hourly_rate);
+            $('#currency_id').val(currency_id);
+            $('.modal-title').html('Update level');
 
             $('#add-modal').modal('show');
         }
