@@ -678,17 +678,27 @@
             var id = $(e).val();
             var attr = $(e).attr("id");
             var no = attr.split("_")[1];
+            var j = 0;
 
             if (id === '' || id === 0 || id === null) {
+                for(j = 0; j < user_arr.length; j++){
+                    if ( user_arr[j] === old_value) {
+                        user_arr.splice(j, 1);
+                        console.log(user_arr);
+                        break;
+                    }
+                }
                 $("#hourly_rate_"+no).val(0);
                 $("#percentage_"+no).val(0);
                 return false;
             }
 
+            console.log(user_arr);
             if (old_value !== 0) {
-                for( var j = 0; j < user_arr.length; j++){
+                for(j = 0; j < user_arr.length; j++){
                     if ( user_arr[j] === old_value) {
                         user_arr.splice(j, 1);
+                        console.log(user_arr);
                         break;
                     }
                 }
