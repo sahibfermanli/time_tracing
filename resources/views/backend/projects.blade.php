@@ -24,7 +24,8 @@
                     <th scope="col">Project's type</th>
                     <th scope="col">Description</th>
                     <th scope="col">Time</th>
-                    <th scope="col">Payment</th>
+                    <th scope="col">Fix payment</th>
+                    <th scope="col">Total payment</th>
                     <th scope="col">Payment type</th>
                     <th scope="col">Client</th>
                     <th scope="col">Client role</th>
@@ -62,6 +63,7 @@
                             <td id="description_{{$project->id}}">{{$project->description}}</td>
                             <td id="time_{{$project->id}}">{{$project->time}}</td>
                             <td id="payment_{{$project->id}}" currency_id="{{$project->currency_id}}">{{$project->payment}} {{$project->currency}}</td>
+                            <td>{{$project->total_payment}} {{$project->currency}}</td>
                             <td id="payment_type_{{$project->id}}" payment_type="{{$project->payment_type}}">{{$pay_type}}</td>
                             <td id="client_{{$project->id}}" client_id="{{$project->client_id}}" title="{{$project->client_director}}">{{$project->client_name}} {{$project->client_fob}}</td>
                             <td id="client_role_{{$project->id}}" client_role_id="{{$project->client_role_id}}">{{$project->client_role}}</td>
