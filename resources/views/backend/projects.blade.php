@@ -481,7 +481,7 @@
                         location.reload();
                     }
                     else {
-                        $('#add-modal').modal('hide');
+                        // $('#add-modal').modal('hide');
                         swal(
                             response.title,
                             response.content,
@@ -513,7 +513,7 @@
                         $("#project-display").css('display', 'block');
                     }
                     else {
-                        $('#third-party-modal').modal('hide');
+                        // $('#third-party-modal').modal('hide');
                         swal(
                             response.title,
                             response.content,

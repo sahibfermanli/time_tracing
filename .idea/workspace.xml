@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="532745a1-a77a-4ad3-a881-6f6d0ffe1280" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ProjectController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ProjectController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/backend/projects.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/projects.blade.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,31 +26,24 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProjectController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3706">
-              <caret line="234" column="21" selection-start-line="234" selection-start-column="21" selection-end-line="234" selection-end-column="21" />
+            <state relative-caret-position="425">
+              <caret line="280" column="47" selection-start-line="280" selection-start-column="47" selection-end-line="280" selection-end-column="47" />
               <folding>
                 <element signature="e#40#59#0#PHP" expanded="true" />
-                <marker date="1555587108760" expanded="true" signature="17079:17218" ph="..." />
+                <marker date="1555606696578" expanded="true" signature="17626:17765" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/views/backend/projects.blade.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="680" column="22" selection-start-line="680" selection-start-column="22" selection-end-line="680" selection-end-column="22" />
-              <folding>
-                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#i#0;n#span#0;n#td#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#i#0;n#span#0;n#td#0;n#!!top" expanded="true" />
-              </folding>
+            <state relative-caret-position="8772">
+              <caret line="516" column="29" selection-start-line="516" selection-start-column="29" selection-end-line="516" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -169,8 +164,8 @@
         <option value="$PROJECT_DIR$/resources/views/backend/users.blade.php" />
         <option value="$PROJECT_DIR$/app/Team.php" />
         <option value="$PROJECT_DIR$/app/Projects.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/ProjectController.php" />
         <option value="$PROJECT_DIR$/resources/views/backend/projects.blade.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/ProjectController.php" />
       </list>
     </option>
   </component>
@@ -282,7 +277,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -355,6 +349,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -460,18 +455,19 @@
       <workItem from="1555497008562" duration="8515000" />
       <workItem from="1555513423720" duration="2076000" />
       <workItem from="1555563529391" duration="13914000" />
-      <workItem from="1555599032562" duration="1588000" />
+      <workItem from="1555599032562" duration="4623000" />
+      <workItem from="1555649919499" duration="912000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="305769000" />
+    <option name="totallyTimeSpent" value="309716000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19969743" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20272315" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -862,27 +858,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProjectController.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/backend/projects.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3706">
-          <caret line="234" column="21" selection-start-line="234" selection-start-column="21" selection-end-line="234" selection-end-column="21" />
-          <folding>
-            <element signature="e#40#59#0#PHP" expanded="true" />
-            <marker date="1555587108760" expanded="true" signature="17079:17218" ph="..." />
-          </folding>
+        <state relative-caret-position="8772">
+          <caret line="516" column="29" selection-start-line="516" selection-start-column="29" selection-end-line="516" selection-end-column="29" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/backend/projects.blade.php">
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProjectController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="680" column="22" selection-start-line="680" selection-start-column="22" selection-end-line="680" selection-end-column="22" />
+        <state relative-caret-position="425">
+          <caret line="280" column="47" selection-start-line="280" selection-start-column="47" selection-end-line="280" selection-end-column="47" />
           <folding>
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#i#0;n#span#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#i#0;n#span#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="e#40#59#0#PHP" expanded="true" />
+            <marker date="1555606696578" expanded="true" signature="17626:17765" ph="..." />
           </folding>
         </state>
       </provider>

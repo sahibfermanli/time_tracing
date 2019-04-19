@@ -268,6 +268,19 @@ class ProjectController extends HomeController
                 return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
             }
 
+            $total_percentage = 0;
+            for ($i=1; $i<=count($staff); $i++) {
+                if (!empty($staff[$i]['user_id']) && $staff[$i]['user_id'] != 0) {
+                    if (!empty($staff[$i]['percentage'])) {
+                        $total_percentage += $staff[$i]['percentage'];
+                    }
+                }
+            }
+
+            if ($total_percentage != 100) {
+                return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Total percentage must be equal to 100!"]);
+            }
+
             $staff_control = false;
             $pay_type = $request->payment_type;
             // payment types:
