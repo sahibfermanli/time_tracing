@@ -10,7 +10,7 @@
         <div style="clear:both;"></div>
         <div style="position: relative;">
             <div>
-                <div class="form-group col-lg-1" style="display: inline-block; padding-left: 0 !important;">
+                <div class="form-group col-lg-2" style="display: inline-block; padding-left: 0 !important;">
                     <select class="form-control form-control-sm" id="start_time" oninput="select_start_time();">
                         <option value="">Start</option>
                         @foreach($fields as $start_time)
@@ -19,7 +19,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-group col-lg-1" style="display: inline-block;">
+                <div class="form-group col-lg-2" style="display: inline-block;">
                     <select class="form-control form-control-sm" id="end_time" oninput="select_end_time();" disabled>
                         <option value="">End</option>
                     </select>
