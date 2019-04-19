@@ -74,18 +74,16 @@
                             //billable
                             $minute = $project->billable * 10;
 
-                            $hour = floor($minute / 60);
-                            $minute = $minute - ($hour * 60);
+                            $hour = round($minute / 60, 1);
 
-                            $p_billable = $hour . " hour(s), " . $minute . " minute(s)";
+                            $p_billable = $hour . " hour(s)";
 
                             //non billable
                             $minute = $project->non_billable * 10;
 
-                            $hour = floor($minute / 60);
-                            $minute = $minute - ($hour * 60);
+                            $hour = round($minute / 60, 1);
 
-                            $p_non_billable = $hour . " hour(s), " . $minute . " minute(s)";
+                            $p_non_billable = $hour . " hour(s)";
                         ?>
                         <tr ondblclick="show_tasks({{$project->id}});">
                             <th scope="row">{{$row}}</th>
@@ -159,10 +157,10 @@
         function calculate_time(field) {
             var minute = field * 10;
 
-            var hour = Math.floor(minute / 60);
-            minute = minute - (hour * 60);
+            var hour = minute / 60;
+            // minute = minute - (hour * 60);
 
-            var time = hour + " hour(s), " + minute + " minute(s)";
+            var time = hour.toFixed(1) + " hour(s)";
 
             return time;
         }
