@@ -268,6 +268,12 @@ class ProjectController extends HomeController
                 return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
             }
 
+            $cur_id = 0;
+            $cur_control = true;
+            if (!empty($request->currency_id)) {
+                $cur_id = $request->currency_id;
+            }
+
             $total_percentage = 0;
             for ($i=1; $i<=count($staff); $i++) {
                 if (!empty($staff[$i]['user_id']) && $staff[$i]['user_id'] != 0) {
@@ -275,6 +281,19 @@ class ProjectController extends HomeController
                         $total_percentage += $staff[$i]['percentage'];
                     }
                 }
+
+                if ($cur_id != 0) {
+                    if (!empty($staff[$i]['currency_id'])) {
+                        if ($cur_id != $staff[$i]['currency_id']) {
+                            $cur_control = false;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!$cur_control) {
+                return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Currencies is not same!"]);
             }
 
             if ($total_percentage != 100) {
