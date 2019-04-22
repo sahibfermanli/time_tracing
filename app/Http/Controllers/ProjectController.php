@@ -413,7 +413,10 @@ class ProjectController extends HomeController
             unset($request['_token']);
             unset($request['type']);
 
+            $old_data = Projects::where(['id'=>$request->id])->select('project_manager_id')->first();
+
             $staff = $request->staff;
+
             $third_parties = $request->third_party_id;
             $roles = $request->third_party_role_id;
             unset($request['staff'], $request['third_party_id'], $request['third_party_role_id']);
@@ -427,16 +430,108 @@ class ProjectController extends HomeController
                 $project = $request->project_list;
             }
 
-            $request->merge(['project'=>$project]);
+            $request->merge(['created_by'=>Auth::id(), 'project'=>$project]);
             unset($request['project_text'], $request['project_list']);
 
             if (empty($project)) {
                 return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
             }
 
+            $cur_id = 0;
+            $cur_control = true;
+            if (!empty($request->currency_id)) {
+                $cur_id = $request->currency_id;
+            }
+
+            $fix_pay = 0;
+            $total_pay = 0;
+            if (!empty($request->payment) && $request->payment != 0 && $request->payment != '') {
+                $fix_pay = $request->payment;
+            }
+            $time = $request->time;
+
+            $total_percentage = Team::where(['project_id'=>$request->id, 'deleted'=>0])->sum('percentage');
+            for ($i=1; $i<=count($staff); $i++) {
+                if (!empty($staff[$i]['user_id']) && $staff[$i]['user_id'] != 0) {
+                    if (!empty($staff[$i]['percentage'])) {
+                        $total_percentage += $staff[$i]['percentage'];
+                    }
+                }
+
+                if ($cur_id != 0) {
+                    if (!empty($staff[$i]['currency_id'])) {
+                        if ($cur_id != $staff[$i]['currency_id']) {
+                            $cur_control = false;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!$cur_control) {
+                return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Currencies is not same!"]);
+            }
+
+            if ($total_percentage != 100) {
+                return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Total percentage must be equal to 100!"]);
+            }
+
+            $staff_control = false;
+            $pay_type = $request->payment_type;
+            // payment types:
+            // 1: fix
+            // 2: fix + hourly rate
+            // 3: hourly rate
+            // 4: monthly
+            switch ($pay_type) {
+                case 1:
+                    $staff_control = false;
+                    break;
+                case 2:
+                    $staff_control = true;
+                    break;
+                case 3:
+                    $staff_control = true;
+                    break;
+                case 4:
+                    $staff_control = false;
+                    break;
+                default:
+                    return response(['case' => 'warning', 'title' => 'Error!', 'content' => 'Payment type error!']);
+            }
+
             $update = Projects::where(['id'=>$request->id])->update($request->all());
 
+            $user_arr = array();
             if ($update) {
+                $total_pay += $fix_pay;
+                for ($i=1; $i<=count($staff); $i++) {
+                    if (!empty($staff[$i]['user_id']) && $staff[$i]['user_id'] != 0) {
+                        //same staff control
+                        if (in_array($staff[$i]['user_id'], $user_arr)) {
+                            continue;
+                        } else {
+                            if (Team::where(['project_id'=>$request->id, 'user_id'=>$staff[$i]['user_id'], 'deleted'=>0])->count() > 0) {
+                                continue;
+                            }
+                            array_push($user_arr, $staff[$i]['user_id']);
+                        }
+
+                        if ($staff_control == true) {
+                            if (!empty($staff[$i]['percentage']) && !empty($staff[$i]['hourly_rate']) && !empty($staff[$i]['currency_id'])) {
+                                $staff[$i]['project_id'] = $request->id;
+                                Team::create($staff[$i]);
+                                $total_pay += $staff[$i]['hourly_rate'] * (($time * $staff[$i]['percentage']) / 100);
+                            }
+                        } else {
+                            $staff[$i]['project_id'] = $request->id;
+                            Team::create($staff[$i]);
+                        }
+                    }
+                }
+
+                Projects::where(['id'=>$request->id])->update(['total_payment'=>$total_pay]);
+
                 $arr['project_id'] = $request->id;
                 $arr['created_by'] = Auth::id();
                 for ($j=1; $j<=count($third_parties); $j++) {
@@ -449,11 +544,20 @@ class ProjectController extends HomeController
                     ThirdParties::create($arr);
                 }
 
-                Team::where(['project_id'=>$request->id, 'deleted'=>0])->update(['deleted'=>1, 'deleted_at'=>Carbon::now(), 'deleted_by'=>Auth::id()]);
+                if ($old_data->project_manager_id != $request->project_manager_id) {
+                    $project_manager = User::where(['id'=>$request->project_manager_id])->select('send_mail', 'email', 'name', 'surname')->first();
 
-                for ($i=0; $i<count($staff); $i++) {
-                    $project_id = $request->id;
-                    Team::create(['project_id'=>$project_id, 'user_id'=>$staff[$i]]);
+                    if ($project_manager->send_mail == 1) {
+                        //send email
+                        $email = $project_manager['email'];
+                        $to = $project_manager['name'] . ' ' . $project_manager['surname'];
+                        $message = "You have a new project:";
+                        $message .= "<br>";
+                        $message .= "<b>" . $request->project . "</b>";
+                        $title = 'New project';
+
+                        app('App\Http\Controllers\MailController')->get_send($email, $to, $title, $message);
+                    }
                 }
             }
 
