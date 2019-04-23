@@ -335,6 +335,7 @@ class ProjectController extends HomeController
 
             $add = Projects::create($request->all());
 
+            $staff_mail_arr = array();
             $user_arr = array();
             if ($add) {
                 $total_pay += $fix_pay;
@@ -352,10 +353,12 @@ class ProjectController extends HomeController
                                 $staff[$i]['project_id'] = $add->id;
                                 Team::create($staff[$i]);
                                 $total_pay += $staff[$i]['hourly_rate'] * (($time * $staff[$i]['percentage']) / 100);
+                                array_push($staff_mail_arr, $staff[$i]['user_id']);
                             }
                         } else {
                             $staff[$i]['project_id'] = $add->id;
                             Team::create($staff[$i]);
+                            array_push($staff_mail_arr, $staff[$i]['user_id']);
                         }
                     }
                 }
@@ -374,18 +377,34 @@ class ProjectController extends HomeController
                     ThirdParties::create($arr);
                 }
 
+                //send email
+                $email_arr = array();
+                $to_arr = array();
+
                 $project_manager = User::where(['id'=>$request->project_manager_id])->select('send_mail', 'email', 'name', 'surname')->first();
 
                 if ($project_manager->send_mail == 1) {
+                    array_push($email_arr, $project_manager['email']);
+                    array_push($to_arr, $project_manager['name'] . ' ' . $project_manager['surname']);
+                }
+
+                $staffs = User::whereIn('id', $staff_mail_arr)->select('send_mail', 'email', 'name', 'surname', 'deleted')->get();
+
+                foreach ($staffs as $staff) {
+                    if ($staff->send_mail == 1 && $staff->deleted == 0) {
+                        array_push($email_arr, $staff['email']);
+                        array_push($to_arr, $staff['name'] . ' ' . $staff['surname']);
+                    }
+                }
+
+                if (count($email_arr) > 0) {
                     //send email
-                    $email = $project_manager['email'];
-                    $to = $project_manager['name'] . ' ' . $project_manager['surname'];
                     $message = "You have a new project:";
                     $message .= "<br>";
                     $message .= "<b>" . $request->project . "</b>";
                     $title = 'New project';
 
-                    app('App\Http\Controllers\MailController')->get_send($email, $to, $title, $message);
+                    app('App\Http\Controllers\MailController')->get_send($email_arr, $to_arr, $title, $message);
                 }
             }
 
@@ -510,6 +529,7 @@ class ProjectController extends HomeController
 
             $update = Projects::where(['id'=>$request->id])->update($request->all());
 
+            $staff_mail_arr = array();
             $user_arr = array();
             if ($update) {
                 $total_pay += $fix_pay;
@@ -530,10 +550,12 @@ class ProjectController extends HomeController
                                 $staff[$i]['project_id'] = $request->id;
                                 Team::create($staff[$i]);
                                 $total_pay += $staff[$i]['hourly_rate'] * (($time * $staff[$i]['percentage']) / 100);
+                                array_push($staff_mail_arr, $staff[$i]['user_id']);
                             }
                         } else {
                             $staff[$i]['project_id'] = $request->id;
                             Team::create($staff[$i]);
+                            array_push($staff_mail_arr, $staff[$i]['user_id']);
                         }
                     }
                 }
@@ -552,20 +574,35 @@ class ProjectController extends HomeController
                     ThirdParties::create($arr);
                 }
 
+                //send email
+                $email_arr = array();
+                $to_arr = array();
+
                 if ($old_data->project_manager_id != $request->project_manager_id) {
                     $project_manager = User::where(['id'=>$request->project_manager_id])->select('send_mail', 'email', 'name', 'surname')->first();
-
                     if ($project_manager->send_mail == 1) {
-                        //send email
-                        $email = $project_manager['email'];
-                        $to = $project_manager['name'] . ' ' . $project_manager['surname'];
-                        $message = "You have a new project:";
-                        $message .= "<br>";
-                        $message .= "<b>" . $request->project . "</b>";
-                        $title = 'New project';
-
-                        app('App\Http\Controllers\MailController')->get_send($email, $to, $title, $message);
+                        array_push($email_arr, $project_manager['email']);
+                        array_push($to_arr, $project_manager['name'] . ' ' . $project_manager['surname']);
                     }
+                }
+
+                $staffs = User::whereIn('id', $staff_mail_arr)->select('send_mail', 'email', 'name', 'surname', 'deleted')->get();
+
+                foreach ($staffs as $staff) {
+                    if ($staff->send_mail == 1 && $staff->deleted == 0) {
+                        array_push($email_arr, $staff['email']);
+                        array_push($to_arr, $staff['name'] . ' ' . $staff['surname']);
+                    }
+                }
+
+                if (count($email_arr) > 0) {
+                    //send email
+                    $message = "You have a new project:";
+                    $message .= "<br>";
+                    $message .= "<b>" . $request->project . "</b>";
+                    $title = 'New project';
+
+                    app('App\Http\Controllers\MailController')->get_send($email_arr, $to_arr, $title, $message);
                 }
             }
 
