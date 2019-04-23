@@ -398,10 +398,16 @@ class ProjectController extends HomeController
                 }
 
                 if (count($email_arr) > 0) {
+                    $client = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.id'=>$request->client_id])->orderBy('clients.name')->select('clients.name', 'fob.title as fob')->first();
+                    $client_role = ClientRoles::where(['id'=>$request->client_role_id])->select('role')->first();
+
                     //send email
                     $message = "You have a new project:";
-                    $message .= "<br>";
-                    $message .= "<b>" . $request->project . "</b>";
+                    $message .= "<br>Project type: <b>" . $request->project . "</b>";
+                    $message .= "<br>Description: <b>" . $request->description . "</b>";
+                    $message .= "<br>Client: <b>" . $client->name . ' ' . $client->fob . "</b>";
+                    $message .= "<br>Client role: <b>" . $client_role->role . "</b>";
+                    $message .= "<br>Project manager: <b>" . $project_manager['name'] . ' ' . $project_manager['surname'] . "</b>";
                     $title = 'New project';
 
                     app('App\Http\Controllers\MailController')->get_send($email_arr, $to_arr, $title, $message);
@@ -596,10 +602,16 @@ class ProjectController extends HomeController
                 }
 
                 if (count($email_arr) > 0) {
+                    $client = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.id'=>$request->client_id])->orderBy('clients.name')->select('clients.name', 'fob.title as fob')->first();
+                    $client_role = ClientRoles::where(['id'=>$request->client_role_id])->select('role')->first();
+
                     //send email
                     $message = "You have a new project:";
-                    $message .= "<br>";
-                    $message .= "<b>" . $request->project . "</b>";
+                    $message .= "<br>Project type: <b>" . $request->project . "</b>";
+                    $message .= "<br>Description: <b>" . $request->description . "</b>";
+                    $message .= "<br>Client: <b>" . $client->name . ' ' . $client->fob . "</b>";
+                    $message .= "<br>Client role: <b>" . $client_role->role . "</b>";
+                    $message .= "<br>Project manager: <b>" . $project_manager['name'] . ' ' . $project_manager['surname'] . "</b>";
                     $title = 'New project';
 
                     app('App\Http\Controllers\MailController')->get_send($email_arr, $to_arr, $title, $message);
