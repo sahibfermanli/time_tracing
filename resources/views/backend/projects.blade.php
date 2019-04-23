@@ -63,7 +63,7 @@
                             <td id="description_{{$project->id}}">{{$project->description}}</td>
                             <td id="time_{{$project->id}}">{{$project->time}}</td>
                             <td id="payment_{{$project->id}}" currency_id="{{$project->currency_id}}">{{$project->payment}} {{$project->currency}}</td>
-                            <td>{{$project->total_payment}} {{$project->currency}}</td>
+                            <td id="currency_{{$project->id}}" currency_id="{{$project->currency_id}}">{{$project->total_payment}} {{$project->currency}}</td>
                             <td id="payment_type_{{$project->id}}" payment_type="{{$project->payment_type}}">{{$pay_type}}</td>
                             <td id="client_{{$project->id}}" client_id="{{$project->client_id}}" title="{{$project->client_director}}">{{$project->client_name}} {{$project->client_fob}}</td>
                             <td id="client_role_{{$project->id}}" client_role_id="{{$project->client_role_id}}">{{$project->client_role}}</td>
@@ -526,8 +526,18 @@
             });
         });
 
-        function select_payment_type(e) {
-            pay_type = $(e).val();
+        function select_payment_type(e, type=1) {
+            if (type === 1) {
+                pay_type = $(e).val();
+            } else if (type === 2) {
+                pay_type = e;
+            } else {
+                swal(
+                    'Oops',
+                    'Please select payment type',
+                    'warning'
+                );
+            }
             // payment types:
             // 1: fix
             // 2: fix + hourly rate
@@ -1073,6 +1083,8 @@
             $("#hourly_rate_1").val('');
             $("#currency_id_1").val('');
             $("#payment").val('');
+            $("#payment_type").val(1);
+            $("#currency_id").val('');
             response_tp = 0;
             tp_id = 1;
             staff_id = 1;
@@ -1089,6 +1101,8 @@
             var time = $('#time_'+row_id).text();
             var payment = $('#payment_'+row_id).text();
             var client_id = $('#client_'+row_id).attr('client_id');
+            var payment_type = $('#payment_type_'+row_id).attr('payment_type');
+            var currency_id = $('#currency_'+row_id).attr('currency_id');
             var client_role_id = $('#client_role_'+row_id).attr('client_role_id');
             var project_manager_id = $('#project_manager_'+row_id).attr('project_manager_id');
             var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
@@ -1112,40 +1126,13 @@
             $("#hourly_rate_1").val('');
             $("#currency_id_1").val('');
             $("#payment").val(payment);
+            $("#payment_type").val(payment_type);
+            $("#currency_id").val(currency_id);
             response_tp = 0;
             tp_id = 1;
             staff_id = 1;
 
-            swal({
-                title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
-                text: 'Loading, please wait...',
-                showConfirmButton: false
-            });
-            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-            $.ajax({
-                type: "Post",
-                url: '',
-                data: {
-                    'project_id': row_id,
-                    '_token': CSRF_TOKEN,
-                    'type': 'show_team_for_update_project'
-                },
-                success: function (response) {
-                    swal.close();
-                    if (response.case === 'success') {
-                        var team  = response.team;
-                        var team_arr = [];
-
-                        for (var i=0; i<team.length; i++) {
-                            team_arr.push(team[i]['user_id']);
-                        }
-
-                        console.log(team_arr);
-
-                        $('#staff').val(team_arr);
-                    }
-                }
-            });
+            select_payment_type(payment_type, 2);
 
             $('#add-modal').modal('show');
         }
