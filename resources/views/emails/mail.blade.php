@@ -1,5 +1,65 @@
 {!! $data["data"] !!}
-<br>
-<br>
-<br>
-<div dir="ltr" class="m_2415177346453440395gmail_signature" data-smartmail="gmail_signature"><div dir="ltr"><div><div dir="ltr"><div style="color:rgb(0,0,0);font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;font-size:16px;margin-top:0px;margin-bottom:0px"><font face="Times New Roman,serif" color="#365F91"><b>Time </b></font><font face="Times New Roman,serif" color="#365F91">Tracer</font></div><div style="font-size:16px;margin-top:0px;margin-bottom:10pt"><font color="#0563c1" face="Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><a href="mailto:time.tracer3@gmail.com" target="_blank">time.tracer3@gmail.com</a></font><font face="Times New Roman,serif" color="#365F91" style="color:rgb(0,0,0);font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif">&nbsp; |&nbsp;&nbsp;</font><a href="https://supply.swgh.az" style="color:rgb(0,0,0);font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://supply.swgh.az/&amp;source=gmail&amp;ust=1547804418416000&amp;usg=AFQjCNHCZz9JZoHV-klITzkDYfDCIbsFKA"><font face="Times New Roman,serif" color="#0077CC"><font color="blue">www.alcis.az</font></font></a></div><p style="margin-top:0px;margin-bottom:0px;color:rgb(0,0,0);font-family:Calibri,Arial,Helvetica,sans-serif;font-size:16px"><span style="font-size:8pt;font-family:&quot;Times New Roman&quot;,serif">This e-mail message, including all attachments, is for the sole use of the intended recipient(s) and may contain legally privileged and confidential information. If you are not an intended recipient, you are hereby notified that you have either received this message in error or through interception, and that any review, use, distribution, copying or disclosure of this message and/or its attachments or parts thereof is strictly prohibited and is subject to criminal and civil penalties with appropriate national legislation. All personal messages express solely the sender's views and not those of Silk Way Ground Handling. If you received this message in error, please contact the sender by replying e-mail and destroy all copies of the original message.</span><br></p><div style="color:rgb(0,0,0);font-family:Calibri,Arial,Helvetica,sans-serif;font-size:16px"><div name="divtagdefaultwrapper" style="margin:0px"><font face="Arial,Tahoma,Verdana,sans-serif"></font></div></div></div></div></div></div>
+
+<div dir="ltr">
+    <div class="gmail_default" style="font-family:trebuchet ms,sans-serif"><br clear="all"></div>
+    <div><br>
+    </div>
+    -- <br>
+    <div dir="ltr" class="gmail_signature">
+        <div dir="ltr">
+            <div>
+                <div dir="ltr">
+                    <div>
+                        <div dir="ltr">
+                            <div>
+                                <div dir="ltr">
+                                    <div>
+                                        <div dir="ltr">
+                                            <div dir="ltr">
+                                                <div style="color:rgb(80,0,80)"><font face="trebuchet ms, sans-serif"><b
+                                                                style="color:rgb(68,68,68)">Time Tracer</b><br>
+                                                    </font></div>
+                                                <div style="color:rgb(80,0,80)"><font color="#444444"
+                                                                                      face="trebuchet ms, sans-serif"><b>Auto message</b>&nbsp;|&nbsp;<b>ALP Law Firm</b></font></div>
+                                                <div style="color:rgb(80,0,80)">
+                                                    <p class="MsoNormal" style=""><font face="trebuchet ms, sans-serif"><font
+                                                                    color="#444444">Winter Park Plaza, 75 Rasul Rza str.
+                                                                |&nbsp;</font><span style="color:rgb(68,68,68)">&nbsp;Baku,&nbsp;</span></font><span
+                                                                style="color:rgb(68,68,68); font-family:&quot;trebuchet ms&quot;,sans-serif">Azerbaijan&nbsp;</span><span
+                                                                style="color:rgb(68,68,68); font-family:&quot;trebuchet ms&quot;,sans-serif">|&nbsp;</span><span
+                                                                style="color:rgb(68,68,68); font-family:&quot;trebuchet ms&quot;,sans-serif">AZ1014</span><span
+                                                                style="color:rgb(68,68,68); font-family:&quot;trebuchet ms&quot;,sans-serif">&nbsp;</span>
+                                                    </p>
+                                                    <p class="MsoNormal" style=""><font face="trebuchet ms, sans-serif"><font
+                                                                    color="#444444"><b>T</b>: +994 12 599 82 22
+                                                                |&nbsp;<b>E</b>:&nbsp;</font><font color="#444444"><a
+                                                                        href="mailto:time.tracer3@gmail.com" target="_blank">time.tracer3@gmail.com</a></font><font
+                                                                    color="#444444">|&nbsp;<b>W</b>:&nbsp;</font><font
+                                                                    color="#444444"><a href="http://www.alplaw.az"
+                                                                                       target="_blank">www.alplaw.az</a></font></font>
+                                                    </p>
+                                                    <p class="MsoNormal" style=""><font face="trebuchet ms, sans-serif"><br>
+                                                        </font></p>
+                                                    <p class="MsoNormal" style=""><font face="trebuchet ms, sans-serif"><font
+                                                                    color="#444444" style="color:rgb(17,85,204)"><a
+                                                                        href="http://www.alplaw.az/" target="_blank"><img
+                                                                            src="https://docs.google.com/uc?export=download&amp;id=1eLmGH0W0Q38JnvJW1bKT7pwlsg4QsH6u&amp;revid=0BzkyVd3yG5m4UWR1ZmlCcERDLzcvYnhoZFY5ZG5mcnBLamw0PQ"
+                                                                            width="200" height="29"><br>
+                                                                </a></font></font></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

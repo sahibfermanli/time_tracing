@@ -131,7 +131,7 @@ class ProjectController extends HomeController
             'project_id' => 'required|integer',
         ]);
         if ($validator->fails()) {
-            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Id not found!']);
+            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Project not found!']);
         }
         try {
             $team = Team::leftJoin('users as u', 'team.user_id', '=', 'u.id')->leftJoin('currencies as c', 'team.currency_id', '=', 'c.id')->where(['team.project_id'=>$request->project_id, 'team.deleted'=>0, 'u.deleted'=>0])->select('team.id', 'team.project_id', 'team.user_id', 'u.name', 'u.surname', 'team.percentage', 'team.hourly_rate', 'c.currency')->get();

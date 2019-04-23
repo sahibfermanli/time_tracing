@@ -43,16 +43,16 @@
                         @php($pay_type = '')
                         @switch($project->payment_type)
                             @case(1)
-                            @php($pay_type = 'Fix')
+                            @php($pay_type = 'Fixed Fee')
                             @break
                             @case(2)
-                            @php($pay_type = 'Fix + hourly rate')
+                            @php($pay_type = 'Cap Fee')
                             @break
                             @case(3)
                             @php($pay_type = 'Hourly rate')
                             @break
                             @case(4)
-                            @php($pay_type = 'Monthly')
+                            @php($pay_type = 'Monthly Fee')
                             @break
                             @default()
                             @php($pay_type = '')
@@ -69,7 +69,7 @@
                             <td id="client_role_{{$project->id}}" client_role_id="{{$project->client_role_id}}">{{$project->client_role}}</td>
                             <td><span class="btn btn-primary btn-xs" onclick="show_third_parties({{$project->id}});">Show</span></td>
                             <td id="project_manager_{{$project->id}}" project_manager_id="{{$project->project_manager_id}}">{{$project->pm_name}} {{$project->pm_surname}}</td>
-                            <td><span class="btn btn-primary btn-xs" onclick="show_team({{$project->id}});">Team</span></td>
+                            <td><span class="btn btn-primary btn-xs" onclick="show_team({{$project->id}}, {{$project->payment_type}});">Team</span></td>
                             <td>{{$project->created_at}}</td>
                             <td>{{$project->created_name}} {{$project->created_surname}}</td>
                         </tr>
@@ -182,17 +182,17 @@
                                         <div class="col-md-6 ml-auto">
                                             <label for="payment_type">Payment type</label>
                                             <select id="payment_type" name="payment_type" class="form-control" required oninput="select_payment_type(this);">
-                                                <option value="1">Fix</option>
-                                                <option value="2">Fix + hourly rate</option>
+                                                <option value="1">Fixed Fee</option>
+                                                <option value="2">Cap Fee</option>
                                                 <option value="3">Hourly rate</option>
-                                                <option value="4">Monthly</option>
+                                                <option value="4">Monthly Fee</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="row form-group" id="fix_div">
                                         <div class="col-md-6 ml-auto">
-                                            <label for="payment">Payment</label>
-                                            <input id="payment" type="number" name="payment" placeholder="fix payment" class="form-control" min="0">
+                                            <label for="fix_payment">Payment</label>
+                                            <input id="fix_payment" type="number" name="payment" placeholder="fix payment" class="form-control" min="0">
                                         </div>
                                         <div class="col-md-6 ml-auto">
                                             <label for="currency_id">Currency</label>
@@ -204,6 +204,28 @@
                                             </select>
                                         </div>
                                     </div>
+
+                                    <div class="row form-group" id="team_for_update_table" style="display: none;">
+                                        <div class="col-md-12 ml-auto">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Surname</th>
+                                                    <th scope="col" id="team_for_update_percentage">Percentage</th>
+                                                    <th scope="col" id="team_for_update_hourly_rate">Hourly rate</th>
+                                                    <th scope="col" id="team_for_update_currency">Currency</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="team_for_update_body">
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
                                     <div class="row form-group">
                                         <div class="col-md-12 ml-auto staff_class" id="staff_div_1">
                                             <label for="staff_1">Staff</label>
@@ -431,9 +453,9 @@
                                             <th scope="col">#</th>
                                             <th scope="col">Name</th>
                                             <th scope="col">Surname</th>
-                                            <th scope="col">Percentage</th>
-                                            <th scope="col">Hourly rate</th>
-                                            <th scope="col">Currency</th>
+                                            <th scope="col" id="team_percentage">Percentage</th>
+                                            <th scope="col" id="team_hourly_rate">Hourly rate</th>
+                                            <th scope="col" id="team_currency">Currency</th>
                                             <th scope="col"></th>
                                         </tr>
                                         </thead>
@@ -552,6 +574,14 @@
                     $('div[id^="percentage_div"]').css('display', 'none');
                     $('div[id^="hourly_rate_div"]').css('display', 'none');
                     $('div[id^="currency_div"]').css('display', 'none');
+
+                    $('td[id^="team_for_update_percentage"]').css('display', 'none');
+                    $('td[id^="team_for_update_hourly_rate"]').css('display', 'none');
+                    $('td[id^="team_for_update_currency"]').css('display', 'none');
+                    $("#team_for_update_percentage").css('display', 'none');
+                    $("#team_for_update_hourly_rate").css('display', 'none');
+                    $("#team_for_update_currency").css('display', 'none');
+
                     break;
                 case '2':
                     $("#fix_div").css('display', 'flex');
@@ -560,6 +590,14 @@
                     $('div[id^="percentage_div"]').css('display', 'block');
                     $('div[id^="hourly_rate_div"]').css('display', 'block');
                     $('div[id^="currency_div"]').css('display', 'block');
+
+                    $('td[id^="team_for_update_percentage"]').css('display', 'table-cell');
+                    $('td[id^="team_for_update_hourly_rate"]').css('display', 'table-cell');
+                    $('td[id^="team_for_update_currency"]').css('display', 'table-cell');
+                    $("#team_for_update_percentage").css('display', 'table-cell');
+                    $("#team_for_update_hourly_rate").css('display', 'table-cell');
+                    $("#team_for_update_currency").css('display', 'table-cell');
+
                     break;
                 case '3':
                     $("#fix_div").css('display', 'none');
@@ -567,6 +605,14 @@
                     $('div[id^="percentage_div"]').css('display', 'block');
                     $('div[id^="hourly_rate_div"]').css('display', 'block');
                     $('div[id^="currency_div"]').css('display', 'block');
+
+                    $('td[id^="team_for_update_percentage"]').css('display', 'table-cell');
+                    $('td[id^="team_for_update_hourly_rate"]').css('display', 'table-cell');
+                    $('td[id^="team_for_update_currency"]').css('display', 'table-cell');
+                    $("#team_for_update_percentage").css('display', 'table-cell');
+                    $("#team_for_update_hourly_rate").css('display', 'table-cell');
+                    $("#team_for_update_currency").css('display', 'table-cell');
+
                     break;
                 case '4':
                     $("#fix_div").css('display', 'flex');
@@ -575,6 +621,14 @@
                     $('div[id^="percentage_div"]').css('display', 'none');
                     $('div[id^="hourly_rate_div"]').css('display', 'none');
                     $('div[id^="currency_div"]').css('display', 'none');
+
+                    $('td[id^="team_for_update_percentage"]').css('display', 'none');
+                    $('td[id^="team_for_update_hourly_rate"]').css('display', 'none');
+                    $('td[id^="team_for_update_currency"]').css('display', 'none');
+                    $("#team_for_update_percentage").css('display', 'none');
+                    $("#team_for_update_hourly_rate").css('display', 'none');
+                    $("#team_for_update_currency").css('display', 'none');
+
                     break;
                 default:
                     swal(
@@ -839,7 +893,7 @@
             }
         });
 
-        function show_team(project_id) {
+        function show_team(project_id, payment_type) {
             swal({
                 title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
                 text: 'Loading, please wait...',
@@ -872,6 +926,18 @@
                             var hourly_rate = '<td>' + user['hourly_rate'] + '</td>';
                             var currency = '<td>' + user['currency'] + '</td>';
                             var btn = '<td><span onclick="delete_staff(' + user['id'] + ');"><i class="fa fa-trash" style="color: red;"></i></span></td>';
+                            if (payment_type == 2 || payment_type == 3) {
+                                $("#team_percentage").css('display', 'table-cell');
+                                $("#team_hourly_rate").css('display', 'table-cell');
+                                $("#team_currency").css('display', 'table-cell');
+                            } else {
+                                percentage = '';
+                                hourly_rate = '';
+                                currency = '';
+                                $("#team_percentage").css('display', 'none');
+                                $("#team_hourly_rate").css('display', 'none');
+                                $("#team_currency").css('display', 'none');
+                            }
 
                             tr = '<tr id="staff_row_' + user['id'] + '">' + row + name + surname + percentage + hourly_rate + currency + btn + '</tr>';
 
@@ -1082,12 +1148,15 @@
             $("#percentage_1").val('');
             $("#hourly_rate_1").val('');
             $("#currency_id_1").val('');
-            $("#payment").val('');
+            $("#fix_payment").val('');
             $("#payment_type").val(1);
             $("#currency_id").val('');
             response_tp = 0;
             tp_id = 1;
             staff_id = 1;
+
+            $("#team_for_update_body").html('');
+            $("#team_for_update_table").css('display', 'none');
 
             $('#add-modal').modal('show');
         }
@@ -1125,7 +1194,7 @@
             $("#percentage_1").val('');
             $("#hourly_rate_1").val('');
             $("#currency_id_1").val('');
-            $("#payment").val(payment);
+            $("#fix_payment").val(parseFloat(payment));
             $("#payment_type").val(payment_type);
             $("#currency_id").val(currency_id);
             response_tp = 0;
@@ -1133,6 +1202,69 @@
             staff_id = 1;
 
             select_payment_type(payment_type, 2);
+
+            swal({
+                title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                text: 'Loading, please wait...',
+                showConfirmButton: false
+            });
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                type: "Post",
+                url: '',
+                data: {
+                    'project_id': row_id,
+                    '_token': CSRF_TOKEN,
+                    'type': 'show_team'
+                },
+                success: function (response) {
+                    swal.close();
+                    if (response.case === 'success') {
+                        var team = response.team;
+                        var tr = '';
+                        var table = '';
+
+                        for (i=0; i<team.length; i++) {
+                            var user = team[i];
+                            var num = i + 1;
+                            var row = '<td>' + num + '</td>';
+                            var name = '<td>' + user['name'] + '</td>';
+                            var surname = '<td>' + user['surname'] + '</td>';
+                            var percentage = '<td id="team_for_update_percentage">' + user['percentage'] + '</td>';
+                            var hourly_rate = '<td id="team_for_update_hourly_rate">' + user['hourly_rate'] + '</td>';
+                            var currency = '<td id="team_for_update_currency">' + user['currency'] + '</td>';
+                            var btn = '<td><span onclick="delete_staff(' + user['id'] + ');"><i class="fa fa-trash" style="color: red;"></i></span></td>';
+
+                            if (payment_type == 2 || payment_type == 3) {
+                                $("#team_for_update_percentage").css('display', 'table-cell');
+                                $("#team_for_update_hourly_rate").css('display', 'table-cell');
+                                $("#team_for_update_currency").css('display', 'table-cell');
+                            } else {
+                                percentage = '';
+                                hourly_rate = '';
+                                currency = '';
+                                $("#team_for_update_percentage").css('display', 'none');
+                                $("#team_for_update_hourly_rate").css('display', 'none');
+                                $("#team_for_update_currency").css('display', 'none');
+                            }
+
+                            tr = '<tr id="staff_row_' + user['id'] + '">' + row + name + surname + percentage + hourly_rate + currency + btn + '</tr>';
+
+                            table = table + tr;
+                        }
+
+                        $("#team_for_update_body").html(table);
+                        $("#team_for_update_table").css('display', 'block');
+                    }
+                    else {
+                        swal(
+                            response.title,
+                            response.content,
+                            response.case
+                        );
+                    }
+                }
+            });
 
             $('#add-modal').modal('show');
         }
