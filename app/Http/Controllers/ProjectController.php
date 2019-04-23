@@ -282,29 +282,31 @@ class ProjectController extends HomeController
             $time = $request->time;
 
             $total_percentage = 0;
-            for ($i=1; $i<=count($staff); $i++) {
-                if (!empty($staff[$i]['user_id']) && $staff[$i]['user_id'] != 0) {
-                    if (!empty($staff[$i]['percentage'])) {
-                        $total_percentage += $staff[$i]['percentage'];
+            if ($request->payment_type != 1 && $request->payment_type != 4) {
+                for ($i=1; $i<=count($staff); $i++) {
+                    if (!empty($staff[$i]['user_id']) && $staff[$i]['user_id'] != 0) {
+                        if (!empty($staff[$i]['percentage'])) {
+                            $total_percentage += $staff[$i]['percentage'];
+                        }
                     }
-                }
 
-                if ($cur_id != 0) {
-                    if (!empty($staff[$i]['currency_id'])) {
-                        if ($cur_id != $staff[$i]['currency_id']) {
-                            $cur_control = false;
-                            break;
+                    if ($cur_id != 0) {
+                        if (!empty($staff[$i]['currency_id'])) {
+                            if ($cur_id != $staff[$i]['currency_id']) {
+                                $cur_control = false;
+                                break;
+                            }
                         }
                     }
                 }
-            }
 
-            if (!$cur_control) {
-                return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Currencies is not same!"]);
-            }
+                if (!$cur_control) {
+                    return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Currencies is not same!"]);
+                }
 
-            if ($total_percentage != 100) {
-                return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Total percentage must be equal to 100!"]);
+                if ($total_percentage != 100) {
+                    return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Total percentage must be equal to 100!"]);
+                }
             }
 
             $staff_control = false;
@@ -441,6 +443,10 @@ class ProjectController extends HomeController
             $cur_control = true;
             if (!empty($request->currency_id)) {
                 $cur_id = $request->currency_id;
+
+                if (Team::where(['project_id'=>$request->id, 'deleted'=>0])->count() > 0 && Team::where(['project_id'=>$request->id, 'deleted'=>0, 'currency_id'=>$cur_id])->count() == 0 && $request->payment_type != 1 && $request->payment_type != 4) {
+                    return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Currencies is not same!"]);
+                }
             }
 
             $fix_pay = 0;
@@ -450,30 +456,32 @@ class ProjectController extends HomeController
             }
             $time = $request->time;
 
-            $total_percentage = Team::where(['project_id'=>$request->id, 'deleted'=>0])->sum('percentage');
-            for ($i=1; $i<=count($staff); $i++) {
-                if (!empty($staff[$i]['user_id']) && $staff[$i]['user_id'] != 0) {
-                    if (!empty($staff[$i]['percentage'])) {
-                        $total_percentage += $staff[$i]['percentage'];
+            if ($request->payment_type != 1 && $request->payment_type != 4) {
+                $total_percentage = Team::where(['project_id'=>$request->id, 'deleted'=>0])->sum('percentage');
+                for ($i=1; $i<=count($staff); $i++) {
+                    if (!empty($staff[$i]['user_id']) && $staff[$i]['user_id'] != 0) {
+                        if (!empty($staff[$i]['percentage'])) {
+                            $total_percentage += $staff[$i]['percentage'];
+                        }
                     }
-                }
 
-                if ($cur_id != 0) {
-                    if (!empty($staff[$i]['currency_id'])) {
-                        if ($cur_id != $staff[$i]['currency_id']) {
-                            $cur_control = false;
-                            break;
+                    if ($cur_id != 0) {
+                        if (!empty($staff[$i]['currency_id'])) {
+                            if ($cur_id != $staff[$i]['currency_id']) {
+                                $cur_control = false;
+                                break;
+                            }
                         }
                     }
                 }
-            }
 
-            if (!$cur_control) {
-                return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Currencies is not same!"]);
-            }
+                if (!$cur_control) {
+                    return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Currencies is not same!"]);
+                }
 
-            if ($total_percentage != 100) {
-                return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Total percentage must be equal to 100!"]);
+                if ($total_percentage != 100) {
+                    return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Total percentage must be equal to 100!"]);
+                }
             }
 
             $staff_control = false;
