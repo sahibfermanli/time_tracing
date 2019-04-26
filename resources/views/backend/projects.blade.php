@@ -1,4 +1,11 @@
 @extends('backend.app')
+
+@section('buttons')
+    <button style="float: right;" type="button" class="btn btn-primary btn-xs" onclick="add_modal();">Add</button>
+    <button disabled id="update_btn" style="float: right; margin-right: 5px;" type="button" class="btn btn-warning btn-xs" onclick="update_modal();">Update</button>
+    <button disabled id="delete_btn" style="float: right; margin-right: 5px;" type="button" class="btn btn-danger btn-xs" onclick="del();">Delete</button>
+@endsection
+
 @section('content')
     @if(session('display') == 'block')
         <div class="alert alert-{{session('class')}}" role="alert">
@@ -9,9 +16,6 @@
     <div class="card">
         <h5 class="card-header">
             Projects
-            <button style="float: right;" type="button" class="btn btn-primary btn-xs" onclick="add_modal();">Add</button>
-            <button disabled id="update_btn" style="float: right; margin-right: 5px;" type="button" class="btn btn-warning btn-xs" onclick="update_modal();">Update</button>
-            <button disabled id="delete_btn" style="float: right; margin-right: 5px;" type="button" class="btn btn-danger btn-xs" onclick="del();">Delete</button>
         </h5>
         <div class="card-body">
             <div>
@@ -23,7 +27,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Project's type</th>
                     <th scope="col">Description</th>
-                    <th scope="col">Time</th>
+                    <th scope="col">SCT</th>
                     <th scope="col">Fix payment</th>
                     <th scope="col">Total payment</th>
                     <th scope="col">Payment type</th>
@@ -176,8 +180,8 @@
                                     </div>
                                     <div class="row form-group">
                                         <div class="col-md-6 ml-auto">
-                                            <label for="time">Time</label>
-                                            <input id="time" type="text" name="time" placeholder="time (hour)" class="form-control" required>
+                                            <label for="time">Scheduled time for the project</label>
+                                            <input id="time" type="number" name="time" placeholder="time (hour)" class="form-control" required>
                                         </div>
                                         <div class="col-md-6 ml-auto">
                                             <label for="payment_type">Payment type</label>
@@ -191,7 +195,7 @@
                                     </div>
                                     <div class="row form-group" id="fix_div">
                                         <div class="col-md-6 ml-auto">
-                                            <label for="fix_payment">Payment</label>
+                                            <label for="fix_payment">Amount of legal fees</label>
                                             <input id="fix_payment" type="number" name="payment" placeholder="fix payment" class="form-control" min="0">
                                         </div>
                                         <div class="col-md-6 ml-auto">

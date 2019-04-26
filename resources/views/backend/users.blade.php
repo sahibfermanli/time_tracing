@@ -1,4 +1,11 @@
 @extends('backend.app')
+
+@section('buttons')
+    <button style="float: right;" type="button" class="btn btn-primary btn-xs" onclick="add_modal();">Add</button>
+    <button disabled id="update_btn" style="float: right; margin-right: 5px;" type="button" class="btn btn-warning btn-xs" onclick="update_modal();">Update</button>
+    <button disabled id="delete_btn" style="float: right; margin-right: 5px;" type="button" class="btn btn-danger btn-xs" onclick="del();">Delete</button>
+@endsection
+
 @section('content')
     @if(session('display') == 'block')
         <div class="alert alert-{{session('class')}}" role="alert">
@@ -9,9 +16,6 @@
     <div class="card">
         <h5 class="card-header">
             Users
-            <button style="float: right;" type="button" class="btn btn-primary btn-xs" onclick="add_modal();">Add</button>
-            <button disabled id="update_btn" style="float: right; margin-right: 5px;" type="button" class="btn btn-warning btn-xs" onclick="update_modal();">Update</button>
-            <button disabled id="delete_btn" style="float: right; margin-right: 5px;" type="button" class="btn btn-danger btn-xs" onclick="del();">Delete</button>
         </h5>
         <div class="card-body">
             <div>
@@ -32,9 +36,11 @@
                 </tr>
                 </thead>
                 <tbody>
+                    @php($row = 0)
                     @foreach($users as $user)
+                        @php($row++)
                         <tr onclick="row_select({{$user->id}});" id="row_{{$user->id}}" class="rows">
-                            <th scope="row">{{$user->id}}</th>
+                            <th scope="row">{{$row}}</th>
                             <td id="name_{{$user->id}}">{{$user->name}}</td>
                             <td id="surname_{{$user->id}}">{{$user->surname}}</td>
                             <td id="email_{{$user->id}}">{{$user->email}}</td>
