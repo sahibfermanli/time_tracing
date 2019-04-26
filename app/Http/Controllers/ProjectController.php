@@ -81,8 +81,56 @@ class ProjectController extends HomeController
         else if ($request->type == 'delete_staff') {
             return $this->delete_staff($request);
         }
+        else if ($request->type == 'same_client_control') {
+            return $this->same_client_control($request);
+        }
         else {
             return response(['case' => 'error', 'title' => 'Oops!', 'content' => 'Operation not found!']);
+        }
+    }
+
+    //same client control
+    private function same_client_control(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'val' => 'required',
+            'col' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Value not found!']);
+        }
+        try {
+            $value = $request->val;
+            $column = '';
+            switch ($request->col) {
+                case 'mail':
+                    $column = 'email';
+                    break;
+                case 'tel':
+                    $column = 'phone';
+                    break;
+                case 'web':
+                    $column = 'web_site';
+                    break;
+                case 'address':
+                    $column = 'address';
+                    break;
+                default:
+                    return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Column not found!']);
+            }
+
+            $client_id = 0;
+            $same = false;
+            if (Clients::where([$column=>$value, 'deleted'=>0])->count() > 0) {
+                $client = Clients::where([$column=>$value, 'deleted'=>0])->select('id')->first();
+                $client_id = $client->id;
+                $same = true;
+            } else {
+                $same = false;
+            }
+
+            return response(['case' => 'success', 'same'=>$same, 'client_id'=>$client_id]);
+        } catch (\Exception $e) {
+            return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
         }
     }
 

@@ -332,7 +332,7 @@
                                     column = 'data';
                             }
                             swal({
-                                title: 'The customer with this ' + column + ' already exists. Do you want to continue?',
+                                title: 'The client with this ' + column + ' already exists. Do you want to continue?',
                                 type: 'warning',
                                 showCancelButton: true,
                                 cancelButtonText: 'Cancel',

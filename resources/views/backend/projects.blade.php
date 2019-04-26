@@ -304,15 +304,15 @@
                                             <input id="director" type="text" name="director" placeholder="Representative" class="form-control" required maxlength="255">
                                         </div>
                                         <div class="col-md-6 ml-auto">
-                                            <input id="email" type="email" name="email" placeholder="E-mail" class="form-control" required maxlength="100">
+                                            <input id="email" type="email" name="email" placeholder="E-mail" class="form-control" required maxlength="100" onchange="same_client_control(this, 'mail');">
                                         </div>
                                     </div>
                                     <div class="row form-group">
                                         <div class="col-md-6 ml-auto">
-                                            <input id="web_site" type="text" name="web_site" placeholder="WEB site" class="form-control" maxlength="255" required>
+                                            <input id="web_site" type="text" name="web_site" placeholder="WEB site" class="form-control" maxlength="255" required onchange="same_client_control(this, 'web');">
                                         </div>
                                         <div class="col-md-6 ml-auto">
-                                            <input id="phone" type="text" name="phone" placeholder="Phone" class="form-control" required maxlength="20">
+                                            <input id="phone" type="text" name="phone" placeholder="Phone" class="form-control" required maxlength="20" onchange="same_client_control(this, 'tel');">
                                         </div>
                                     </div>
                                     <div class="row form-group">
@@ -330,7 +330,7 @@
                                     </div>
                                     <div class="row form-group">
                                         <div class="col-md-6 ml-auto">
-                                            <input id="address" type="text" name="address" placeholder="Address" class="form-control" required maxlength="255">
+                                            <input id="address" type="text" name="address" placeholder="Address" class="form-control" required maxlength="255" onchange="same_client_control(this, 'address');">
                                         </div>
                                         <div class="col-md-6 ml-auto">
                                             <input id="zipcode" type="text" name="zipcode" placeholder="Zip code" class="form-control" required maxlength="20">
@@ -547,6 +547,77 @@
                 }
             });
         });
+
+        function same_client_control(e, col) {
+            var val = $(e).val();
+            if (val.length === 0) {
+                return false;
+            }
+            swal({
+                title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                text: 'Loading, please wait...',
+                showConfirmButton: false
+            });
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                type: "Post",
+                url: '',
+                data: {
+                    '_token': CSRF_TOKEN,
+                    'type': 'same_client_control',
+                    'val': val,
+                    'col': col
+                },
+                success: function (response) {
+                    swal.close();
+                    if (response.case === 'success') {
+                        var same_control = response.same;
+                        if (same_control) {
+                            var column = '';
+                            switch (col) {
+                                case 'mail':
+                                    column = 'email';
+                                    break;
+                                case 'tel':
+                                    column = 'phone';
+                                    break;
+                                case 'web':
+                                    column = 'web site';
+                                    break;
+                                case 'address':
+                                    column = 'address';
+                                    break;
+                                default:
+                                    column = 'data';
+                            }
+                            swal({
+                                title: 'The customer with this ' + column + ' already exists. Do you want to continue?',
+                                type: 'warning',
+                                showCancelButton: true,
+                                cancelButtonText: 'Choose this client',
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Continue'
+                            }).then(function (result) {
+                                if (!result.value) {
+                                    $("#third_party_id_"+response_tp).val(response.client_id);
+                                    $(".modal-title").html("Project");
+                                    $("#third-party-display").css('display', 'none');
+                                    $("#project-display").css('display', 'block');
+                                }
+                            });
+                        }
+                    } else {
+                        swal(
+                            response.title,
+                            response.content,
+                            response.case
+                        );
+                        return false;
+                    }
+                }
+            });
+        }
 
         function select_payment_type(e, type=1) {
             if (type === 1) {
@@ -817,7 +888,7 @@
         }
 
         function back_to_add_project() {
-            $(".modal-title").html("Add project");
+            $(".modal-title").html("Project");
             $("#third-party-display").css('display', 'none');
             $("#project-display").css('display', 'block');
         }
@@ -1130,6 +1201,9 @@
             $('#project_text').css('display', 'none').prop('required', false);
             $('#project_list').css('display', 'block').prop('required', true);
 
+            $("#third-party-display").css('display', 'none');
+            $("#project-display").css('display', 'block');
+
             $('#type').val('add');
             $('#project_text').val('');
             $('#project_list').val('');
@@ -1164,6 +1238,9 @@
         function update_modal() {
             $('#project_text').css('display', 'none').prop('required', false);
             $('#project_list').css('display', 'block').prop('required', true);
+
+            $("#third-party-display").css('display', 'none');
+            $("#project-display").css('display', 'block');
 
             var project = $('#project_'+row_id).text();
             var description = $('#description_'+row_id).text();
