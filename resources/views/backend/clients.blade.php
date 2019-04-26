@@ -162,7 +162,7 @@
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-6 ml-auto">
-                                        <input id="address" type="text" name="address" placeholder="Address" class="form-control" required maxlength="255">
+                                        <input id="address" type="text" name="address" placeholder="Address" class="form-control" required maxlength="255" onchange="same_client_control(this, 'address');">
                                     </div>
                                     <div class="col-md-6 ml-auto">
                                         <input id="zipcode" type="text" name="zipcode" placeholder="Zip code" class="form-control" required maxlength="20">
@@ -324,6 +324,9 @@
                                     break;
                                 case 'web':
                                     column = 'web site';
+                                    break;
+                                case 'address':
+                                    column = 'address';
                                     break;
                                 default:
                                     column = 'data';

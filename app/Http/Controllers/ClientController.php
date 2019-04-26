@@ -63,13 +63,16 @@ class ClientController extends HomeController
             switch ($request->col) {
                 case 'mail':
                     $column = 'email';
-                break;
+                    break;
                 case 'tel':
                     $column = 'phone';
-                break;
+                    break;
                 case 'web':
                     $column = 'web_site';
-                break;
+                    break;
+                case 'address':
+                    $column = 'address';
+                    break;
                 default:
                     return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Column not found!']);
             }
