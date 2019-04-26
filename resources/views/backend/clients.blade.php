@@ -344,8 +344,6 @@
                                     $('#add-modal').modal('hide');
                                 }
                             });
-                        } else {
-                            alert('yox');
                         }
                     } else {
                         swal(
