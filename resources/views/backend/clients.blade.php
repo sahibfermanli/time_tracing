@@ -136,15 +136,15 @@
                                         <input id="director" type="text" name="director" placeholder="Representative" class="form-control" required maxlength="255">
                                     </div>
                                     <div class="col-md-6 ml-auto">
-                                        <input id="email" type="email" name="email" placeholder="E-mail" class="form-control" required maxlength="100">
+                                        <input id="email" type="email" name="email" placeholder="E-mail" class="form-control" required maxlength="100" onchange="same_client_control(this, 'mail');">
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-6 ml-auto">
-                                        <input id="web_site" type="text" name="web_site" placeholder="WEB site" class="form-control" maxlength="255" required>
+                                        <input id="web_site" type="text" name="web_site" placeholder="WEB site" class="form-control" maxlength="255" required onchange="same_client_control(this, 'web');">
                                     </div>
                                     <div class="col-md-6 ml-auto">
-                                        <input id="phone" type="text" name="phone" placeholder="Phone" class="form-control" required maxlength="20">
+                                        <input id="phone" type="text" name="phone" placeholder="Phone" class="form-control" required maxlength="20" onchange="same_client_control(this, 'tel');">
                                     </div>
                                 </div>
                                 <div class="row form-group">
@@ -287,6 +287,73 @@
                 $('#form_of_business_id').css('display', 'none').prop('required', false);
                 $('#form_of_business_text').css('display', 'block').prop('required', true);
             }
+        }
+
+        function same_client_control(e, col) {
+            var val = $(e).val();
+            if (val.length === 0) {
+                return false;
+            }
+            swal({
+                title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                text: 'Loading, please wait...',
+                showConfirmButton: false
+            });
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                type: "Post",
+                url: '',
+                data: {
+                    '_token': CSRF_TOKEN,
+                    'type': 'same_client_control',
+                    'val': val,
+                    'col': col
+                },
+                success: function (response) {
+                    swal.close();
+                    if (response.case === 'success') {
+                        var same_control = response.same;
+                        if (same_control) {
+                            var column = '';
+                            switch (col) {
+                                case 'mail':
+                                    column = 'email';
+                                    break;
+                                case 'tel':
+                                    column = 'phone';
+                                    break;
+                                case 'web':
+                                    column = 'web site';
+                                    break;
+                                default:
+                                    column = 'data';
+                            }
+                            swal({
+                                title: 'The customer with this ' + column + ' already exists. Do you want to continue?',
+                                type: 'warning',
+                                showCancelButton: true,
+                                cancelButtonText: 'Cancel',
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Continue'
+                            }).then(function (result) {
+                                if (!result.value) {
+                                    $('#add-modal').modal('hide');
+                                }
+                            });
+                        } else {
+                            alert('yox');
+                        }
+                    } else {
+                        swal(
+                            response.title,
+                            response.content,
+                            response.case
+                        );
+                        return false;
+                    }
+                }
+            });
         }
 
         function add_modal() {
