@@ -1137,7 +1137,6 @@
         function delete_staff(id) {
             swal({
                 title: 'Do you approve the deletion?',
-                text: 'If you delete this project, its tasks will also be deleted.',
                 type: 'warning',
                 showCancelButton: true,
                 cancelButtonText: 'No',

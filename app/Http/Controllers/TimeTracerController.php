@@ -6,6 +6,7 @@ use App\Fields;
 use App\NonBillableCodes;
 use App\Projects;
 use App\Tasks;
+use App\TaskUser;
 use App\User;
 use App\Works;
 use Carbon\Carbon;
@@ -20,11 +21,11 @@ class TimeTracerController extends HomeController
     public function get_time_tracer() {
         $today = Carbon::today();
         $fields = Fields::where(['deleted'=>0])->select('id', 'start_time', 'end_time')->orderBy('start_time')->limit(48)->get();
-        $tasks = Tasks::where(['user_id'=>Auth::id(), 'deleted'=>0])->orderBy('task')->select('id', 'task')->get();
+        $tasks = TaskUser::leftJoin('tasks as t', 'task_user.task_id', '=', 't.id')->where(['task_user.user_id'=>Auth::id(), 't.deleted'=>0])->orderBy('t.task')->select('t.id', 't.task')->get();
         $non_billable_codes = NonBillableCodes::where(['deleted'=>0])->select('id', 'title')->get();
         $full_fields = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->where(['works.user_id'=>Auth::id(), 'works.deleted'=>0])->whereDate('works.created_at', $today)->select('works.field_id', 'works.work', 'works.color', 't.task')->get();
         $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id'=>Auth::id(), 'works.deleted'=>0])->whereDate('works.created_at', $today)->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'works.same_work', 'works.completed')->get();
-        $projects = Tasks::leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->where(['tasks.user_id'=>Auth::id(), 'tasks.deleted'=>0, 'p.deleted'=>0])->distinct('tasks.project_id')->orderBy('p.project')->select('p.id', 'p.project')->get();
+        $projects = TaskUser::leftJoin('tasks as t', 'task_user.task_id', '=', 't.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['task_user.user_id'=>Auth::id(), 't.deleted'=>0, 'p.deleted'=>0])->distinct('t.project_id')->orderBy('p.project')->select('p.id', 'p.project')->get();
 
         return view('backend.time_tracer')->with(['fields'=>$fields, 'tasks'=>$tasks, 'non_billable_codes'=>$non_billable_codes, 'full_fields'=>$full_fields, 'works'=>$works, 'projects'=>$projects]);
     }
@@ -183,7 +184,7 @@ class TimeTracerController extends HomeController
             return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Project not found!']);
         }
         try {
-            $tasks = Tasks::leftJoin('users as u', 'tasks.user_id', '=', 'u.id')->where(['tasks.project_id'=>$request->project_id, 'tasks.deleted'=>0])->select('tasks.id', 'tasks.task', 'u.name', 'u.surname')->get();
+            $tasks = TaskUser::leftJoin('users as u', 'task_user.user_id', '=', 'u.id')->leftJoin('tasks as t', 'task_user.task_id', '=', 't.id')->where(['t.project_id'=>$request->project_id, 't.deleted'=>0])->select('t.id', 't.task', 'u.name', 'u.surname')->get();
 
             $i = 0;
             foreach ($tasks  as $task) {
@@ -399,7 +400,7 @@ class TimeTracerController extends HomeController
                 $tasks = Tasks::where(['project_id'=>$request->project_id, 'deleted'=>0])->orderBy('task')->select('id', 'task')->get();
             } else {
                 //user
-                $tasks = Tasks::where(['project_id'=>$request->project_id, 'user_id'=>Auth::id(), 'deleted'=>0])->orderBy('task')->select('id', 'task')->get();
+                $tasks = TaskUser::leftJoin('tasks as t', 'task_user.task_id', '=', 't.id')->where(['t.project_id'=>$request->project_id, 'task_user.user_id'=>Auth::id(), 't.deleted'=>0])->orderBy('t.task')->select('t.id', 't.task')->get();
             }
 
             return response(['case' => 'success', 'tasks'=>$tasks]);

@@ -39,7 +39,7 @@
                             <th scope="row">{{$task->id}}</th>
                             <td id="task_{{$task->id}}">{{$task->task}}</td>
                             <td id="project_{{$task->id}}" project_id="{{$task->project_id}}">{{$task->project}}</td>
-                            <td id="user_{{$task->id}}" user_id="{{$task->user_id}}" title="{{$task->user_date}}">{{$task->user_name}} {{$task->user_surname}}</td>
+                            <td style="width: 50px;"><span class="btn btn-primary btn-xs" onclick="show_users({{$task->id}});">Show</span></td>
                             <td id="deadline_{{$task->id}}">{{substr($task->deadline, 0, 10)}}</td>
                             <td>{{$task->created_at}}</td>
                             <td>{{$task->created_name}} {{$task->created_surname}}</td>
@@ -92,11 +92,13 @@
                                     <textarea name="task" id="task" cols="30" rows="5" class="form-control" placeholder="task description" required></textarea>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="user_id">User</label>
-                                    <select name="user_id" id="user_id" class="form-control">
+                                    <label for="user_id_1">User</label>
+                                    <select name="user_id[1]" id="user_id_1" class="form-control" required>
                                         <option value=''>None</option>
                                     </select>
                                 </div>
+                                <div id="another-user"></div>
+                                <span onclick="add_another_user();" class="btn btn-success btn-xs">Add new user</span>
                                 <div class="form-group row">
                                     <label for="deadline">Deadline</label>
                                     <input id="deadline" type="date" required="" name="deadline" class="form-control">
@@ -115,6 +117,44 @@
         </div>
     </div>
     <!-- /.end add modal-->
+
+    {{-- users modal --}}
+    <div class="modal fade" id="users-modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Users</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-body-data">
+                        <div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <table class="table table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Surname</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="users-body">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('css')
@@ -130,6 +170,7 @@
         var row_id = 0;
         var p_id = 0;
         var c_id = 0;
+        var user_id = 1;
 
         $(document).ready(function () {
             $('form').validate();
@@ -147,7 +188,7 @@
                         location.reload();
                     }
                     else {
-                        $('#add-modal').modal('hide');
+                        // $('#add-modal').modal('hide');
                         swal(
                             response.title,
                             response.content,
@@ -167,6 +208,117 @@
 
             $('#update_btn').prop('disabled', false);
             $('#delete_btn').prop('disabled', false);
+        }
+
+        function add_another_user() {
+            user_id++;
+            var new_user = '';
+            new_user = '<label for="user_id_' + user_id + '">User ' + user_id + '</label>' +
+                '<div id="new_user_' + user_id + '"  style="width: 100%;">' +
+                '</div>' +
+                '</div>';
+
+            $("#another-user").append('<div class="form-group row">' + new_user + '</div>');
+
+            $("#user_id_1").clone().appendTo("#new_user_"+user_id);
+            $("#another-user > .form-group > #new_user_" + user_id + " > select").prop("id", "user_id_"+user_id).prop("name", "user_id["+user_id+"]").prop('required', false).val("");
+        }
+
+        function show_users(task_id) {
+            swal({
+                title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                text: 'Loading, please wait...',
+                showConfirmButton: false
+            });
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                type: "Post",
+                url: '',
+                data: {
+                    'task_id': task_id,
+                    '_token': CSRF_TOKEN,
+                    'type': 'show_users'
+                },
+                success: function (response) {
+                    swal.close();
+                    if (response.case === 'success') {
+                        var users  = response.users;
+                        var i = 0;
+                        var tr = '';
+                        var table = '';
+
+                        for (i=0; i<users.length; i++) {
+                            var user = users[i];
+                            var num = i + 1;
+                            var row = '<td>' + num + '</td>';
+                            var name = '<td>' + user['name'] + '</td>';
+                            var surname = '<td>' + user['surname'] + '</td>';
+                            var btn = '<td><span onclick="delete_user(' + user['id'] + ');"><i class="fa fa-trash" style="color: red;"></i></span></td>';
+
+                            tr = '<tr id="user_row_' + user['id'] + '">' + row + name + surname + btn + '</tr>';
+
+                            table = table + tr;
+                        }
+
+                        $('.modal-title').html('Users');
+                        $('#users-body').html(table);
+
+                        $('#users-modal').modal('show');
+                    }
+                    else {
+                        swal(
+                            response.title,
+                            response.content,
+                            response.case
+                        );
+                    }
+                }
+            });
+        }
+
+        function delete_user(id) {
+            swal({
+                title: 'Do you approve the deletion?',
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonText: 'No',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes!'
+            }).then(function (result) {
+                if (result.value) {
+                    swal({
+                        title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                        text: 'Loading, please wait...',
+                        showConfirmButton: false
+                    });
+                    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                    $.ajax({
+                        type: "Post",
+                        url: '',
+                        data: {
+                            'id': id,
+                            '_token': CSRF_TOKEN,
+                            'type': 'delete_user'
+                        },
+                        success: function (response) {
+                            swal.close();
+                            if (response.case === 'success') {
+                                $('#user_row_'+response.id).remove();
+                            }
+                            else {
+                                swal(
+                                    response.title,
+                                    response.content,
+                                    response.case
+                                );
+                            }
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
         }
 
         function select_client(e) {
@@ -242,7 +394,8 @@
                             options = options + option;
                         }
 
-                        $('#user_id').html(options);
+                        $('select[id^="user_id_"]').html(options);
+                        // $('#user_id').html(options);
                     }
                     else {
                         swal(
@@ -266,6 +419,8 @@
             $('#deadline').val('');
             $('.modal-title').html('Add task');
             $("#project_id").prop("disabled", true).html("<option value=''>Select client</option>");
+            $("#another-user").html('');
+            user_id = 1;
 
             $('#add-modal').modal('show');
         }
@@ -298,12 +453,11 @@
                             options = options + option;
                         }
 
-                        $('#user_id').html(options);
+                        $('#user_id_1').html(options);
 
                         var task = $('#task_'+row_id).text();
                         var project_id = $('#project_'+row_id).attr('project_id');
                         var project = $('#project_'+row_id).text();
-                        var user_id = $('#user_'+row_id).attr('user_id');
                         var deadline = $('#deadline_'+row_id).text();
                         var id_input = '<input type="hidden" name="id" value="' + row_id + '">';
 
@@ -312,9 +466,10 @@
                         $('#task').val(task);
                         $('#client_id').val('').prop('required', false);
                         $('#project_id').html("<option value='" + project_id + "' selected>" + project + "</option>").prop("disabled", false);
-                        $('#user_id').val(user_id);
                         $('#deadline').val(deadline);
                         $('.modal-title').html('Update task');
+                        $("#another-user").html('');
+                        user_id = 1;
 
                         $('#add-modal').modal('show');
                     }

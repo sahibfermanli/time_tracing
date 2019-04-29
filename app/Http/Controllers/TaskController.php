@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Clients;
 use App\Projects;
 use App\Tasks;
+use App\TaskUser;
 use App\Team;
 use App\User;
 use Carbon\Carbon;
@@ -17,7 +18,7 @@ class TaskController extends HomeController
 {
     //for manager
     public function get_tasks() {
-        $tasks = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')->leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->leftJoin('users as u', 'tasks.user_id', '=', 'u.id')->where(['tasks.deleted'=>0, 'p.deleted'=>0])->orderBy('tasks.id', 'DESC')->select('tasks.id', 'tasks.task', 'tasks.created_at', 'tasks.deadline', 'tasks.project_id', 'p.project', 'tasks.user_id', 'tasks.user_date', 'u.name as user_name', 'u.surname as user_surname', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
+        $tasks = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')->leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->where(['tasks.deleted'=>0, 'p.deleted'=>0])->orderBy('tasks.id', 'DESC')->select('tasks.id', 'tasks.task', 'tasks.created_at', 'tasks.deadline', 'tasks.project_id', 'p.project', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
         $clients = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.deleted'=>0])->orderBy('clients.name')->select('clients.id', 'clients.name', 'fob.title as fob')->get();
 
         return view('backend.tasks')->with(['tasks'=>$tasks, 'clients'=>$clients]);
@@ -25,7 +26,7 @@ class TaskController extends HomeController
 
     //for project manager
     public function get_tasks_for_project_manager() {
-        $tasks = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')->leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->leftJoin('users as u', 'tasks.user_id', '=', 'u.id')->where(['tasks.deleted'=>0, 'p.deleted'=>0, 'p.project_manager_id'=>Auth::id()])->select('tasks.id', 'tasks.task', 'tasks.created_at', 'tasks.deadline', 'tasks.project_id', 'p.project', 'tasks.user_id', 'tasks.user_date', 'u.name as user_name', 'u.surname as user_surname', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
+        $tasks = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')->leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->where(['tasks.deleted'=>0, 'p.deleted'=>0, 'p.project_manager_id'=>Auth::id()])->select('tasks.id', 'tasks.task', 'tasks.created_at', 'tasks.deadline', 'tasks.project_id', 'p.project', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
         $clients = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.deleted'=>0])->orderBy('clients.name')->select('clients.id', 'clients.name', 'fob.title as fob')->get();
 
         return view('backend.tasks')->with(['tasks'=>$tasks, 'clients'=>$clients]);
@@ -48,6 +49,12 @@ class TaskController extends HomeController
         else if ($request->type == 'get_projects_selected_user') {
             return $this->get_projects_selected_user($request);
         }
+        else if ($request->type == 'show_users') {
+            return $this->show_users($request);
+        }
+        else if ($request->type == 'delete_user') {
+            return $this->delete_user($request);
+        }
         else {
             return response(['case' => 'error', 'title' => 'Oops!', 'content' => 'Operation not found!']);
         }
@@ -64,6 +71,40 @@ class TaskController extends HomeController
             $users = Team::leftJoin('users as u', 'team.user_id', '=', 'u.id')->where(['team.project_id'=>$request->project_id, 'team.deleted'=>0, 'u.deleted'=>0, 'u.role_id'=>2])->select('u.id', 'u.name', 'u.surname')->get();
 
             return response(['case' => 'success', 'users'=>$users]);
+        } catch (\Exception $e) {
+            return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
+        }
+    }
+
+    private function show_users(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'task_id' => 'required|integer',
+        ]);
+        if ($validator->fails()) {
+            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Task not found!']);
+        }
+        try {
+            $users = TaskUser::leftJoin('users as u', 'task_user.user_id', '=', 'u.id')->where(['task_user.task_id'=>$request->task_id, 'task_user.deleted'=>0])->select('task_user.id', 'u.name', 'u.surname')->get();
+
+            return response(['case' => 'success', 'users'=>$users]);
+        } catch (\Exception $e) {
+            return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
+        }
+    }
+
+    private function delete_user(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer',
+        ]);
+        if ($validator->fails()) {
+            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'User not found!']);
+        }
+        try {
+            $current_date = Carbon::now();
+
+            TaskUser::where(['id'=>$request->id])->update(['deleted'=>1, 'deleted_at'=>$current_date, 'deleted_by'=>Auth::id()]);
+
+            return response(['case' => 'success', 'title' => 'Success!', 'content' => 'Successful!', 'id'=>$request->id]);
         } catch (\Exception $e) {
             return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
         }
@@ -97,35 +138,57 @@ class TaskController extends HomeController
         }
         try {
             unset($request['id']);
+            $users = $request->user_id;
+            unset($request['user_id']);
 
             if ($request->project_id == 0) {
                 return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Please select project!']);
             }
 
-            if (!empty($request->user_id) && isset($request->user_id) && $request->user_id != 0) {
-                $current_date = Carbon::now();
-                $request->merge(['user_date'=>$current_date]);
+            if (count($users) == 0) {
+                return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'You must select at least one user!']);
             }
 
             $request->merge(['created_by'=>Auth::id()]);
 
             $add = Tasks::create($request->all());
 
-            if ($add && !empty($request->user_id) && $request->user_id != '' && $request->user_id != 0) {
-                $user = User::where(['id'=>$request->user_id])->select('send_mail', 'email', 'name', 'surname')->first();
+            $user_arr = array();
+            if ($add) {
+                for ($i=1; $i<=count($users); $i++) {
+                    if (!empty($users[$i]) && $users[$i] != 0) {
+                        //same user control
+                        if (in_array($users[$i], $user_arr)) {
+                            continue;
+                        } else {
+                            array_push($user_arr, $users[$i]);
+                        }
 
-                if ($user->send_mail == 1) {
+                        TaskUser::create(['user_id'=>$users[$i], 'task_id'=>$add->id, 'created_by'=>Auth::id()]);
+                    }
+                }
+
+                $users_in_task = User::whereIn('id', $user_arr)->select('send_mail', 'email', 'name', 'surname')->get();
+
+                $email_arr = array();
+                $to_arr = array();
+                foreach ($users_in_task as $user_in_task) {
+                    if ($user_in_task->send_mail == 1 && $user_in_task->deleted == 0) {
+                        array_push($email_arr, $user_in_task['email']);
+                        array_push($to_arr, $user_in_task['name'] . ' ' . $user_in_task['surname']);
+                    }
+                }
+
+                if (count($email_arr) > 0) {
                     //send email
-                    $email = $user['email'];
-                    $to = $user['name'] . ' ' . $user['surname'];
                     $message = "You have a new task:";
                     $message .= "<br>";
                     $message .= "<b>" . $request->task . "</b>";
                     $message .= "<br>";
-                    $message .= "Deadline: " . $request->deadline . " day(s).";
+                    $message .= "Deadline: " . $request->deadline;
                     $title = 'New task';
 
-                    app('App\Http\Controllers\MailController')->get_send($email, $to, $title, $message);
+                    app('App\Http\Controllers\MailController')->get_send($email_arr, $to_arr, $title, $message);
                 }
             }
 
@@ -153,42 +216,54 @@ class TaskController extends HomeController
             unset($request['_token']);
             unset($request['type']);
             $send_mail = false;
+            $users = $request->user_id;
+            unset($request['user_id']);
 
             if ($request->project_id == 0) {
                 return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Please select project!']);
             }
 
-            if (!empty($request->user_id) && isset($request->user_id) && $request->user_id != 0) {
-                $task = Tasks::where(['id'=>$request->id])->select('user_id')->first();
-                if ($task->user_id != $request->user_id) {
-                    $current_date = Carbon::now();
-                    $request->merge(['user_date'=>$current_date]);
-                    $send_mail = true;
-                }
-            }
-            else {
-                $request->merge(['user_date'=>null]);
-            }
-
             $update = Tasks::where(['id'=>$request->id])->update($request->all());
 
-            if ($update && !empty($request->user_id) && $request->user_id != '' && $request->user_id != 0) {
-                if ($send_mail) {
-                    $user = User::where(['id'=>$request->user_id])->select('send_mail', 'email', 'name', 'surname')->first();
+            $user_arr = array();
+            if ($update) {
+                for ($i=1; $i<=count($users); $i++) {
+                    if (!empty($users[$i]) && $users[$i] != 0) {
+                        //same user control
+                        if (in_array($users[$i], $user_arr)) {
+                            continue;
+                        } else {
+                            if (TaskUser::where(['task_id'=>$request->id, 'user_id'=>$users[$i], 'deleted'=>0])->count() > 0) {
+                                continue;
+                            }
+                            array_push($user_arr, $users[$i]);
+                        }
 
-                    if ($user->send_mail == 1) {
-                        //send email
-                        $email = $user['email'];
-                        $to = $user['name'] . ' ' . $user['surname'];
-                        $message = "You have a new task:";
-                        $message .= "<br>";
-                        $message .= "<b>" . $request->task . "</b>";
-                        $message .= "<br>";
-                        $message .= "Deadline: " . $request->deadline . " day(s).";
-                        $title = 'New task';
-
-                        app('App\Http\Controllers\MailController')->get_send($email, $to, $title, $message);
+                        TaskUser::create(['user_id'=>$users[$i], 'task_id'=>$request->id, 'created_by'=>Auth::id()]);
                     }
+                }
+
+                $users_in_task = User::whereIn('id', $user_arr)->select('send_mail', 'email', 'name', 'surname')->get();
+
+                $email_arr = array();
+                $to_arr = array();
+                foreach ($users_in_task as $user_in_task) {
+                    if ($user_in_task->send_mail == 1 && $user_in_task->deleted == 0) {
+                        array_push($email_arr, $user_in_task['email']);
+                        array_push($to_arr, $user_in_task['name'] . ' ' . $user_in_task['surname']);
+                    }
+                }
+
+                if (count($email_arr) > 0) {
+                    //send email
+                    $message = "You have a new task:";
+                    $message .= "<br>";
+                    $message .= "<b>" . $request->task . "</b>";
+                    $message .= "<br>";
+                    $message .= "Deadline: " . $request->deadline;
+                    $title = 'New task';
+
+                    app('App\Http\Controllers\MailController')->get_send($email_arr, $to_arr, $title, $message);
                 }
             }
 
