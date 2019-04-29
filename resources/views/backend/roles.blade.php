@@ -32,9 +32,11 @@
                 </tr>
                 </thead>
                 <tbody>
+                    @php($row = 0)
                     @foreach($roles as $role)
+                        @php($row++)
                         <tr onclick="row_select({{$role->id}});" id="row_{{$role->id}}" class="rows">
-                            <th scope="row">{{$role->id}}</th>
+                            <th scope="row">{{$row}}</th>
                             <td id="role_{{$role->id}}">{{$role->role}}</td>
                             <td id="description_{{$role->id}}">{{$role->description}}</td>
                             <td>{{$role->created_at}}</td>

@@ -34,9 +34,11 @@
                 </tr>
                 </thead>
                 <tbody>
+                    @php($row = 0)
                     @foreach($tasks as $task)
+                        @php($row++)
                         <tr onclick="row_select({{$task->id}}, {{$task->project_id}});" id="row_{{$task->id}}" class="rows">
-                            <th scope="row">{{$task->id}}</th>
+                            <th scope="row">{{$row}}</th>
                             <td id="task_{{$task->id}}">{{$task->task}}</td>
                             <td id="project_{{$task->id}}" project_id="{{$task->project_id}}">{{$task->project}}</td>
                             <td style="width: 50px;"><span class="btn btn-primary btn-xs" onclick="show_users({{$task->id}});">Show</span></td>

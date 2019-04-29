@@ -31,9 +31,11 @@
                 </tr>
                 </thead>
                 <tbody>
+                    @php($row = 0)
                     @foreach($form_of_businesses as $form_of_business)
+                        @php($row++)
                         <tr onclick="row_select({{$form_of_business->id}});" id="row_{{$form_of_business->id}}" class="rows">
-                            <th scope="row">{{$form_of_business->id}}</th>
+                            <th scope="row">{{$row}}</th>
                             <td id="title_{{$form_of_business->id}}">{{$form_of_business->title}}</td>
                             <td>{{$form_of_business->created_at}}</td>
                             <td>{{$form_of_business->created_name}} {{$form_of_business->created_surname}}</td>

@@ -31,9 +31,11 @@
                 </tr>
                 </thead>
                 <tbody>
+                    @php($row = 0)
                     @foreach($non_billable_codes as $non_billable_code)
+                        @php($row++)
                         <tr onclick="row_select({{$non_billable_code->id}});" id="row_{{$non_billable_code->id}}" class="rows">
-                            <th scope="row">{{$non_billable_code->id}}</th>
+                            <th scope="row">{{$row}}</th>
                             <td id="title_{{$non_billable_code->id}}">{{$non_billable_code->title}}</td>
                             <td>{{$non_billable_code->created_at}}</td>
                             <td>{{$non_billable_code->created_name}} {{$non_billable_code->created_surname}}</td>

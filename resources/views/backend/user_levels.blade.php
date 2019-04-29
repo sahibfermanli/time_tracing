@@ -35,9 +35,11 @@
                 </tr>
                 </thead>
                 <tbody>
+                    @php($row = 0)
                     @foreach($levels as $level)
+                        @php($row++)
                         <tr onclick="row_select({{$level->id}});" id="row_{{$level->id}}" class="rows">
-                            <th scope="row">{{$level->id}}</th>
+                            <th scope="row">{{$row}}</th>
                             <td id="level_{{$level->id}}">{{$level->level}}</td>
                             <td id="description_{{$level->id}}">{{$level->description}}</td>
                             <td id="percentage_{{$level->id}}">{{$level->percentage}}</td>

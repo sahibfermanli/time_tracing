@@ -31,9 +31,11 @@
                 </tr>
                 </thead>
                 <tbody>
+                    @php($row = 0)
                     @foreach($currencies as $currency)
+                        @php($row++)
                         <tr onclick="row_select({{$currency->id}});" id="row_{{$currency->id}}" class="rows">
-                            <th scope="row">{{$currency->id}}</th>
+                            <th scope="row">{{$row}}</th>
                             <td id="currency_{{$currency->id}}">{{$currency->currency}}</td>
                             <td>{{$currency->created_at}}</td>
                             <td>{{$currency->created_name}} {{$currency->created_surname}}</td>

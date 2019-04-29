@@ -31,9 +31,11 @@
                 </tr>
                 </thead>
                 <tbody>
+                    @php($row = 0)
                     @foreach($projects as $project)
+                        @php($row++)
                         <tr onclick="row_select({{$project->id}});" id="row_{{$project->id}}" class="rows">
-                            <th scope="row">{{$project->id}}</th>
+                            <th scope="row">{{$row}}</th>
                             <td id="project_{{$project->id}}">{{$project->project}}</td>
                             <td>{{$project->created_at}}</td>
                             <td>{{$project->created_name}} {{$project->created_surname}}</td>
