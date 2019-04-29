@@ -413,6 +413,7 @@ class ProjectController extends HomeController
 
                 Projects::where(['id'=>$add->id])->update(['total_payment'=>$total_pay]);
 
+                $added_tp_arr = array();
                 $arr['project_id'] = $add->id;
                 $arr['created_by'] = Auth::id();
                 for ($j=1; $j<=count($third_parties); $j++) {
@@ -422,7 +423,8 @@ class ProjectController extends HomeController
                     $arr['client_id'] = $third_parties[$j];
                     $arr['role_id'] = $roles[$j];
 
-                    ThirdParties::create($arr);
+                    $add_tp = ThirdParties::create($arr);
+                    array_push($added_tp_arr, $add_tp->id);
                 }
 
                 //send email
@@ -446,8 +448,16 @@ class ProjectController extends HomeController
                 }
 
                 if (count($email_arr) > 0) {
-                    $client = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.id'=>$request->client_id])->orderBy('clients.name')->select('clients.name', 'fob.title as fob')->first();
+                    $client = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.id'=>$request->client_id])->select('clients.name', 'fob.title as fob')->first();
                     $client_role = ClientRoles::where(['id'=>$request->client_role_id])->select('role')->first();
+
+                    $third_parties_email_string = '';
+                    if (count($added_tp_arr) > 0) {
+                        $added_third_parties = ThirdParties::leftJoin('clients as c', 'third_parties.client_id', '=', 'c.id')->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')->leftJoin('client_roles as cr', 'third_parties.role_id', '=', 'cr.id')->whereIn('third_parties.id', $added_tp_arr)->select('c.name', 'fob.title as fob', 'cr.role')->get();
+                        foreach ($added_third_parties as $added_third_party) {
+                            $third_parties_email_string .= '<br>Third party: <b>' . $added_third_party->name . ' ' . $added_third_party->fob . ' (' . $added_third_party->role . ')' . '</b>';
+                        }
+                    }
 
                     //send email
                     $message = "You have a new project:";
@@ -455,6 +465,7 @@ class ProjectController extends HomeController
                     $message .= "<br>Description: <b>" . $request->description . "</b>";
                     $message .= "<br>Client: <b>" . $client->name . ' ' . $client->fob . "</b>";
                     $message .= "<br>Client role: <b>" . $client_role->role . "</b>";
+                    $message .= $third_parties_email_string;
                     $message .= "<br>Project manager: <b>" . $project_manager['name'] . ' ' . $project_manager['surname'] . "</b>";
                     $title = 'New project';
 
@@ -653,12 +664,19 @@ class ProjectController extends HomeController
                     $client = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.id'=>$request->client_id])->orderBy('clients.name')->select('clients.name', 'fob.title as fob')->first();
                     $client_role = ClientRoles::where(['id'=>$request->client_role_id])->select('role')->first();
 
+                    $third_parties_email_string = '';
+                    $added_third_parties = ThirdParties::leftJoin('clients as c', 'third_parties.client_id', '=', 'c.id')->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')->leftJoin('client_roles as cr', 'third_parties.role_id', '=', 'cr.id')->where(['third_parties.project_id'=>$request->id, 'third_parties.deleted'=>0])->select('c.name', 'fob.title as fob', 'cr.role')->get();
+                    foreach ($added_third_parties as $added_third_party) {
+                        $third_parties_email_string .= '<br>Third party: <b>' . $added_third_party->name . ' ' . $added_third_party->fob . ' (' . $added_third_party->role . ')' . '</b>';
+                    }
+
                     //send email
                     $message = "You have a new project:";
                     $message .= "<br>Project type: <b>" . $request->project . "</b>";
                     $message .= "<br>Description: <b>" . $request->description . "</b>";
                     $message .= "<br>Client: <b>" . $client->name . ' ' . $client->fob . "</b>";
                     $message .= "<br>Client role: <b>" . $client_role->role . "</b>";
+                    $message .= $third_parties_email_string;
                     $message .= "<br>Project manager: <b>" . $project_manager['name'] . ' ' . $project_manager['surname'] . "</b>";
                     $title = 'New project';
 
