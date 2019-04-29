@@ -105,6 +105,11 @@ Route::group(['prefix'=>'/chief', 'middleware'=>'Chief'], function () {
         Route::get('/', 'CurrencyController@get_currencies');
         Route::post('/', 'CurrencyController@post_currencies');
     });
+
+    Route::group(['prefix'=>'/projects-library'], function () {
+        Route::get('/', 'ProjectsLibraryController@get_projects');
+        Route::post('/', 'ProjectsLibraryController@post_projects');
+    });
 });
 
 //project manager

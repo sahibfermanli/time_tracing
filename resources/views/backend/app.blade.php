@@ -206,6 +206,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/chief/currencies"><i class="fa fa-money-bill-alt"></i> Currencies</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/chief/projects-library"><i class="fa fa-list-ol"></i> Projects library</a>
+                            </li>
                         @elseif(Auth::user()->role() == 2)
                             {{--User--}}
                             <li class="nav-item">
