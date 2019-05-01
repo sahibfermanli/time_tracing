@@ -180,6 +180,9 @@
                         @if(Auth::user()->role() == 1)
                             {{--Chief--}}
                             <li class="nav-item">
+                                <a class="nav-link" href="/chief/time-tracer"><i class="fa fa-tasks"></i> Time tracer</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="/chief/tracer"><i class="fa fa-tasks"></i> Tracer</a>
                             </li>
                             <li class="nav-item">

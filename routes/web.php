@@ -61,6 +61,11 @@ Route::group(['prefix'=>'/admin', 'middleware'=>'Admin'], function () {
 
 //chief (manager)
 Route::group(['prefix'=>'/chief', 'middleware'=>'Chief'], function () {
+    Route::group(['prefix'=>'/time-tracer'], function () {
+        Route::get('/', 'TimeTracerController@get_time_tracer_for_manager');
+        Route::post('/', 'TimeTracerController@post_time_tracer');
+    });
+
     Route::group(['prefix'=>'/client-roles'], function () {
         Route::get('/', 'ClientRoleController@get_client_roles');
         Route::post('/', 'ClientRoleController@post_client_roles');

@@ -135,6 +135,19 @@ class TimeTracerController extends HomeController
         return view('backend.time_tracer')->with(['fields'=>$fields, 'tasks'=>$tasks, 'non_billable_codes'=>$non_billable_codes, 'full_fields'=>$full_fields, 'works'=>$works, 'projects'=>$projects]);
     }
 
+    //for manager
+    public function get_time_tracer_for_manager() {
+        $today = Carbon::today();
+        $fields = Fields::where(['deleted'=>0])->select('id', 'start_time', 'end_time')->orderBy('start_time')->limit(48)->get();
+        $tasks = Tasks::leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->where(['tasks.deleted'=>0, 'p.deleted'=>0])->orderBy('tasks.task')->select('tasks.id', 'tasks.task')->get();
+        $non_billable_codes = NonBillableCodes::where(['deleted'=>0])->select('id', 'title')->get();
+        $full_fields = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->where(['works.user_id'=>Auth::id(), 'works.deleted'=>0])->whereDate('works.created_at', $today)->select('works.field_id', 'works.work', 'works.color', 't.task')->get();
+        $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id'=>Auth::id(), 'works.deleted'=>0])->whereDate('works.created_at', $today)->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'works.same_work', 'works.completed')->get();
+        $projects = Projects::where(['deleted'=>0])->orderBy('project')->select('id', 'project')->get();
+
+        return view('backend.time_tracer')->with(['fields'=>$fields, 'tasks'=>$tasks, 'non_billable_codes'=>$non_billable_codes, 'full_fields'=>$full_fields, 'works'=>$works, 'projects'=>$projects]);
+    }
+
     //complete works
     private function complete_works() {
         try {
@@ -398,6 +411,9 @@ class TimeTracerController extends HomeController
             if (Auth::user()->role() == 4) {
                 //project manager
                 $tasks = Tasks::where(['project_id'=>$request->project_id, 'deleted'=>0])->orderBy('task')->select('id', 'task')->get();
+            } else if (Auth::user()->role() == 1) {
+                //manager
+                $tasks = TaskUser::leftJoin('tasks as t', 'task_user.task_id', '=', 't.id')->where(['t.project_id'=>$request->project_id, 't.deleted'=>0])->orderBy('t.task')->select('t.id', 't.task')->get();
             } else {
                 //user
                 $tasks = TaskUser::leftJoin('tasks as t', 'task_user.task_id', '=', 't.id')->where(['t.project_id'=>$request->project_id, 'task_user.user_id'=>Auth::id(), 't.deleted'=>0])->orderBy('t.task')->select('t.id', 't.task')->get();
