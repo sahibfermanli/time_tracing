@@ -408,12 +408,9 @@ class TimeTracerController extends HomeController
             return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Project not found!']);
         }
         try {
-            if (Auth::user()->role() == 4) {
-                //project manager
+            if (Auth::user()->role() == 4 || Auth::user()->role() == 1) {
+                //project manager || manager
                 $tasks = Tasks::where(['project_id'=>$request->project_id, 'deleted'=>0])->orderBy('task')->select('id', 'task')->get();
-            } else if (Auth::user()->role() == 1) {
-                //manager
-                $tasks = TaskUser::leftJoin('tasks as t', 'task_user.task_id', '=', 't.id')->where(['t.project_id'=>$request->project_id, 't.deleted'=>0])->orderBy('t.task')->select('t.id', 't.task')->get();
             } else {
                 //user
                 $tasks = TaskUser::leftJoin('tasks as t', 'task_user.task_id', '=', 't.id')->where(['t.project_id'=>$request->project_id, 'task_user.user_id'=>Auth::id(), 't.deleted'=>0])->orderBy('t.task')->select('t.id', 't.task')->get();

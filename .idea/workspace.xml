@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="532745a1-a77a-4ad3-a881-6f6d0ffe1280" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TimeTracerController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TimeTracerController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/backend/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/app.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,32 +15,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/routes/web.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="148">
-              <caret line="64" column="66" selection-start-line="64" selection-start-column="66" selection-end-line="64" selection-end-column="66" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TimeTracerController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="141" column="125" selection-start-line="141" selection-start-column="125" selection-end-line="141" selection-end-column="125" />
+            <state relative-caret-position="378">
+              <caret line="416" column="13" selection-start-line="416" selection-start-column="13" selection-end-line="416" selection-end-column="13" />
               <folding>
                 <element signature="e#40#55#0#PHP" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/backend/app.blade.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="182" column="64" selection-start-line="182" selection-start-column="64" selection-end-line="182" selection-end-column="64" />
             </state>
           </provider>
         </entry>
@@ -262,7 +242,7 @@
       <path value="$PROJECT_DIR$/vendor/opis/closure" />
     </include_path>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1382" />
@@ -462,7 +442,7 @@
       <workItem from="1556516550885" duration="17676000" />
       <workItem from="1556544594298" duration="14000" />
       <workItem from="1556604460108" duration="1286000" />
-      <workItem from="1556680854868" duration="4993000" />
+      <workItem from="1556680854868" duration="5691000" />
     </task>
     <task id="LOCAL-00001" summary="project update error solved">
       <created>1556259964662</created>
@@ -475,7 +455,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="372809000" />
+    <option name="totallyTimeSpent" value="373507000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
@@ -510,13 +490,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="project update error solved" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/ThirdParties.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="62" selection-start-line="9" selection-start-column="62" selection-end-line="9" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/HomeController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
@@ -882,6 +855,9 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Middleware/Chief.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/routes/web.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="148">
@@ -891,8 +867,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TimeTracerController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="141" column="125" selection-start-line="141" selection-start-column="125" selection-end-line="141" selection-end-column="125" />
+        <state relative-caret-position="378">
+          <caret line="416" column="13" selection-start-line="416" selection-start-column="13" selection-end-line="416" selection-end-column="13" />
           <folding>
             <element signature="e#40#55#0#PHP" expanded="true" />
           </folding>
