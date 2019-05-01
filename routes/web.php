@@ -121,6 +121,7 @@ Route::group(['prefix'=>'/chief', 'middleware'=>'Chief'], function () {
 Route::group(['prefix'=>'/project-manager', 'middleware'=>'ProjectManager'], function () {
     Route::group(['prefix'=>'/projects'], function () {
         Route::get('/', 'ProjectController@get_projects_for_project_manager');
+        Route::post('/', 'ProjectController@post_projects');
     });
 
     Route::group(['prefix'=>'/tasks'], function () {

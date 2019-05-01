@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ActionLogs;
 use App\Categories;
 use App\ClientRoles;
 use App\Clients;
@@ -41,20 +42,31 @@ class ProjectController extends HomeController
 
     //for project manager
     public function get_projects_for_project_manager() {
-        $projects = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')->where(['projects.deleted'=>0, 'project_manager_id'=>Auth::id()])->select('projects.id', 'projects.project', 'projects.description', 'projects.time', 'projects.created_at', 'c.name as client_name', 'c.director as client_director', 'created.name as created_name', 'created.surname as created_surname')->paginate(30);
+        $projects = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')->leftJoin('client_roles as cr', 'projects.client_role_id', '=', 'cr.id')->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')->leftJoin('users as pm', 'projects.project_manager_id', '=', 'pm.id')->leftJoin('currencies as cur', 'projects.currency_id', '=', 'cur.id')->where(['projects.deleted'=>0, 'project_manager_id'=>Auth::id()])->orderBy('projects.id', 'DESC')->select('projects.id', 'projects.project', 'projects.description', 'projects.time', 'projects.payment', 'projects.total_payment', 'projects.payment_type', 'projects.currency_id', 'cur.currency', 'projects.created_at', 'projects.client_id', 'projects.client_role_id', 'c.name as client_name', 'fob.title as client_fob', 'c.director as client_director', 'cr.role as client_role', 'created.name as created_name', 'created.surname as created_surname', 'projects.project_manager_id', 'pm.name as pm_name', 'pm.surname as pm_surname')->paginate(30);
 
-        return view('backend.projects_for_project_manager')->with(['projects'=>$projects]);
+        $project_managers = User::where(['deleted'=>0])->whereIn('role_id', [4, 1])->orderBy('name')->select('id', 'name', 'surname')->get();
+        $users = User::where(['deleted'=>0, 'role_id'=>2])->orderBy('name')->select('id', 'name', 'surname')->get();
+        $clients = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.deleted'=>0])->orderBy('clients.name')->select('clients.id', 'clients.name', 'fob.title as fob')->get();
+        $project_list = ProjectList::where(['deleted'=>0])->orderBy('project')->select('project')->get();
+        $client_roles = ClientRoles::where(['deleted'=>0])->select('id', 'role')->get();
+        $currencies = Currencies::where(['deleted'=>0])->select('id', 'currency')->get();
+        //for add new third party modal
+        $industries = Categories::where('up_category', '=', 0)->where(['deleted'=>0])->select('id', 'category')->get();
+        $form_of_businesses = FormOfBusiness::where(['deleted'=>0])->select('id', 'title')->get();
+        $countries = Countries::where(['deleted'=>0])->select('id', 'country')->get();
+
+        return view('backend.projects_for_project_manager')->with(['projects'=>$projects, 'project_managers'=>$project_managers, 'clients'=>$clients, 'project_list'=>$project_list, 'users'=>$users, 'client_roles'=>$client_roles, 'form_of_businesses'=>$form_of_businesses, 'countries'=>$countries, 'industries'=>$industries, 'currencies'=>$currencies]);
     }
 
     //for manager
     public function post_projects(Request $request) {
-        if ($request->type == 'add') {
+        if ($request->type == 'add' && Auth::user()->role() == 1) {
             return $this->add_project($request);
         }
         else if ($request->type == 'update') {
             return $this->update_project($request);
         }
-        else if ($request->type == 'delete') {
+        else if ($request->type == 'delete' && Auth::user()->role() == 1) {
             return $this->delete_project($request);
         }
         else if ($request->type == 'show_team') {
@@ -690,6 +702,8 @@ class ProjectController extends HomeController
                     app('App\Http\Controllers\MailController')->get_send($email_arr, $to_arr, $title, $message);
                 }
             }
+
+            ActionLogs::create(['user_id'=>Auth::id(), 'action'=>'update', 'table'=>'projects', 'row_id'=>$request->id]);
 
             Session::flash('message', 'Success!');
             Session::flash('class', 'success');
