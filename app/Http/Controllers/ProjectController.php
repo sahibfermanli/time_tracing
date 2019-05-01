@@ -292,7 +292,7 @@ class ProjectController extends HomeController
             return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
         }
         try {
-            unset($request['id']);
+            unset($request['id'], $request['deleted_staffs']);
 
             $staff = $request->staff;
 
@@ -497,7 +497,8 @@ class ProjectController extends HomeController
         }
         try {
             unset($request['_token']);
-            unset($request['type']);
+            $deleted_staffs = $request->deleted_staffs;
+            unset($request['type'], $request['deleted_staffs']);
 
             $old_data = Projects::where(['id'=>$request->id])->select('project_manager_id')->first();
 
@@ -597,6 +598,12 @@ class ProjectController extends HomeController
             $staff_mail_arr = array();
             $user_arr = array();
             if ($update) {
+                $deleted_staffs_arr = array();
+                $deleted_staffs_arr = explode(',', $deleted_staffs);
+                if (count($deleted_staffs_arr) > 0) {
+                    Team::whereIn('id', $deleted_staffs_arr)->update(['deleted'=>1, 'deleted_at'=>Carbon::now(), 'deleted_by'=>Auth::id()]);
+                }
+
                 $total_pay += $fix_pay;
                 for ($i=1; $i<=count($staff); $i++) {
                     if (!empty($staff[$i]['user_id']) && $staff[$i]['user_id'] != 0) {

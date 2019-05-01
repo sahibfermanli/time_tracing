@@ -209,6 +209,7 @@
                                         </div>
                                     </div>
 
+                                    <input type="hidden" id="delete_staff_input" name="deleted_staffs">
                                     <div class="row form-group" id="team_for_update_table" style="display: none;">
                                         <div class="col-md-12 ml-auto">
                                             <table class="table table-bordered">
@@ -1134,6 +1135,7 @@
             });
         }
 
+        var del_staff = '';
         function delete_staff(id) {
             swal({
                 title: 'Do you approve the deletion?',
@@ -1145,36 +1147,9 @@
                 confirmButtonText: 'Yes!'
             }).then(function (result) {
                 if (result.value) {
-                    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-                    $.ajax({
-                        type: "Post",
-                        url: '',
-                        data: {
-                            'id': id,
-                            '_token': CSRF_TOKEN,
-                            'type': 'delete_staff'
-                        },
-                        beforeSubmit: function () {
-                            //loading
-                            swal({
-                                title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
-                                text: 'Loading, please wait...',
-                                showConfirmButton: false
-                            });
-                        },
-                        success: function (response) {
-                            if (response.case === 'success') {
-                                $('#staff_row_'+response.id).remove();
-                            }
-                            else {
-                                swal(
-                                    response.title,
-                                    response.content,
-                                    response.case
-                                );
-                            }
-                        }
-                    });
+                    del_staff += id + ',';
+                    $("#delete_staff_input").val(del_staff);
+                    $('#staff_row_'+id).remove();
                 } else {
                     return false;
                 }
