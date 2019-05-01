@@ -27,7 +27,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Task description</th>
                     <th scope="col">Project</th>
-                    <th scope="col">User</th>
+                    <th scope="col">Staff</th>
                     <th scope="col">Deadline</th>
                     <th scope="col">Created date</th>
                     <th scope="col">Created by</th>
@@ -94,13 +94,13 @@
                                     <textarea name="task" id="task" cols="30" rows="5" class="form-control" placeholder="task description" required></textarea>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="user_id_1">User</label>
+                                    <label for="user_id_1">Staff</label>
                                     <select name="user_id[1]" id="user_id_1" class="form-control" required>
                                         <option value=''>None</option>
                                     </select>
                                 </div>
                                 <div id="another-user"></div>
-                                <span onclick="add_another_user();" class="btn btn-success btn-xs">Add new user</span>
+                                <span onclick="add_another_user();" class="btn btn-success btn-xs">Add new staff</span>
                                 <div class="form-group row">
                                     <label for="deadline">Deadline</label>
                                     <input id="deadline" type="date" required="" name="deadline" class="form-control">
@@ -215,7 +215,7 @@
         function add_another_user() {
             user_id++;
             var new_user = '';
-            new_user = '<label for="user_id_' + user_id + '">User ' + user_id + '</label>' +
+            new_user = '<label for="user_id_' + user_id + '">Staff ' + user_id + '</label>' +
                 '<div id="new_user_' + user_id + '"  style="width: 100%;">' +
                 '</div>' +
                 '</div>';
