@@ -64,18 +64,18 @@
             <div class="card-body">
                 <div>
                     <div class="form-group col-lg-3" style="display: inline-block; padding-left: 0 !important;">
-                        <select class="form-control form-control-sm" id="task_id_where" oninput="get_works_where(this, 'task');">
-                            <option value="">Task</option>
-                            @foreach($tasks as $task)
-                                <option value="{{$task->id}}">{{$task->task}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group col-lg-3" style="display: inline-block; padding-left: 0 !important;">
                         <select class="form-control form-control-sm" id="project_id_where" oninput="get_works_where(this, 'project');">
                             <option value="">Project</option>
                             @foreach($projects as $project)
                                 <option value="{{$project->id}}">{{$project->project}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-3" style="display: inline-block; padding-left: 0 !important;">
+                        <select class="form-control form-control-sm" id="task_id_where" oninput="get_works_where(this, 'task');">
+                            <option value="">Task</option>
+                            @foreach($tasks as $task)
+                                <option value="{{$task->id}}">{{$task->task}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -519,7 +519,7 @@
                 $('#project_id_where').val('');
             } else if (column === 'task') {
                 $('#date_where').val('');
-                $('#project_id_where').val('');
+                // $('#project_id_where').val('');
             } else if (column === 'project') {
                 $('#task_id_where').val('');
                 $('#date_where').val('');
@@ -619,6 +619,19 @@
                                 responsive: true
                             }
                         });
+
+                        if (column === 'project') {
+                            var tasks_list = response.tasks;
+                            var j = 0;
+                            var options = '<option value="">Tafgbsk</option>';
+                            for (j = 0; j < tasks_list.length; j++) {
+                                var task_item = tasks_list[j];
+                                var option = '<option value="' + task_item['id'] + '">' + task_item['task'] + '</option>';
+                                options += option;
+                            }
+
+                            $("#task_id_where").html(options);
+                        }
                     }
                     else {
                         swal(

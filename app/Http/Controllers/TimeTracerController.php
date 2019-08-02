@@ -349,6 +349,8 @@ class TimeTracerController extends HomeController
             return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
         }
         try {
+            $tasks = array();
+
             if ($request->column == 'date') {
                 $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id'=>Auth::id(), 'works.deleted'=>0])->whereDate('works.created_at', $request->value)->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'works.same_work')->get();
             }
@@ -357,12 +359,13 @@ class TimeTracerController extends HomeController
             }
             else if ($request->column == 'project') {
                 $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id'=>Auth::id(), 'works.deleted'=>0, 't.project_id' => $request->value])->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'works.same_work')->get();
+                $tasks = Tasks::where(['deleted'=>0, 'project_id'=>$request->value])->orderBy('task')->select('id', 'task')->get();
             }
             else {
                 return response(['case' => 'error', 'title' => 'Error!', 'content' => 'Column not found!']);
             }
 
-            return response(['case' => 'success', 'works'=>$works]);
+            return response(['case' => 'success', 'works'=>$works, 'tasks'=>$tasks]);
         } catch (\Exception $e) {
             return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
         }
@@ -377,6 +380,8 @@ class TimeTracerController extends HomeController
             return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
         }
         try {
+            $tasks = array();
+
             if ($request->column == 'date') {
                 $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->leftJoin('users as u', 't.user_id', '=', 'u.id')->where(['works.deleted'=>0])->whereDate('works.created_at', $request->value)->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'u.name', 'u.surname')->get();
             }
@@ -385,6 +390,7 @@ class TimeTracerController extends HomeController
             }
             else if ($request->column == 'project') {
                 $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->leftJoin('users as u', 't.user_id', '=', 'u.id')->where(['works.deleted'=>0, 't.project_id' => $request->value])->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'u.name', 'u.surname')->get();
+                $tasks = Tasks::where(['deleted'=>0, 'project_id'=>$request->value])->orderBy('task')->select('id', 'task')->get();
             }
             else if ($request->column == 'user') {
                 $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->leftJoin('users as u', 't.user_id', '=', 'u.id')->where(['works.deleted'=>0, 'works.user_id' => $request->value])->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'u.name', 'u.surname')->get();
@@ -393,7 +399,7 @@ class TimeTracerController extends HomeController
                 return response(['case' => 'error', 'title' => 'Error!', 'content' => 'Column not found!']);
             }
 
-            return response(['case' => 'success', 'works'=>$works]);
+            return response(['case' => 'success', 'works'=>$works, 'tasks'=>$tasks]);
         } catch (\Exception $e) {
             return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
         }
