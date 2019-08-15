@@ -25,37 +25,35 @@ class ProjectController extends HomeController
 {
     //for manager
     public function get_projects() {
-        $projects = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')->leftJoin('client_roles as cr', 'projects.client_role_id', '=', 'cr.id')->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')->leftJoin('users as pm', 'projects.project_manager_id', '=', 'pm.id')->leftJoin('currencies as cur', 'projects.currency_id', '=', 'cur.id')->where(['projects.deleted'=>0])->orderBy('projects.id', 'DESC')->select('projects.id', 'projects.project', 'projects.description', 'projects.time', 'projects.payment', 'projects.total_payment', 'projects.payment_type', 'projects.currency_id', 'cur.currency', 'projects.created_at', 'projects.client_id', 'projects.client_role_id', 'c.name as client_name', 'fob.title as client_fob', 'c.director as client_director', 'cr.role as client_role', 'created.name as created_name', 'created.surname as created_surname', 'projects.project_manager_id', 'pm.name as pm_name', 'pm.surname as pm_surname')->paginate(30);
+        $projects = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')->leftJoin('client_roles as cr', 'projects.client_role_id', '=', 'cr.id')->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')->leftJoin('users as pm', 'projects.project_manager_id', '=', 'pm.id')->leftJoin('currencies as cur', 'projects.currency_id', '=', 'cur.id')->where(['projects.deleted'=>0])->orderBy('projects.id', 'DESC')->select('projects.id', 'projects.project', 'projects.description', 'projects.time', 'projects.total_payment', 'projects.currency_id', 'cur.currency', 'projects.created_at', 'projects.client_id', 'projects.client_role_id', 'c.name as client_name', 'fob.title as client_fob', 'c.director as client_director', 'cr.role as client_role', 'created.name as created_name', 'created.surname as created_surname', 'projects.project_manager_id', 'pm.name as pm_name', 'pm.surname as pm_surname')->paginate(30);
         $project_managers = User::where(['deleted'=>0])->whereIn('role_id', [4, 1])->orderBy('name')->select('id', 'name', 'surname')->get();
         $users = User::where(['deleted'=>0, 'role_id'=>2])->orderBy('name')->select('id', 'name', 'surname')->get();
         $clients = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.deleted'=>0])->orderBy('clients.name')->select('clients.id', 'clients.name', 'fob.title as fob')->get();
         $project_list = ProjectList::where(['deleted'=>0])->orderBy('project')->select('project')->get();
         $client_roles = ClientRoles::where(['deleted'=>0])->select('id', 'role')->get();
-        $currencies = Currencies::where(['deleted'=>0])->select('id', 'currency')->get();
         //for add new third party modal
         $industries = Categories::where('up_category', '=', 0)->where(['deleted'=>0])->select('id', 'category')->get();
         $form_of_businesses = FormOfBusiness::where(['deleted'=>0])->select('id', 'title')->get();
         $countries = Countries::where(['deleted'=>0])->select('id', 'country')->get();
 
-        return view('backend.projects')->with(['projects'=>$projects, 'project_managers'=>$project_managers, 'clients'=>$clients, 'project_list'=>$project_list, 'users'=>$users, 'client_roles'=>$client_roles, 'form_of_businesses'=>$form_of_businesses, 'countries'=>$countries, 'industries'=>$industries, 'currencies'=>$currencies]);
+        return view('backend.projects')->with(['projects'=>$projects, 'project_managers'=>$project_managers, 'clients'=>$clients, 'project_list'=>$project_list, 'users'=>$users, 'client_roles'=>$client_roles, 'form_of_businesses'=>$form_of_businesses, 'countries'=>$countries, 'industries'=>$industries]);
     }
 
     //for project manager
     public function get_projects_for_project_manager() {
-        $projects = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')->leftJoin('client_roles as cr', 'projects.client_role_id', '=', 'cr.id')->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')->leftJoin('users as pm', 'projects.project_manager_id', '=', 'pm.id')->leftJoin('currencies as cur', 'projects.currency_id', '=', 'cur.id')->where(['projects.deleted'=>0, 'project_manager_id'=>Auth::id()])->orderBy('projects.id', 'DESC')->select('projects.id', 'projects.project', 'projects.description', 'projects.time', 'projects.payment', 'projects.total_payment', 'projects.payment_type', 'projects.currency_id', 'cur.currency', 'projects.created_at', 'projects.client_id', 'projects.client_role_id', 'c.name as client_name', 'fob.title as client_fob', 'c.director as client_director', 'cr.role as client_role', 'created.name as created_name', 'created.surname as created_surname', 'projects.project_manager_id', 'pm.name as pm_name', 'pm.surname as pm_surname')->paginate(30);
+        $projects = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')->leftJoin('client_roles as cr', 'projects.client_role_id', '=', 'cr.id')->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')->leftJoin('users as pm', 'projects.project_manager_id', '=', 'pm.id')->leftJoin('currencies as cur', 'projects.currency_id', '=', 'cur.id')->where(['projects.deleted'=>0, 'project_manager_id'=>Auth::id()])->orderBy('projects.id', 'DESC')->select('projects.id', 'projects.project', 'projects.description', 'projects.time', 'projects.total_payment', 'projects.currency_id', 'cur.currency', 'projects.created_at', 'projects.client_id', 'projects.client_role_id', 'c.name as client_name', 'fob.title as client_fob', 'c.director as client_director', 'cr.role as client_role', 'created.name as created_name', 'created.surname as created_surname', 'projects.project_manager_id', 'pm.name as pm_name', 'pm.surname as pm_surname')->paginate(30);
 
         $project_managers = User::where(['deleted'=>0])->whereIn('role_id', [4, 1])->orderBy('name')->select('id', 'name', 'surname')->get();
         $users = User::where(['deleted'=>0, 'role_id'=>2])->orderBy('name')->select('id', 'name', 'surname')->get();
         $clients = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.deleted'=>0])->orderBy('clients.name')->select('clients.id', 'clients.name', 'fob.title as fob')->get();
         $project_list = ProjectList::where(['deleted'=>0])->orderBy('project')->select('project')->get();
         $client_roles = ClientRoles::where(['deleted'=>0])->select('id', 'role')->get();
-        $currencies = Currencies::where(['deleted'=>0])->select('id', 'currency')->get();
         //for add new third party modal
         $industries = Categories::where('up_category', '=', 0)->where(['deleted'=>0])->select('id', 'category')->get();
         $form_of_businesses = FormOfBusiness::where(['deleted'=>0])->select('id', 'title')->get();
         $countries = Countries::where(['deleted'=>0])->select('id', 'country')->get();
 
-        return view('backend.projects_for_project_manager')->with(['projects'=>$projects, 'project_managers'=>$project_managers, 'clients'=>$clients, 'project_list'=>$project_list, 'users'=>$users, 'client_roles'=>$client_roles, 'form_of_businesses'=>$form_of_businesses, 'countries'=>$countries, 'industries'=>$industries, 'currencies'=>$currencies]);
+        return view('backend.projects_for_project_manager')->with(['projects'=>$projects, 'project_managers'=>$project_managers, 'clients'=>$clients, 'project_list'=>$project_list, 'users'=>$users, 'client_roles'=>$client_roles, 'form_of_businesses'=>$form_of_businesses, 'countries'=>$countries, 'industries'=>$industries]);
     }
 
     //for manager
@@ -86,9 +84,6 @@ class ProjectController extends HomeController
         }
         else if ($request->type == 'delete_third_party') {
             return $this->delete_third_party($request);
-        }
-        else if ($request->type == 'select_staff') {
-            return $this->select_staff($request);
         }
         else if ($request->type == 'delete_staff') {
             return $this->delete_staff($request);
@@ -202,23 +197,6 @@ class ProjectController extends HomeController
         }
     }
 
-    //select staff
-    private function select_staff(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'id' => 'required|integer',
-        ]);
-        if ($validator->fails()) {
-            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Staff not found!']);
-        }
-        try {
-            $staff = User::leftJoin('user_levels as l', 'users.level_id', '=', 'l.id')->where(['users.id'=>$request->id])->select('percentage', 'hourly_rate', 'currency_id')->first();
-
-            return response(['case' => 'success', 'staff'=>$staff]);
-        } catch (\Exception $e) {
-            return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
-        }
-    }
-
     //show third parties
     private function show_third_parties(Request $request) {
         $validator = Validator::make($request->all(), [
@@ -294,8 +272,6 @@ class ProjectController extends HomeController
     //add project
     private function add_project(Request $request) {
         $validator = Validator::make($request->all(), [
-            'time' => ['required', 'integer'],
-            'payment_type' => ['required', 'integer'],
             'client_id' => ['required', 'integer'],
             'client_role_id' => ['required', 'integer'],
             'project_manager_id' => ['required', 'integer'],
@@ -328,77 +304,11 @@ class ProjectController extends HomeController
                 return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
             }
 
-            $cur_id = 0;
-            $cur_control = true;
-            if (!empty($request->currency_id)) {
-                $cur_id = $request->currency_id;
-            }
-
-            $fix_pay = 0;
-            $total_pay = 0;
-            if (!empty($request->payment) && $request->payment != 0 && $request->payment != '') {
-                $fix_pay = $request->payment;
-            }
-            $time = $request->time;
-
-            $total_percentage = 0;
-            if ($request->payment_type != 1 && $request->payment_type != 4) {
-                for ($i=1; $i<=count($staff); $i++) {
-                    if (!empty($staff[$i]['user_id']) && $staff[$i]['user_id'] != 0) {
-                        if (!empty($staff[$i]['percentage'])) {
-                            $total_percentage += $staff[$i]['percentage'];
-                        }
-                    }
-
-                    if ($cur_id != 0) {
-                        if (!empty($staff[$i]['currency_id'])) {
-                            if ($cur_id != $staff[$i]['currency_id']) {
-                                $cur_control = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (!$cur_control) {
-                    return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Currencies is not same!"]);
-                }
-
-                if ($total_percentage != 100) {
-                    return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Total percentage must be equal to 100!"]);
-                }
-            }
-
-            $staff_control = false;
-            $pay_type = $request->payment_type;
-            // payment types:
-            // 1: fix
-            // 2: fix + hourly rate
-            // 3: hourly rate
-            // 4: monthly
-            switch ($pay_type) {
-                case 1:
-                    $staff_control = false;
-                    break;
-                case 2:
-                    $staff_control = true;
-                    break;
-                case 3:
-                    $staff_control = true;
-                    break;
-                case 4:
-                    $staff_control = false;
-                    break;
-                default:
-                    return response(['case' => 'warning', 'title' => 'Error!', 'content' => 'Payment type error!']);
-            }
-
             $add = Projects::create($request->all());
 
             $staff_mail_arr = array();
             $user_arr = array();
             if ($add) {
-                $total_pay += $fix_pay;
                 for ($i=1; $i<=count($staff); $i++) {
                     if (!empty($staff[$i]['user_id']) && $staff[$i]['user_id'] != 0) {
                         //same staff control
@@ -408,22 +318,11 @@ class ProjectController extends HomeController
                             array_push($user_arr, $staff[$i]['user_id']);
                         }
 
-                        if ($staff_control == true) {
-                            if (!empty($staff[$i]['percentage']) && !empty($staff[$i]['hourly_rate']) && !empty($staff[$i]['currency_id'])) {
-                                $staff[$i]['project_id'] = $add->id;
-                                Team::create($staff[$i]);
-                                $total_pay += $staff[$i]['hourly_rate'] * (($time * $staff[$i]['percentage']) / 100);
-                                array_push($staff_mail_arr, $staff[$i]['user_id']);
-                            }
-                        } else {
-                            $staff[$i]['project_id'] = $add->id;
-                            Team::create($staff[$i]);
-                            array_push($staff_mail_arr, $staff[$i]['user_id']);
-                        }
+                        $staff[$i]['project_id'] = $add->id;
+                        Team::create($staff[$i]);
+                        array_push($staff_mail_arr, $staff[$i]['user_id']);
                     }
                 }
-
-                Projects::where(['id'=>$add->id])->update(['total_payment'=>$total_pay]);
 
                 $added_tp_arr = array();
                 $arr['project_id'] = $add->id;
@@ -450,10 +349,10 @@ class ProjectController extends HomeController
                     array_push($to_arr, $project_manager['name'] . ' ' . $project_manager['surname']);
                 }
 
-                $staffs = User::whereIn('id', $staff_mail_arr)->select('send_mail', 'email', 'name', 'surname', 'deleted')->get();
+                $staffs = User::whereIn('id', $staff_mail_arr)->where('deleted', 0)->select('send_mail', 'email', 'name', 'surname', 'deleted')->get();
 
                 foreach ($staffs as $staff) {
-                    if ($staff->send_mail == 1 && $staff->deleted == 0) {
+                    if ($staff->send_mail == 1) {
                         array_push($email_arr, $staff['email']);
                         array_push($to_arr, $staff['name'] . ' ' . $staff['surname']);
                     }
@@ -498,8 +397,6 @@ class ProjectController extends HomeController
     private function update_project(Request $request) {
         $validator = Validator::make($request->all(), [
             'id' => ['required', 'integer'],
-            'time' => ['required', 'integer'],
-            'payment_type' => ['required', 'integer'],
             'client_id' => ['required', 'integer'],
             'client_role_id' => ['required', 'integer'],
             'project_manager_id' => ['required', 'integer'],
@@ -536,75 +433,6 @@ class ProjectController extends HomeController
                 return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
             }
 
-            $cur_id = 0;
-            $cur_control = true;
-            if (!empty($request->currency_id)) {
-                $cur_id = $request->currency_id;
-
-                if (Team::where(['project_id'=>$request->id, 'deleted'=>0])->count() > 0 && Team::where(['project_id'=>$request->id, 'deleted'=>0, 'currency_id'=>$cur_id])->count() == 0 && $request->payment_type != 1 && $request->payment_type != 4) {
-                    return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Currencies is not same!"]);
-                }
-            }
-
-            $fix_pay = 0;
-            $total_pay = 0;
-            if (!empty($request->payment) && $request->payment != 0 && $request->payment != '') {
-                $fix_pay = $request->payment;
-            }
-            $time = $request->time;
-
-            if ($request->payment_type != 1 && $request->payment_type != 4) {
-                $total_percentage = Team::where(['project_id'=>$request->id, 'deleted'=>0])->sum('percentage');
-                for ($i=1; $i<=count($staff); $i++) {
-                    if (!empty($staff[$i]['user_id']) && $staff[$i]['user_id'] != 0) {
-                        if (!empty($staff[$i]['percentage'])) {
-                            $total_percentage += $staff[$i]['percentage'];
-                        }
-                    }
-
-                    if ($cur_id != 0) {
-                        if (!empty($staff[$i]['currency_id'])) {
-                            if ($cur_id != $staff[$i]['currency_id']) {
-                                $cur_control = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (!$cur_control) {
-                    return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Currencies is not same!"]);
-                }
-
-                if ($total_percentage != 100) {
-                    return response(['case' => 'warning', 'title' => 'Warning!', 'content' => "Total percentage must be equal to 100!"]);
-                }
-            }
-
-            $staff_control = false;
-            $pay_type = $request->payment_type;
-            // payment types:
-            // 1: fix
-            // 2: fix + hourly rate
-            // 3: hourly rate
-            // 4: monthly
-            switch ($pay_type) {
-                case 1:
-                    $staff_control = false;
-                    break;
-                case 2:
-                    $staff_control = true;
-                    break;
-                case 3:
-                    $staff_control = true;
-                    break;
-                case 4:
-                    $staff_control = false;
-                    break;
-                default:
-                    return response(['case' => 'warning', 'title' => 'Error!', 'content' => 'Payment type error!']);
-            }
-
             $update = Projects::where(['id'=>$request->id])->update($request->all());
 
             $staff_mail_arr = array();
@@ -616,7 +444,6 @@ class ProjectController extends HomeController
                     Team::whereIn('id', $deleted_staffs_arr)->update(['deleted'=>1, 'deleted_at'=>Carbon::now(), 'deleted_by'=>Auth::id()]);
                 }
 
-                $total_pay += $fix_pay;
                 for ($i=1; $i<=count($staff); $i++) {
                     if (!empty($staff[$i]['user_id']) && $staff[$i]['user_id'] != 0) {
                         //same staff control
@@ -629,22 +456,11 @@ class ProjectController extends HomeController
                             array_push($user_arr, $staff[$i]['user_id']);
                         }
 
-                        if ($staff_control == true) {
-                            if (!empty($staff[$i]['percentage']) && !empty($staff[$i]['hourly_rate']) && !empty($staff[$i]['currency_id'])) {
-                                $staff[$i]['project_id'] = $request->id;
-                                Team::create($staff[$i]);
-                                $total_pay += $staff[$i]['hourly_rate'] * (($time * $staff[$i]['percentage']) / 100);
-                                array_push($staff_mail_arr, $staff[$i]['user_id']);
-                            }
-                        } else {
-                            $staff[$i]['project_id'] = $request->id;
-                            Team::create($staff[$i]);
-                            array_push($staff_mail_arr, $staff[$i]['user_id']);
-                        }
+                        $staff[$i]['project_id'] = $request->id;
+                        Team::create($staff[$i]);
+                        array_push($staff_mail_arr, $staff[$i]['user_id']);
                     }
                 }
-
-                Projects::where(['id'=>$request->id])->update(['total_payment'=>$total_pay]);
 
                 $arr['project_id'] = $request->id;
                 $arr['created_by'] = Auth::id();
@@ -670,10 +486,10 @@ class ProjectController extends HomeController
                     }
                 }
 
-                $staffs = User::whereIn('id', $staff_mail_arr)->select('send_mail', 'email', 'name', 'surname', 'deleted')->get();
+                $staffs = User::whereIn('id', $staff_mail_arr)->where('deleted', 0)->select('send_mail', 'email', 'name', 'surname', 'deleted')->get();
 
                 foreach ($staffs as $staff) {
-                    if ($staff->send_mail == 1 && $staff->deleted == 0) {
+                    if ($staff->send_mail == 1) {
                         array_push($email_arr, $staff['email']);
                         array_push($to_arr, $staff['name'] . ' ' . $staff['surname']);
                     }

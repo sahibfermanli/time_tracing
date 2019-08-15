@@ -25,14 +25,12 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
+                    <th scope="col">Client</th>
+                    <th scope="col">Client role</th>
                     <th scope="col">Project's type</th>
                     <th scope="col">Description</th>
                     <th scope="col">SCT</th>
-                    <th scope="col">Fix payment</th>
                     <th scope="col">Total payment</th>
-                    <th scope="col">Payment type</th>
-                    <th scope="col">Client</th>
-                    <th scope="col">Client role</th>
                     <th scope="col">Third parties</th>
                     <th scope="col">Project manager</th>
                     <th scope="col" style="width: 60px !important;">Team</th>
@@ -44,33 +42,14 @@
                 @php($row = 0)
                     @foreach($projects as $project)
                         @php($row++)
-                        @php($pay_type = '')
-                        @switch($project->payment_type)
-                            @case(1)
-                            @php($pay_type = 'Fixed Fee')
-                            @break
-                            @case(2)
-                            @php($pay_type = 'Cap Fee')
-                            @break
-                            @case(3)
-                            @php($pay_type = 'Hourly rate')
-                            @break
-                            @case(4)
-                            @php($pay_type = 'Monthly Fee')
-                            @break
-                            @default()
-                            @php($pay_type = '')
-                        @endswitch
                         <tr onclick="row_select({{$project->id}});" id="row_{{$project->id}}" class="rows">
                             <th scope="row">{{$row}}</th>
+                            <td id="client_{{$project->id}}" client_id="{{$project->client_id}}" title="{{$project->client_director}}">{{$project->client_name}} {{$project->client_fob}}</td>
+                            <td id="client_role_{{$project->id}}" client_role_id="{{$project->client_role_id}}">{{$project->client_role}}</td>
                             <td id="project_{{$project->id}}">{{$project->project}}</td>
                             <td id="description_{{$project->id}}">{{$project->description}}</td>
                             <td id="time_{{$project->id}}">{{$project->time}}</td>
-                            <td id="payment_{{$project->id}}" currency_id="{{$project->currency_id}}">{{$project->payment}} {{$project->currency}}</td>
                             <td id="currency_{{$project->id}}" currency_id="{{$project->currency_id}}">{{$project->total_payment}} {{$project->currency}}</td>
-                            <td id="payment_type_{{$project->id}}" payment_type="{{$project->payment_type}}">{{$pay_type}}</td>
-                            <td id="client_{{$project->id}}" client_id="{{$project->client_id}}" title="{{$project->client_director}}">{{$project->client_name}} {{$project->client_fob}}</td>
-                            <td id="client_role_{{$project->id}}" client_role_id="{{$project->client_role_id}}">{{$project->client_role}}</td>
                             <td><span class="btn btn-primary btn-xs" onclick="show_third_parties({{$project->id}});">Show</span></td>
                             <td id="project_manager_{{$project->id}}" project_manager_id="{{$project->project_manager_id}}">{{$project->pm_name}} {{$project->pm_surname}}</td>
                             <td><span class="btn btn-primary btn-xs" onclick="show_team({{$project->id}}, {{$project->payment_type}});">Team</span></td>
@@ -178,36 +157,6 @@
                                             <textarea name="description" id="description" cols="30" rows="2" class="form-control" placeholder="description"></textarea>
                                         </div>
                                     </div>
-                                    <div class="row form-group">
-                                        <div class="col-md-6 ml-auto">
-                                            <label for="time">Scheduled time for the project</label>
-                                            <input id="time" type="number" name="time" placeholder="time (hour)" class="form-control" required>
-                                        </div>
-                                        <div class="col-md-6 ml-auto">
-                                            <label for="payment_type">Payment type</label>
-                                            <select id="payment_type" name="payment_type" class="form-control" required oninput="select_payment_type(this);">
-                                                <option value="1">Fixed Fee</option>
-                                                <option value="2">Cap Fee</option>
-                                                <option value="3">Hourly rate</option>
-                                                <option value="4">Monthly Fee</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row form-group" id="fix_div">
-                                        <div class="col-md-6 ml-auto">
-                                            <label for="fix_payment">Amount of legal fees</label>
-                                            <input id="fix_payment" type="number" name="payment" placeholder="fix payment" class="form-control" min="0">
-                                        </div>
-                                        <div class="col-md-6 ml-auto">
-                                            <label for="currency_id">Currency</label>
-                                            <select name="currency_id" id="currency_id" class="form-control">
-                                                <option value=''>Select</option>
-                                                @foreach($currencies as $currency)
-                                                    <option value="{{$currency->id}}">{{$currency->currency}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
 
                                     <input type="hidden" id="delete_staff_input" name="deleted_staffs">
                                     <div class="row form-group" id="team_for_update_table" style="display: none;">
@@ -218,9 +167,6 @@
                                                     <th scope="col">#</th>
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Surname</th>
-                                                    <th scope="col" id="team_for_update_percentage">Percentage</th>
-                                                    <th scope="col" id="team_for_update_hourly_rate">Hourly rate</th>
-                                                    <th scope="col" id="team_for_update_currency">Currency</th>
                                                     <th scope="col"></th>
                                                 </tr>
                                                 </thead>
@@ -238,23 +184,6 @@
                                                 <option value=''>Select</option>
                                                 @foreach($users as $user)
                                                     <option value="{{$user->id}}">{{$user->name}} {{$user->surname}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3 ml-auto" id="percentage_div_1" style="display: none;">
-                                            <label for="percentage_1">Percentage</label>
-                                            <input id="percentage_1" type="number" name="staff[1][percentage]" class="form-control" min="0">
-                                        </div>
-                                        <div class="col-md-3 ml-auto" id="hourly_rate_div_1" style="display: none;">
-                                            <label for="hourly_rate_1">Hourly rate</label>
-                                            <input id="hourly_rate_1" type="number" name="staff[1][hourly_rate]" class="form-control" min="0">
-                                        </div>
-                                        <div class="col-md-2 ml-auto" id="currency_div_1" style="display: none;">
-                                            <label for="currency_id_1">Currency</label>
-                                            <select name="staff[1][currency_id]" id="currency_id_1" class="form-control">
-                                                <option value=''>-</option>
-                                                @foreach($currencies as $currency)
-                                                    <option value="{{$currency->id}}">{{$currency->currency}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -492,7 +421,6 @@
         var tp_id = 1;
         var staff_id = 1;
         var response_tp = 0;
-        var pay_type = 1; //fix
 
         $(document).ready(function () {
             $('#form').validate();
@@ -623,97 +551,6 @@
                 }
             });
         }
-
-        function select_payment_type(e, type=1) {
-            if (type === 1) {
-                pay_type = $(e).val();
-            } else if (type === 2) {
-                pay_type = e;
-            } else {
-                swal(
-                    'Oops',
-                    'Please select payment type',
-                    'warning'
-                );
-            }
-            // payment types:
-            // 1: fix
-            // 2: fix + hourly rate
-            // 3: hourly rate
-            // 4: monthly
-
-            switch (pay_type) {
-                case '1':
-                    $("#fix_div").css('display', 'flex');
-                    $("#payment").prop("placeholder", 'fix payment');
-                    $('div[id^="staff_div"]').removeClass('col-md-4').addClass('col-md-12');
-                    $('div[id^="percentage_div"]').css('display', 'none');
-                    $('div[id^="hourly_rate_div"]').css('display', 'none');
-                    $('div[id^="currency_div"]').css('display', 'none');
-
-                    $('td[id^="team_for_update_percentage"]').css('display', 'none');
-                    $('td[id^="team_for_update_hourly_rate"]').css('display', 'none');
-                    $('td[id^="team_for_update_currency"]').css('display', 'none');
-                    $("#team_for_update_percentage").css('display', 'none');
-                    $("#team_for_update_hourly_rate").css('display', 'none');
-                    $("#team_for_update_currency").css('display', 'none');
-
-                    break;
-                case '2':
-                    $("#fix_div").css('display', 'flex');
-                    $("#payment").prop("placeholder", 'fix payment');
-                    $('div[id^="staff_div"]').removeClass('col-md-12').addClass('col-md-4');
-                    $('div[id^="percentage_div"]').css('display', 'block');
-                    $('div[id^="hourly_rate_div"]').css('display', 'block');
-                    $('div[id^="currency_div"]').css('display', 'block');
-
-                    $('td[id^="team_for_update_percentage"]').css('display', 'table-cell');
-                    $('td[id^="team_for_update_hourly_rate"]').css('display', 'table-cell');
-                    $('td[id^="team_for_update_currency"]').css('display', 'table-cell');
-                    $("#team_for_update_percentage").css('display', 'table-cell');
-                    $("#team_for_update_hourly_rate").css('display', 'table-cell');
-                    $("#team_for_update_currency").css('display', 'table-cell');
-
-                    break;
-                case '3':
-                    $("#fix_div").css('display', 'none');
-                    $('div[id^="staff_div"]').removeClass('col-md-12').addClass('col-md-4');
-                    $('div[id^="percentage_div"]').css('display', 'block');
-                    $('div[id^="hourly_rate_div"]').css('display', 'block');
-                    $('div[id^="currency_div"]').css('display', 'block');
-
-                    $('td[id^="team_for_update_percentage"]').css('display', 'table-cell');
-                    $('td[id^="team_for_update_hourly_rate"]').css('display', 'table-cell');
-                    $('td[id^="team_for_update_currency"]').css('display', 'table-cell');
-                    $("#team_for_update_percentage").css('display', 'table-cell');
-                    $("#team_for_update_hourly_rate").css('display', 'table-cell');
-                    $("#team_for_update_currency").css('display', 'table-cell');
-
-                    break;
-                case '4':
-                    $("#fix_div").css('display', 'flex');
-                    $("#payment").prop("placeholder", 'monthly rate');
-                    $('div[id^="staff_div"]').removeClass('col-md-4').addClass('col-md-12');
-                    $('div[id^="percentage_div"]').css('display', 'none');
-                    $('div[id^="hourly_rate_div"]').css('display', 'none');
-                    $('div[id^="currency_div"]').css('display', 'none');
-
-                    $('td[id^="team_for_update_percentage"]').css('display', 'none');
-                    $('td[id^="team_for_update_hourly_rate"]').css('display', 'none');
-                    $('td[id^="team_for_update_currency"]').css('display', 'none');
-                    $("#team_for_update_percentage").css('display', 'none');
-                    $("#team_for_update_hourly_rate").css('display', 'none');
-                    $("#team_for_update_currency").css('display', 'none');
-
-                    break;
-                default:
-                    swal(
-                        'Oops',
-                        'Please select payment type',
-                        'warning'
-                    );
-            }
-        }
         
         function add_another_third_party() {
             tp_id++;
@@ -742,67 +579,19 @@
 
         function add_another_staff() {
             staff_id++;
-            var div_style = 'none';
-            var col_no = '12';
-
-            switch (pay_type) {
-                case '1':
-                    div_style = 'none';
-                    col_no = '12';
-                    break;
-                case '2':
-                    div_style = 'block';
-                    col_no = '4';
-                    break;
-                case '3':
-                    div_style = 'block';
-                    col_no = '4';
-                    break;
-                case '4':
-                    div_style = 'none';
-                    col_no = '12';
-                    break;
-                default:
-                    div_style = 'none';
-                    col_no = '12';
-            }
 
             var new_staff = '';
-            var new_percentage = '';
-            var new_hourly_rate = '';
-            var currency = '';
-            new_staff = '<div class="col-md-' + col_no + ' ml-auto staff_class" id="staff_div_' + staff_id + '">' +
+            new_staff = '<div class="col-md-12' + ' ml-auto staff_class" id="staff_div_' + staff_id + '">' +
                 '<label for="staff_id_' + staff_id + '">Staff ' + staff_id + '</label>' +
                 '<div id="new_staff_' + staff_id + '">' +
                 '</div>' +
                 '</div>';
 
-            new_percentage = '<div class="col-md-3 ml-auto" id="percentage_div_' + staff_id + '" style="display: ' + div_style + ';">' +
-                '<label for="percentage_id_' + staff_id + '">Percentage ' + staff_id + '</label>' +
-                '<div id="new_percentage_' + staff_id + '">' +
-                '<input id="percentage_' + staff_id + '" type="number" name="staff[' + staff_id + '][percentage]" class="form-control" min="0">' +
-                '</div>' +
-                '</div>';
-
-            new_hourly_rate = '<div class="col-md-3 ml-auto" id="hourly_rate_div_' + staff_id + '" style="display: ' + div_style + ';">' +
-                '<label for="hourly_rate_id_' + staff_id + '">Hourly rate ' + staff_id + '</label>' +
-                '<div id="new_hourly_rate_' + staff_id + '">' +
-                '<input id="hourly_rate_' + staff_id + '" type="number" name="staff[' + staff_id + '][hourly_rate]" class="form-control" min="0">' +
-                '</div>' +
-                '</div>';
-
-            currency = '<div class="col-md-2 ml-auto" id="currency_div_' + staff_id + '" style="display: ' + div_style + ';">' +
-                    '<label for="currency_id_' + staff_id + '">Currency ' + staff_id + '</label>' +
-                    '<div id="new_currency_' + staff_id + '">' +
-                    '</div>' +
-                    '</div>';
-
-            $("#another-staff").append('<div class="row form-group">' + new_staff + new_percentage + new_hourly_rate + currency + '</div>');
+            $("#another-staff").append('<div class="row form-group">' + new_staff + '</div>');
 
             $("#staff_1").clone().appendTo("#new_staff_"+staff_id);
             $("#another-staff > .form-group > .staff_class > #new_staff_" + staff_id + " > select").prop("id", "staff_"+staff_id).prop("name", "staff["+staff_id+"][user_id]").val("");
             $("#currency_id_1").clone().appendTo("#new_currency_"+staff_id);
-            $("#another-staff > .form-group > .col-md-2 > #new_currency_" + staff_id + " > select").prop("id", "currency_id_"+staff_id).prop("name", "staff["+staff_id+"][currency_id]").val("");
         }
 
         var old_value = 0;
@@ -826,21 +615,16 @@
                 for(j = 0; j < user_arr.length; j++){
                     if ( user_arr[j] === old_value) {
                         user_arr.splice(j, 1);
-                        console.log(user_arr);
                         break;
                     }
                 }
-                $("#hourly_rate_"+no).val(0);
-                $("#percentage_"+no).val(0);
                 return false;
             }
 
-            console.log(user_arr);
             if (old_value !== 0) {
                 for(j = 0; j < user_arr.length; j++){
                     if ( user_arr[j] === old_value) {
                         user_arr.splice(j, 1);
-                        console.log(user_arr);
                         break;
                     }
                 }
@@ -857,39 +641,6 @@
             } else {
                 user_arr.push(id);
             }
-
-            swal({
-                title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
-                text: 'Loading, please wait...',
-                showConfirmButton: false
-            });
-            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-            $.ajax({
-                type: "Post",
-                url: '',
-                data: {
-                    'id': id,
-                    '_token': CSRF_TOKEN,
-                    'type': 'select_staff'
-                },
-                success: function (response) {
-                    if (response.case === 'success') {
-                        swal.close();
-                        var staff = response.staff;
-
-                        $("#hourly_rate_"+no).val(staff['hourly_rate']);
-                        $("#percentage_"+no).val(staff['percentage']);
-                        $("#currency_id_"+no).val(staff['currency_id']);
-                    }
-                    else {
-                        swal(
-                            response.title,
-                            response.content,
-                            response.case
-                        );
-                    }
-                }
-            });
         }
 
         function back_to_add_project() {
@@ -1186,7 +937,6 @@
             $('#project_text').val('');
             $('#project_list').val('');
             $('#description').val('');
-            $('#time').val('');
             $('#client_id').val('');
             $('#client_role_id').val('');
             $('#third_party_id_1').val('');
@@ -1197,12 +947,6 @@
             $("#another-third-party").html("");
             $("#another-staff").html("");
             $("#staff_1").val('');
-            $("#percentage_1").val('');
-            $("#hourly_rate_1").val('');
-            $("#currency_id_1").val('');
-            $("#fix_payment").val('');
-            $("#payment_type").val(1);
-            $("#currency_id").val('');
             response_tp = 0;
             tp_id = 1;
             staff_id = 1;
@@ -1222,10 +966,7 @@
 
             var project = $('#project_'+row_id).text();
             var description = $('#description_'+row_id).text();
-            var time = $('#time_'+row_id).text();
-            var payment = $('#payment_'+row_id).text();
             var client_id = $('#client_'+row_id).attr('client_id');
-            var payment_type = $('#payment_type_'+row_id).attr('payment_type');
             var currency_id = $('#currency_'+row_id).attr('currency_id');
             var client_role_id = $('#client_role_'+row_id).attr('client_role_id');
             var project_manager_id = $('#project_manager_'+row_id).attr('project_manager_id');
@@ -1236,7 +977,6 @@
             $('#project_list').val(project);
             $('#project_text').val('');
             $('#description').val(description);
-            $('#time').val(time);
             $('#client_id').val(client_id);
             $('#client_role_id').val(client_role_id);
             $('#third_party_id_1').val('');
@@ -1246,17 +986,10 @@
             $("#another-third-party").html("");
             $("#another-staff").html("");
             $("#staff_1").val('');
-            $("#percentage_1").val('');
-            $("#hourly_rate_1").val('');
-            $("#currency_id_1").val('');
-            $("#fix_payment").val(parseFloat(payment));
-            $("#payment_type").val(payment_type);
             $("#currency_id").val(currency_id);
             response_tp = 0;
             tp_id = 1;
             staff_id = 1;
-
-            select_payment_type(payment_type, 2);
 
             swal({
                 title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
@@ -1285,25 +1018,9 @@
                             var row = '<td>' + num + '</td>';
                             var name = '<td>' + user['name'] + '</td>';
                             var surname = '<td>' + user['surname'] + '</td>';
-                            var percentage = '<td id="team_for_update_percentage">' + user['percentage'] + '</td>';
-                            var hourly_rate = '<td id="team_for_update_hourly_rate">' + user['hourly_rate'] + '</td>';
-                            var currency = '<td id="team_for_update_currency">' + user['currency'] + '</td>';
                             var btn = '<td><span onclick="delete_staff(' + user['id'] + ');"><i class="fa fa-trash" style="color: red;"></i></span></td>';
 
-                            if (payment_type == 2 || payment_type == 3) {
-                                $("#team_for_update_percentage").css('display', 'table-cell');
-                                $("#team_for_update_hourly_rate").css('display', 'table-cell');
-                                $("#team_for_update_currency").css('display', 'table-cell');
-                            } else {
-                                percentage = '';
-                                hourly_rate = '';
-                                currency = '';
-                                $("#team_for_update_percentage").css('display', 'none');
-                                $("#team_for_update_hourly_rate").css('display', 'none');
-                                $("#team_for_update_currency").css('display', 'none');
-                            }
-
-                            tr = '<tr id="staff_row_' + user['id'] + '">' + row + name + surname + percentage + hourly_rate + currency + btn + '</tr>';
+                            tr = '<tr id="staff_row_' + user['id'] + '">' + row + name + surname + btn + '</tr>';
 
                             table = table + tr;
                         }

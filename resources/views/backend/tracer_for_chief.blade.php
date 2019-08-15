@@ -55,6 +55,22 @@
             <div>
                 <table class="table table-bordered" id="projects_table">
                     <thead>
+                    <?php
+                    //billable sum
+                    $minute = $billable_sum * 10;
+                    $hour = round($minute/60, 1);
+                    $p_billable_sum = $hour . " hour(s)";
+
+                    //non billable sum
+                    $minute = $non_billable_sum * 10;
+                    $hour = round($minute/60, 1);
+                    $p_non_billable_sum = $hour . " hour(s)";
+                    ?>
+                    <tr>
+                        <th colspan="2">Total:</th>
+                        <td>{{$p_billable_sum}}</td>
+                        <td>{{$p_non_billable_sum}}</td>
+                    </tr>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Project</th>
@@ -73,16 +89,12 @@
                         <?php
                             //billable
                             $minute = $project->billable * 10;
-
                             $hour = round($minute / 60, 1);
-
                             $p_billable = $hour . " hour(s)";
 
                             //non billable
                             $minute = $project->non_billable * 10;
-
                             $hour = round($minute / 60, 1);
-
                             $p_non_billable = $hour . " hour(s)";
                         ?>
                         <tr ondblclick="show_tasks({{$project->id}});">
@@ -97,6 +109,11 @@
 
                 <table class="table table-bordered" id="tasks_table" style="display: none;">
                     <thead>
+                    <tr>
+                        <th colspan="3">Total:</th>
+                        <th id="sum_billable_task"></th>
+                        <th id="sum_non_billable_task"></th>
+                    </tr>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Task</th>
@@ -156,11 +173,12 @@
 
         function calculate_time(field) {
             var minute = field * 10;
+            var time;
 
             var hour = minute / 60;
             // minute = minute - (hour * 60);
 
-            var time = hour.toFixed(1) + " hour(s)";
+            time = hour.toFixed(1) + " hour(s)";
 
             return time;
         }
@@ -245,6 +263,9 @@
 
                                 table = table + tr;
                             }
+
+                            $("#sum_billable_task").html(calculate_time(task_billable));
+                            $("#sum_non_billable_task").html(calculate_time(task_non_billable));
 
                             $('#tasks_body').html(table);
 

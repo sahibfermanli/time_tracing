@@ -67,7 +67,7 @@
                         <select class="form-control form-control-sm" id="project_id_where" oninput="get_works_where(this, 'project');">
                             <option value="">Project</option>
                             @foreach($projects as $project)
-                                <option value="{{$project->id}}">{{$project->project}}</option>
+                                <option value="{{$project->id}}">{{$project->project}} | {{$project->client}} {{$project->fob}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -194,7 +194,7 @@
                                     <select id="project_id" class="form-control" required oninput="select_project();">
                                         <option value="">Select project</option>
                                         @foreach($projects as $project)
-                                            <option value="{{$project->id}}">{{$project->project}}</option>
+                                            <option value="{{$project->id}}">{{$project->project}} | {{$project->client}} {{$project->fob}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -368,8 +368,10 @@
 
                             for (var i=0; i<tasks.length; i++) {
                                 var task = tasks[i];
-                                option = '<option value="' + task['id'] + '">' + task['task'] + '</option>';
-                                options = options + option;
+                                if (task['time'] * 60 > task['act_time'])  {
+                                    option = '<option value="' + task['id'] + '">' + task['task'] + '</option>';
+                                    options = options + option;
+                                }
                             }
 
                             $('#task_id').html(options).prop('disabled', false);

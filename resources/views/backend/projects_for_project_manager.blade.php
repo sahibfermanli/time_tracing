@@ -23,14 +23,14 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
+                    <th scope="col">Client</th>
+                    <th scope="col">Client role</th>
                     <th scope="col">Project's type</th>
                     <th scope="col">Description</th>
                     <th scope="col">SCT</th>
                     <th scope="col">Fix payment</th>
                     <th scope="col">Total payment</th>
                     <th scope="col">Payment type</th>
-                    <th scope="col">Client</th>
-                    <th scope="col">Client role</th>
                     <th scope="col">Third parties</th>
                     <th scope="col">Project manager</th>
                     <th scope="col" style="width: 60px !important;">Team</th>
@@ -61,14 +61,14 @@
                     @endswitch
                     <tr onclick="row_select({{$project->id}});" id="row_{{$project->id}}" class="rows">
                         <th scope="row">{{$row}}</th>
+                        <td id="client_{{$project->id}}" client_id="{{$project->client_id}}" title="{{$project->client_director}}">{{$project->client_name}} {{$project->client_fob}}</td>
+                        <td id="client_role_{{$project->id}}" client_role_id="{{$project->client_role_id}}">{{$project->client_role}}</td>
                         <td id="project_{{$project->id}}">{{$project->project}}</td>
                         <td id="description_{{$project->id}}">{{$project->description}}</td>
                         <td id="time_{{$project->id}}">{{$project->time}}</td>
                         <td id="payment_{{$project->id}}" currency_id="{{$project->currency_id}}">{{$project->payment}} {{$project->currency}}</td>
                         <td id="currency_{{$project->id}}" currency_id="{{$project->currency_id}}">{{$project->total_payment}} {{$project->currency}}</td>
                         <td id="payment_type_{{$project->id}}" payment_type="{{$project->payment_type}}">{{$pay_type}}</td>
-                        <td id="client_{{$project->id}}" client_id="{{$project->client_id}}" title="{{$project->client_director}}">{{$project->client_name}} {{$project->client_fob}}</td>
-                        <td id="client_role_{{$project->id}}" client_role_id="{{$project->client_role_id}}">{{$project->client_role}}</td>
                         <td><span class="btn btn-primary btn-xs" onclick="show_third_parties({{$project->id}});">Show</span></td>
                         <td id="project_manager_{{$project->id}}" project_manager_id="{{$project->project_manager_id}}">{{$project->pm_name}} {{$project->pm_surname}}</td>
                         <td><span class="btn btn-primary btn-xs" onclick="show_team({{$project->id}}, {{$project->payment_type}});">Team</span></td>
