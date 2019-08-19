@@ -17,6 +17,48 @@
         <h5 class="card-header">
             Clients
         </h5>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div id="search-inputs-area" class="search-areas">
+                    <input type="text" class="form-control search-input" id="search_values" column_name="name" placeholder="name" value="{{$search_arr['name']}}">
+                    <input type="text" class="form-control search-input" id="search_values" column_name="representative" placeholder="representative" value="{{$search_arr['representative']}}">
+                    <input type="text" class="form-control search-input" id="search_values" column_name="email" placeholder="email" value="{{$search_arr['email']}}">
+                    <input type="text" class="form-control search-input" id="search_values" column_name="phone" placeholder="phone" value="{{$search_arr['phone']}}">
+                    <input type="text" class="form-control search-input" id="search_values" column_name="contract" placeholder="contract №" value="{{$search_arr['contract']}}">
+                    <select class="form-control search-input" id="search_values" column_name="country" style="min-width: 170px;">
+                        <option value="">Country</option>
+                        @foreach($countries as $country)
+                            @if($country->id == $search_arr['country'])
+                                <option selected value="{{$country->id}}">{{$country->country}}</option>
+                            @else
+                                <option value="{{$country->id}}">{{$country->country}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <select class="form-control search-input" style="min-width: 170px;" id="search_industry_id">
+                        <option value="">Industry</option>
+                        @foreach($industries as $industry)
+                            <option value="{{$industry->id}}">{{$industry->category}}</option>
+                        @endforeach
+                    </select>
+                    <select class="form-control search-input search_category_id" id="search_values" column_name="category" style="min-width: 170px;">
+                        <option value="">Select industry</option>
+                    </select>
+                    <button type="button" class="btn btn-primary" onclick="search_data();">Search</button>
+                </div>
+                <div id="search-type-area" class="search-areas">
+                    <label for="date_search">Search by date</label>
+                    <input type="checkbox" id="date_search" placeholder="max" onclick="date_area();">
+                    <span class="btn" onclick="today_for_date_area();">Today</span>
+                </div>
+                <div id="search-date-area" class="search-areas">
+                    <label for="start_date">Start</label>
+                    <input type="date" id="search_values" column_name="start_date" class="form-control search-input start_date_search" value="{{$search_arr['start_date']}}">
+                    <label for="end_date">End</label>
+                    <input type="date" id="search_values" column_name="end_date" class="form-control search-input end_date_search" value="{{$search_arr['end_date']}}">
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <div>
                 {!! $clients->links(); !!}
@@ -25,34 +67,34 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Representative</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">E-mail</th>
-                    <th scope="col">Phone</th>
-                    <th scope="col">Web site</th>
-                    <th scope="col">Country</th>
-                    <th scope="col">City</th>
-                    <th scope="col">Address</th>
-                    <th scope="col">Zip code</th>
-                    <th scope="col">TIN</th>
-                    <th scope="col">Account №</th>
-                    <th scope="col">Bank name</th>
-                    <th scope="col">Bank TIN</th>
-                    <th scope="col">Bank code</th>
-                    <th scope="col">Bank correspondent account</th>
-                    <th scope="col">Bank SWIFT BIK</th>
-                    <th scope="col">Contract №</th>
-                    <th scope="col">Contract date</th>
-                    <th scope="col">Created by</th>
-                    <th scope="col">Created date</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.name')">Name</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.director')">Representative</th>
+                    <th scope="col" class="columns" onclick="sort_by('c.category')">Category</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.email')">E-mail</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.phone')">Phone</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.web_site')">Web site</th>
+                    <th scope="col" class="columns" onclick="sort_by('ct.country')">Country</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.city')">City</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.address')">Address</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.zipcode')">Zip code</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.voen')">TIN</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.account_no')">Account №</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.bank_name')">Bank name</th>
+                    <th scope="col" class="columns" onclick="sort_by('bank_voen')">Bank TIN</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.bank_code')">Bank code</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.bank_m_n')">Bank correspondent account</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.bank_swift')">Bank SWIFT BIK</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.contract_no')">Contract №</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.contract_date')">Contract date</th>
+                    <th scope="col" class="columns" onclick="sort_by('created.name')">Created by</th>
+                    <th scope="col" class="columns" onclick="sort_by('clients.created_at')">Created date</th>
                 </tr>
                 </thead>
                 <tbody>
                 @php($row = 0)
                     @foreach($clients as $client)
                         @php($row++)
-                        <tr onclick="row_select({{$client->id}});" id="row_{{$client->id}}" class="rows">
+                        <tr ondblclick="get_projects({{$client->id}})" onclick="row_select({{$client->id}});" id="row_{{$client->id}}" class="rows">
                             <th scope="row">{{$row}}</th>
                             <td id="name_{{$client->id}}" form_of_business_id="{{$client->form_of_business_id}}" company_name="{{$client->name}}">{{$client->name}} {{$client->form_of_business}}</td>
                             <td id="director_{{$client->id}}">{{$client->director}}</td>
@@ -587,5 +629,62 @@
                 });
             }
         });
+
+        //show categories
+        $('#search_industry_id').change(function () {
+            var up_category_id = $(this).val();
+            if (up_category_id === 0 || up_category_id === '') {
+                var category_option = "<option value=''>Select industry</option>";
+                $('.search_category_id').html(category_option);
+            }
+            else {
+                swal({
+                    title: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Please wait...</span>',
+                    text: 'Loading, please wait...',
+                    showConfirmButton: false
+                });
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                $.ajax({
+                    type: "Post",
+                    url: '',
+                    data: {
+                        'up_id': up_category_id,
+                        '_token': CSRF_TOKEN,
+                        'type': 'show_categories'
+                    },
+                    success: function (response) {
+                        if (response.case === 'success') {
+                            swal.close();
+                            var categories = response.categories;
+                            var options = "<option value=''>Category</option>";
+                            var option = '';
+
+                            for (var i=0; i<categories.length; i++) {
+                                var category = categories[i];
+                                option = '<option value="' + category['id'] + '">' + category['category'] + '</option>';
+                                options = options + option;
+                            }
+
+                            $('.search_category_id').html(options).prop('disabled', false);
+                        }
+                        else {
+                            swal(
+                                response.title,
+                                response.content,
+                                response.case
+                            );
+                        }
+                    }
+                });
+            }
+        });
+
+        function get_projects(client_id) {
+            let old_url = window.location.href;
+            let url_arr = old_url.split("/clients");
+            let url;
+            url = url_arr[0] + '/projects?search=1&client=' + client_id;
+            location.href = url;
+        }
     </script>
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Clients;
 use App\Currencies;
+use App\ProjectList;
 use App\Projects;
 use App\Tasks;
 use App\TaskUser;
@@ -12,6 +13,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,35 +21,139 @@ class TaskController extends HomeController
 {
     //for manager
     public function get_tasks() {
-        $tasks = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')
+        $query = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')
             ->leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')
             ->leftJoin('clients as c', 'p.client_id', '=', 'c.id')
             ->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')
             ->leftJoin('currencies as cur', 'tasks.currency_id', '=', 'cur.id')
-            ->where(['tasks.deleted'=>0, 'p.deleted'=>0])
-            ->orderBy('tasks.id', 'DESC')
+            ->where(['tasks.deleted'=>0, 'p.deleted'=>0]);
+
+        $search_arr = array(
+            'task' => '',
+            'client' => '',
+            'project' => '',
+            'paymentType' => '',
+            'start_date' => '',
+            'end_date' => ''
+        );
+
+        if (!empty(Input::get('task')) && Input::get('task') != ''  && Input::get('task') != null) {
+            $where_task = Input::get('task');
+            $query->where('tasks.task', 'LIKE', '%'.$where_task.'%');
+            $search_arr['task'] = $where_task;
+        }
+
+        if (!empty(Input::get('client')) && Input::get('client') != ''  && Input::get('client') != null) {
+            $where_client = Input::get('client');
+            $query->where('p.client_id', $where_client);
+            $search_arr['client'] = $where_client;
+        }
+
+        if (!empty(Input::get('project')) && Input::get('project') != ''  && Input::get('project') != null) {
+            $where_project = Input::get('project');
+            $query->where('p.project', $where_project);
+            $search_arr['project'] = $where_project;
+        }
+
+        if (!empty(Input::get('paymentType')) && Input::get('paymentType') != ''  && Input::get('paymentType') != null) {
+            $where_payment_type = Input::get('paymentType');
+            $query->where('tasks.payment_type', $where_payment_type);
+            $search_arr['paymentType'] = $where_payment_type;
+        }
+
+        //short by start
+        $short_by = 'tasks.id';
+        $shortType = 'DESC';
+        if (!empty(Input::get('shortBy')) && Input::get('shortBy') != ''  && Input::get('shortBy') != null) {
+            $short_by = Input::get('shortBy');
+        }
+        if (!empty(Input::get('shortType')) && Input::get('shortType') != ''  && Input::get('shortType') != null) {
+            $short_type = Input::get('shortType');
+            if ($short_type == 2) {
+                $shortType = 'DESC';
+            } else {
+                $shortType = 'ASC';
+            }
+        }
+        //short by finish
+
+        $tasks = $query->orderBy($short_by, $shortType)
             ->select('tasks.id', 'tasks.task', 'tasks.created_at', 'tasks.deadline', 'tasks.project_id', 'p.project', 'created.name as created_name', 'created.surname as created_surname', 'c.name as client', 'fob.title as fob', 'p.client_id', 'tasks.currency_id', 'cur.currency', 'tasks.time', 'tasks.payment', 'tasks.total_payment', 'tasks.payment_type')
             ->paginate(30);
         $clients = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.deleted'=>0])->orderBy('clients.name')->select('clients.id', 'clients.name', 'fob.title as fob')->get();
         $currencies = Currencies::where(['deleted'=>0])->select('id', 'currency')->get();
+        $project_list = ProjectList::where(['deleted'=>0])->orderBy('project')->select('project')->get();
 
-        return view('backend.tasks')->with(['tasks'=>$tasks, 'clients'=>$clients, 'currencies'=>$currencies]);
+        return view('backend.tasks')->with(['tasks'=>$tasks, 'clients'=>$clients, 'currencies'=>$currencies, 'project_list'=>$project_list, 'search_arr'=>$search_arr]);
     }
 
     //for project manager
     public function get_tasks_for_project_manager() {
-        $tasks = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')
+        $query = Tasks::leftJoin('users as created', 'tasks.created_by', '=', 'created.id')
             ->leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')
             ->leftJoin('clients as c', 'p.client_id', '=', 'c.id')
             ->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')
             ->leftJoin('currencies as cur', 'tasks.currency_id', '=', 'cur.id')
-            ->where(['tasks.deleted'=>0, 'p.deleted'=>0, 'p.project_manager_id'=>Auth::id()])
+            ->where(['tasks.deleted'=>0, 'p.deleted'=>0, 'p.project_manager_id'=>Auth::id()]);
+
+        $search_arr = array(
+            'task' => '',
+            'client' => '',
+            'project' => '',
+            'paymentType' => '',
+            'start_date' => '',
+            'end_date' => ''
+        );
+
+        if (!empty(Input::get('task')) && Input::get('task') != ''  && Input::get('task') != null) {
+            $where_task = Input::get('task');
+            $query->where('tasks.task', 'LIKE', '%'.$where_task.'%');
+            $search_arr['task'] = $where_task;
+        }
+
+        if (!empty(Input::get('client')) && Input::get('client') != ''  && Input::get('client') != null) {
+            $where_client = Input::get('client');
+            $query->where('p.client_id', $where_client);
+            $search_arr['client'] = $where_client;
+        }
+
+        if (!empty(Input::get('project')) && Input::get('project') != ''  && Input::get('project') != null) {
+            $where_project = Input::get('project');
+            $query->where('p.project', $where_project);
+            $search_arr['project'] = $where_project;
+        }
+
+        if (!empty(Input::get('paymentType')) && Input::get('paymentType') != ''  && Input::get('paymentType') != null) {
+            $where_payment_type = Input::get('paymentType');
+            $query->where('tasks.payment_type', $where_payment_type);
+            $search_arr['paymentType'] = $where_payment_type;
+        }
+
+        //short by start
+        $short_by = 'tasks.id';
+        $shortType = 'DESC';
+        if (!empty(Input::get('shortBy')) && Input::get('shortBy') != ''  && Input::get('shortBy') != null) {
+            $short_by = Input::get('shortBy');
+        }
+        if (!empty(Input::get('shortType')) && Input::get('shortType') != ''  && Input::get('shortType') != null) {
+            $short_type = Input::get('shortType');
+            if ($short_type == 2) {
+                $shortType = 'DESC';
+            } else {
+                $shortType = 'ASC';
+            }
+        }
+        //short by finish
+
+        $tasks = $query->orderBy($short_by, $shortType)
             ->select('tasks.id', 'tasks.task', 'tasks.created_at', 'tasks.deadline', 'tasks.project_id', 'p.project', 'created.name as created_name', 'created.surname as created_surname', 'c.name as client', 'fob.title as fob', 'p.client_id', 'tasks.currency_id', 'cur.currency', 'tasks.time', 'tasks.payment', 'tasks.total_payment', 'tasks.payment_type')
             ->paginate(30);
+
         $clients = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.deleted'=>0])->orderBy('clients.name')->select('clients.id', 'clients.name', 'fob.title as fob')->get();
         $currencies = Currencies::where(['deleted'=>0])->select('id', 'currency')->get();
+        $project_list = ProjectList::where(['deleted'=>0])->orderBy('project')->select('project')->get();
 
-        return view('backend.tasks')->with(['tasks'=>$tasks, 'clients'=>$clients, 'currencies'=>$currencies]);
+        return view('backend.tasks')->with(['tasks'=>$tasks, 'clients'=>$clients, 'currencies'=>$currencies, 'project_list'=>$project_list, 'search_arr'=>$search_arr]);
     }
 
     //for manager

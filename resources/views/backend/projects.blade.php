@@ -17,6 +17,65 @@
         <h5 class="card-header">
             Projects
         </h5>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div id="search-inputs-area" class="search-areas">
+                    <input type="text" class="form-control search-input" id="search_values" column_name="description" placeholder="description" value="{{$search_arr['description']}}">
+                    <select class="form-control search-input" id="search_values" column_name="client" style="min-width: 170px;">
+                        <option value="">Client</option>
+                        @foreach($clients as $client)
+                            @if($client->id == $search_arr['client'])
+                                <option selected value="{{$client->id}}">{{$client->name}} {{$client->fob}}</option>
+                            @else
+                                <option value="{{$client->id}}">{{$client->name}} {{$client->fob}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <select class="form-control search-input" id="search_values" column_name="role" style="min-width: 170px;">
+                        <option value="">Client role</option>
+                        @foreach($client_roles as $client_role)
+                            @if($client_role->id == $search_arr['role'])
+                                <option selected value="{{$client_role->id}}">{{$client_role->role}}</option>
+                            @else
+                                <option value="{{$client_role->id}}">{{$client_role->role}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <select class="form-control search-input" id="search_values" column_name="project" style="min-width: 170px;">
+                        <option value="">Project's type</option>
+                        @foreach($project_list as $project)
+                            @if($project->project == $search_arr['project'])
+                                <option selected value="{{$project->project}}">{{$project->project}}</option>
+                            @else
+                                <option value="{{$project->project}}">{{$project->project}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <select class="form-control search-input" id="search_values" column_name="manager" style="min-width: 170px;">
+                        <option value="">Project manager</option>
+                        @foreach($project_managers as $project_manager)
+                            @if($project_manager->id == $search_arr['manager'])
+                                <option selected value="{{$project_manager->id}}">{{$project_manager->name}} {{$project_manager->surname}}</option>
+                            @else
+                                <option value="{{$project_manager->id}}">{{$project_manager->name}} {{$project_manager->surname}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <button type="button" class="btn btn-primary" onclick="search_data();">Search</button>
+                </div>
+                <div id="search-type-area" class="search-areas">
+                    <label for="date_search">Search by date</label>
+                    <input type="checkbox" id="date_search" placeholder="max" onclick="date_area();">
+                    <span class="btn" onclick="today_for_date_area();">Today</span>
+                </div>
+                <div id="search-date-area" class="search-areas">
+                    <label for="start_date">Start</label>
+                    <input type="date" id="search_values" column_name="start_date" class="form-control search-input start_date_search" value="{{$search_arr['start_date']}}">
+                    <label for="end_date">End</label>
+                    <input type="date" id="search_values" column_name="end_date" class="form-control search-input end_date_search" value="{{$search_arr['end_date']}}">
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <div>
                 {!! $projects->links(); !!}
@@ -25,24 +84,24 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Client</th>
-                    <th scope="col">Client role</th>
-                    <th scope="col">Project's type</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">SCT</th>
-                    <th scope="col">Total payment</th>
+                    <th scope="col" class="columns" onclick="sort_by('c.name')">Client</th>
+                    <th scope="col" class="columns" onclick="sort_by('cr.role')">Client role</th>
+                    <th scope="col" class="columns" onclick="sort_by('projects.project')">Project's type</th>
+                    <th scope="col" class="columns" onclick="sort_by('projects.description')">Description</th>
+                    <th scope="col" class="columns" onclick="sort_by('projects.time')">SCT</th>
+                    <th scope="col" class="columns" onclick="sort_by('projects.total_payment')">Total payment</th>
                     <th scope="col">Third parties</th>
-                    <th scope="col">Project manager</th>
+                    <th scope="col" class="columns" onclick="sort_by('pm.name')">Project manager</th>
                     <th scope="col" style="width: 60px !important;">Team</th>
-                    <th scope="col">Created date</th>
-                    <th scope="col">Created by</th>
+                    <th scope="col" class="columns" onclick="sort_by('projects.created_at')">Created date</th>
+                    <th scope="col" class="columns" onclick="sort_by('created.name')">Created by</th>
                 </tr>
                 </thead>
                 <tbody>
                 @php($row = 0)
                     @foreach($projects as $project)
                         @php($row++)
-                        <tr onclick="row_select({{$project->id}});" id="row_{{$project->id}}" class="rows">
+                        <tr ondblclick="get_tasks('{{$project->project}}')" onclick="row_select({{$project->id}});" id="row_{{$project->id}}" class="rows">
                             <th scope="row">{{$row}}</th>
                             <td id="client_{{$project->id}}" client_id="{{$project->client_id}}" title="{{$project->client_director}}">{{$project->client_name}} {{$project->client_fob}}</td>
                             <td id="client_role_{{$project->id}}" client_role_id="{{$project->client_role_id}}">{{$project->client_role}}</td>
@@ -1088,6 +1147,14 @@
                     return false;
                 }
             });
+        }
+
+        function get_tasks(project_name) {
+            let old_url = window.location.href;
+            let url_arr = old_url.split("/projects");
+            let url;
+            url = url_arr[0] + '/tasks?search=1&project=' + project_name;
+            location.href = url;
         }
     </script>
 @endsection

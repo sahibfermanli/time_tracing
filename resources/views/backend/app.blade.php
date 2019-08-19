@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="/assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="/assets/vendor/charts/c3charts/c3.css">
     <link rel="stylesheet" href="/assets/vendor/fonts/flag-icon-css/flag-icon.min.css">
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/main.css?v=1.1">
     @yield('css')
     <title>Time tracer</title>
 </head>
@@ -327,6 +327,7 @@
 <script src="/assets/vendor/charts/c3charts/d3-5.4.0.min.js"></script>
 <script src="/assets/vendor/charts/c3charts/C3chartjs.js"></script>
 <script src="/assets/libs/js/dashboard-ecommerce.js"></script>
+<script src="/js/search.js"></script>
 
 @yield('js')
 </body>

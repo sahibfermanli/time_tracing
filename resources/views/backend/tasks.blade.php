@@ -17,6 +17,84 @@
         <h5 class="card-header">
             Tasks
         </h5>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div id="search-inputs-area" class="search-areas">
+                    <input type="text" class="form-control search-input" id="search_values" column_name="task" placeholder="task description" value="{{$search_arr['task']}}">
+                    <select class="form-control search-input" id="search_values" column_name="client" style="min-width: 170px;">
+                        <option value="">Client</option>
+                        @foreach($clients as $client)
+                            @if($client->id == $search_arr['client'])
+                                <option selected value="{{$client->id}}">{{$client->name}} {{$client->fob}}</option>
+                            @else
+                                <option value="{{$client->id}}">{{$client->name}} {{$client->fob}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <select class="form-control search-input" id="search_values" column_name="project" style="min-width: 170px;">
+                        <option value="">Project's type</option>
+                        @foreach($project_list as $project)
+                            @if($project->project == $search_arr['project'])
+                                <option selected value="{{$project->project}}">{{$project->project}}</option>
+                            @else
+                                <option value="{{$project->project}}">{{$project->project}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <select class="form-control search-input" id="search_values" column_name="paymentType" style="min-width: 170px;">
+                        <option value="">Payment type</option>
+                        @switch($search_arr['paymentType'])
+                            @case(1)
+                            <option value="">Select</option>
+                            <option selected value="1">Fixed Fee</option>
+                            <option value="2">Cap Fee</option>
+                            <option value="3">Hourly rate</option>
+                            <option value="4">Monthly Fee</option>
+                            @break
+                            @case(2)
+                            <option value="">Select</option>
+                            <option value="1">Fixed Fee</option>
+                            <option selected value="2">Cap Fee</option>
+                            <option value="3">Hourly rate</option>
+                            <option value="4">Monthly Fee</option>
+                            @break
+                            @case(3)
+                            <option value="">Select</option>
+                            <option value="1">Fixed Fee</option>
+                            <option value="2">Cap Fee</option>
+                            <option selected value="3">Hourly rate</option>
+                            <option value="4">Monthly Fee</option>
+                            @break
+                            @case(4)
+                            <option value="">Select</option>
+                            <option value="1">Fixed Fee</option>
+                            <option value="2">Cap Fee</option>
+                            <option value="3">Hourly rate</option>
+                            <option selected value="4">Monthly Fee</option>
+                            @break
+                            @default()
+                            <option selected value="">Select</option>
+                            <option value="1">Fixed Fee</option>
+                            <option value="2">Cap Fee</option>
+                            <option value="3">Hourly rate</option>
+                            <option value="4">Monthly Fee</option>
+                        @endswitch
+                    </select>
+                    <button type="button" class="btn btn-primary" onclick="search_data();">Search</button>
+                </div>
+                <div id="search-type-area" class="search-areas">
+                    <label for="date_search">Search by date</label>
+                    <input type="checkbox" id="date_search" placeholder="max" onclick="date_area();">
+                    <span class="btn" onclick="today_for_date_area();">Today</span>
+                </div>
+                <div id="search-date-area" class="search-areas">
+                    <label for="start_date">Start</label>
+                    <input type="date" id="search_values" column_name="start_date" class="form-control search-input start_date_search" value="{{$search_arr['start_date']}}">
+                    <label for="end_date">End</label>
+                    <input type="date" id="search_values" column_name="end_date" class="form-control search-input end_date_search" value="{{$search_arr['end_date']}}">
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <div>
                 {!! $tasks->links(); !!}
@@ -25,17 +103,17 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Client</th>
-                    <th scope="col">Project</th>
-                    <th scope="col">Task description</th>
+                    <th scope="col" class="columns" onclick="sort_by('c.name')">Client</th>
+                    <th scope="col" class="columns" onclick="sort_by('p.project')">Project</th>
+                    <th scope="col" class="columns" onclick="sort_by('tasks.task')">Task description</th>
                     <th scope="col">Staff</th>
-                    <th scope="col">Deadline</th>
-                    <th scope="col">SCT</th>
-                    <th scope="col">Fix payment</th>
-                    <th scope="col">Total payment</th>
+                    <th scope="col" class="columns" onclick="sort_by('tasks.deadline')">Deadline</th>
+                    <th scope="col" class="columns" onclick="sort_by('tasks.time')">SCT</th>
+                    <th scope="col" class="columns" onclick="sort_by('tasks.payment')">Fix payment</th>
+                    <th scope="col" class="columns" onclick="sort_by('tasks.total_payment')">Total payment</th>
                     <th scope="col">Payment type</th>
-                    <th scope="col">Created date</th>
-                    <th scope="col">Created by</th>
+                    <th scope="col" class="columns" onclick="sort_by('tasks.created_at')">Created date</th>
+                    <th scope="col" class="columns" onclick="sort_by('created.name')">Created by</th>
                 </tr>
                 </thead>
                 <tbody>

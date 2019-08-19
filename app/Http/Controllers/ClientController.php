@@ -7,21 +7,116 @@ use App\Clients;
 use App\Countries;
 use App\FormOfBusiness;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class ClientController extends HomeController
 {
     public function get_clients() {
-        $clients = Clients::leftJoin('users as created', 'clients.created_by', '=', 'created.id')->leftJoin('categories as c', 'clients.category_id', '=', 'c.id')->leftJoin('countries as ct', 'clients.country_id', '=', 'ct.id')->leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.deleted'=>0])->select('clients.*', 'created.name as created_name', 'created.surname as created_surname', 'c.category as category', 'clients.country_id', 'ct.country', 'clients.city', 'clients.form_of_business_id', 'fob.title as form_of_business')->paginate(30);
+        $query = Clients::leftJoin('users as created', 'clients.created_by', '=', 'created.id')
+            ->leftJoin('categories as c', 'clients.category_id', '=', 'c.id')
+            ->leftJoin('countries as ct', 'clients.country_id', '=', 'ct.id')
+            ->leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')
+            ->where(['clients.deleted'=>0]);
+
+        $search_arr = array(
+            'name' => '',
+            'representative' => '',
+            'email' => '',
+            'phone' => '',
+            'contract' => '',
+            'country' => '',
+            'category' => '',
+            'start_date' => '',
+            'end_date' => ''
+        );
+
+        if (!empty(Input::get('name')) && Input::get('name') != ''  && Input::get('name') != null) {
+            $where_name = Input::get('name');
+            $query->where('clients.name', 'LIKE', '%'.$where_name.'%');
+            $search_arr['name'] = $where_name;
+        }
+
+        if (!empty(Input::get('representative')) && Input::get('representative') != ''  && Input::get('representative') != null) {
+            $where_representative = Input::get('representative');
+            $query->where('clients.director', 'LIKE', '%'.$where_representative.'%');
+            $search_arr['representative'] = $where_representative;
+        }
+
+        if (!empty(Input::get('email')) && Input::get('email') != ''  && Input::get('email') != null) {
+            $where_email = Input::get('email');
+            $query->where('clients.email', 'LIKE', '%'.$where_email.'%');
+            $search_arr['email'] = $where_email;
+        }
+
+        if (!empty(Input::get('phone')) && Input::get('phone') != ''  && Input::get('phone') != null) {
+            $where_phone = Input::get('phone');
+            $query->where('clients.phone', 'LIKE', '%'.$where_phone.'%');
+            $search_arr['phone'] = $where_phone;
+        }
+
+        if (!empty(Input::get('contract')) && Input::get('contract') != ''  && Input::get('contract') != null) {
+            $where_contract = Input::get('contract');
+            $query->where('clients.contract_no', 'LIKE', '%'.$where_contract.'%');
+            $search_arr['contract'] = $where_contract;
+        }
+
+        if (!empty(Input::get('country')) && Input::get('country') != ''  && Input::get('country') != null) {
+            $where_country = Input::get('country');
+            $query->where('clients.country_id', $where_country);
+            $search_arr['country'] = $where_country;
+        }
+
+        if (!empty(Input::get('category')) && Input::get('category') != ''  && Input::get('category') != null) {
+            $where_category = Input::get('category');
+            $query->where('clients.category_id', $where_category);
+            $search_arr['category'] = $where_category;
+        }
+
+        if (!empty(Input::get('start_date')) && Input::get('start_date') != ''  && Input::get('start_date') != null) {
+            $where_start_date = Input::get('start_date');
+            $query->where('clients.created_at', '>=', $where_start_date);
+            $search_arr['start_date'] = $where_start_date;
+        }
+
+        if (!empty(Input::get('end_date')) && Input::get('end_date') != ''  && Input::get('end_date') != null) {
+            $where_end_date = Input::get('end_date');
+            $search_arr['end_date'] = $where_end_date;
+            $where_end_date = new DateTime($where_end_date);
+            $where_end_date = $where_end_date->modify('+1 day');
+            $query->where('clients.created_at', '<=', $where_end_date);
+        }
+
+        //short by start
+        $short_by = 'clients.id';
+        $shortType = 'DESC';
+        if (!empty(Input::get('shortBy')) && Input::get('shortBy') != ''  && Input::get('shortBy') != null) {
+            $short_by = Input::get('shortBy');
+        }
+        if (!empty(Input::get('shortType')) && Input::get('shortType') != ''  && Input::get('shortType') != null) {
+            $short_type = Input::get('shortType');
+            if ($short_type == 2) {
+                $shortType = 'DESC';
+            } else {
+                $shortType = 'ASC';
+            }
+        }
+        //short by finish
+
+        $clients = $query->orderBy($short_by, $shortType)
+            ->select('clients.*', 'created.name as created_name', 'created.surname as created_surname', 'c.category as category', 'ct.country', 'fob.title as form_of_business')
+            ->paginate(30);
+
         $industries = Categories::where('up_category', '=', 0)->where(['deleted'=>0])->select('id', 'category')->get();
         $categories = Categories::where('up_category', '<>', 0)->where(['deleted'=>0])->select('id', 'category')->get();
         $form_of_businesses = FormOfBusiness::where(['deleted'=>0])->select('id', 'title')->get();
         $countries = Countries::where(['deleted'=>0])->select('id', 'country')->get();
 
-        return view('backend.clients')->with(['clients'=>$clients, 'categories'=>$categories, 'form_of_businesses'=>$form_of_businesses, 'countries'=>$countries, 'industries'=>$industries]);
+        return view('backend.clients')->with(['clients'=>$clients, 'categories'=>$categories, 'form_of_businesses'=>$form_of_businesses, 'countries'=>$countries, 'industries'=>$industries, 'search_arr'=>$search_arr]);
     }
 
     public function post_clients(Request $request) {

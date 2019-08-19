@@ -18,6 +18,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -25,7 +26,74 @@ class ProjectController extends HomeController
 {
     //for manager
     public function get_projects() {
-        $projects = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')->leftJoin('client_roles as cr', 'projects.client_role_id', '=', 'cr.id')->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')->leftJoin('users as pm', 'projects.project_manager_id', '=', 'pm.id')->leftJoin('currencies as cur', 'projects.currency_id', '=', 'cur.id')->where(['projects.deleted'=>0])->orderBy('projects.id', 'DESC')->select('projects.id', 'projects.project', 'projects.description', 'projects.time', 'projects.total_payment', 'projects.currency_id', 'cur.currency', 'projects.created_at', 'projects.client_id', 'projects.client_role_id', 'c.name as client_name', 'fob.title as client_fob', 'c.director as client_director', 'cr.role as client_role', 'created.name as created_name', 'created.surname as created_surname', 'projects.project_manager_id', 'pm.name as pm_name', 'pm.surname as pm_surname')->paginate(30);
+        $query = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')
+            ->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')
+            ->leftJoin('client_roles as cr', 'projects.client_role_id', '=', 'cr.id')
+            ->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')
+            ->leftJoin('users as pm', 'projects.project_manager_id', '=', 'pm.id')
+            ->leftJoin('currencies as cur', 'projects.currency_id', '=', 'cur.id')
+            ->where(['projects.deleted'=>0]);
+
+        $search_arr = array(
+            'description' => '',
+            'client' => '',
+            'role' => '',
+            'project' => '',
+            'manager' => '',
+            'start_date' => '',
+            'end_date' => ''
+        );
+
+        if (!empty(Input::get('description')) && Input::get('description') != ''  && Input::get('description') != null) {
+            $where_description = Input::get('description');
+            $query->where('projects.description', 'LIKE', '%'.$where_description.'%');
+            $search_arr['description'] = $where_description;
+        }
+
+        if (!empty(Input::get('client')) && Input::get('client') != ''  && Input::get('client') != null) {
+            $where_client = Input::get('client');
+            $query->where('projects.client_id', $where_client);
+            $search_arr['client'] = $where_client;
+        }
+
+        if (!empty(Input::get('role')) && Input::get('role') != ''  && Input::get('role') != null) {
+            $where_role = Input::get('role');
+            $query->where('projects.client_role_id', $where_role);
+            $search_arr['role'] = $where_role;
+        }
+
+        if (!empty(Input::get('project')) && Input::get('project') != ''  && Input::get('project') != null) {
+            $where_project = Input::get('project');
+            $query->where('projects.project', $where_project);
+            $search_arr['project'] = $where_project;
+        }
+
+        if (!empty(Input::get('manager')) && Input::get('manager') != ''  && Input::get('manager') != null) {
+            $where_manager = Input::get('manager');
+            $query->where('projects.project_manager_id', $where_manager);
+            $search_arr['manager'] = $where_manager;
+        }
+
+        //short by start
+        $short_by = 'projects.id';
+        $shortType = 'DESC';
+        if (!empty(Input::get('shortBy')) && Input::get('shortBy') != ''  && Input::get('shortBy') != null) {
+            $short_by = Input::get('shortBy');
+        }
+        if (!empty(Input::get('shortType')) && Input::get('shortType') != ''  && Input::get('shortType') != null) {
+            $short_type = Input::get('shortType');
+            if ($short_type == 2) {
+                $shortType = 'DESC';
+            } else {
+                $shortType = 'ASC';
+            }
+        }
+        //short by finish
+
+        $projects = $query->orderBy($short_by, $shortType)
+            ->select('projects.id', 'projects.project', 'projects.description', 'projects.time', 'projects.total_payment', 'projects.currency_id', 'cur.currency', 'projects.created_at', 'projects.client_id', 'projects.client_role_id', 'c.name as client_name', 'fob.title as client_fob', 'c.director as client_director', 'cr.role as client_role', 'created.name as created_name', 'created.surname as created_surname', 'projects.project_manager_id', 'pm.name as pm_name', 'pm.surname as pm_surname')
+            ->paginate(30);
+
         $project_managers = User::where(['deleted'=>0])->whereIn('role_id', [4, 1])->orderBy('name')->select('id', 'name', 'surname')->get();
         $users = User::where(['deleted'=>0, 'role_id'=>2])->orderBy('name')->select('id', 'name', 'surname')->get();
         $clients = Clients::leftJoin('form_of_business as fob', 'clients.form_of_business_id', '=', 'fob.id')->where(['clients.deleted'=>0])->orderBy('clients.name')->select('clients.id', 'clients.name', 'fob.title as fob')->get();
@@ -36,12 +104,78 @@ class ProjectController extends HomeController
         $form_of_businesses = FormOfBusiness::where(['deleted'=>0])->select('id', 'title')->get();
         $countries = Countries::where(['deleted'=>0])->select('id', 'country')->get();
 
-        return view('backend.projects')->with(['projects'=>$projects, 'project_managers'=>$project_managers, 'clients'=>$clients, 'project_list'=>$project_list, 'users'=>$users, 'client_roles'=>$client_roles, 'form_of_businesses'=>$form_of_businesses, 'countries'=>$countries, 'industries'=>$industries]);
+        return view('backend.projects')->with(['projects'=>$projects, 'project_managers'=>$project_managers, 'clients'=>$clients, 'project_list'=>$project_list, 'users'=>$users, 'client_roles'=>$client_roles, 'form_of_businesses'=>$form_of_businesses, 'countries'=>$countries, 'industries'=>$industries, 'search_arr'=>$search_arr]);
     }
 
     //for project manager
     public function get_projects_for_project_manager() {
-        $projects = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')->leftJoin('client_roles as cr', 'projects.client_role_id', '=', 'cr.id')->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')->leftJoin('users as pm', 'projects.project_manager_id', '=', 'pm.id')->leftJoin('currencies as cur', 'projects.currency_id', '=', 'cur.id')->where(['projects.deleted'=>0, 'project_manager_id'=>Auth::id()])->orderBy('projects.id', 'DESC')->select('projects.id', 'projects.project', 'projects.description', 'projects.time', 'projects.total_payment', 'projects.currency_id', 'cur.currency', 'projects.created_at', 'projects.client_id', 'projects.client_role_id', 'c.name as client_name', 'fob.title as client_fob', 'c.director as client_director', 'cr.role as client_role', 'created.name as created_name', 'created.surname as created_surname', 'projects.project_manager_id', 'pm.name as pm_name', 'pm.surname as pm_surname')->paginate(30);
+        $query = Projects::leftJoin('users as created', 'projects.created_by', '=', 'created.id')
+            ->leftJoin('clients as c', 'projects.client_id', '=', 'c.id')
+            ->leftJoin('client_roles as cr', 'projects.client_role_id', '=', 'cr.id')
+            ->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')
+            ->leftJoin('users as pm', 'projects.project_manager_id', '=', 'pm.id')
+            ->leftJoin('currencies as cur', 'projects.currency_id', '=', 'cur.id')
+            ->where(['projects.deleted'=>0, 'project_manager_id'=>Auth::id()]);
+
+        $search_arr = array(
+            'description' => '',
+            'client' => '',
+            'role' => '',
+            'project' => '',
+            'manager' => '',
+            'start_date' => '',
+            'end_date' => ''
+        );
+
+        if (!empty(Input::get('description')) && Input::get('description') != ''  && Input::get('description') != null) {
+            $where_description = Input::get('description');
+            $query->where('projects.description', 'LIKE', '%'.$where_description.'%');
+            $search_arr['description'] = $where_description;
+        }
+
+        if (!empty(Input::get('client')) && Input::get('client') != ''  && Input::get('client') != null) {
+            $where_client = Input::get('client');
+            $query->where('projects.client_id', $where_client);
+            $search_arr['client'] = $where_client;
+        }
+
+        if (!empty(Input::get('role')) && Input::get('role') != ''  && Input::get('role') != null) {
+            $where_role = Input::get('role');
+            $query->where('projects.client_role_id', $where_role);
+            $search_arr['role'] = $where_role;
+        }
+
+        if (!empty(Input::get('project')) && Input::get('project') != ''  && Input::get('project') != null) {
+            $where_project = Input::get('project');
+            $query->where('projects.project', $where_project);
+            $search_arr['project'] = $where_project;
+        }
+
+        if (!empty(Input::get('manager')) && Input::get('manager') != ''  && Input::get('manager') != null) {
+            $where_manager = Input::get('manager');
+            $query->where('projects.project_manager_id', $where_manager);
+            $search_arr['manager'] = $where_manager;
+        }
+
+        //short by start
+        $short_by = 'projects.id';
+        $shortType = 'DESC';
+        if (!empty(Input::get('shortBy')) && Input::get('shortBy') != ''  && Input::get('shortBy') != null) {
+            $short_by = Input::get('shortBy');
+        }
+        if (!empty(Input::get('shortType')) && Input::get('shortType') != ''  && Input::get('shortType') != null) {
+            $short_type = Input::get('shortType');
+            if ($short_type == 2) {
+                $shortType = 'DESC';
+            } else {
+                $shortType = 'ASC';
+            }
+        }
+        //short by finish
+
+        $projects = $query->orderBy($short_by, $shortType)
+            ->select('projects.id', 'projects.project', 'projects.description', 'projects.time', 'projects.total_payment', 'projects.currency_id', 'cur.currency', 'projects.created_at', 'projects.client_id', 'projects.client_role_id', 'c.name as client_name', 'fob.title as client_fob', 'c.director as client_director', 'cr.role as client_role', 'created.name as created_name', 'created.surname as created_surname', 'projects.project_manager_id', 'pm.name as pm_name', 'pm.surname as pm_surname')
+            ->paginate(30);
 
         $project_managers = User::where(['deleted'=>0])->whereIn('role_id', [4, 1])->orderBy('name')->select('id', 'name', 'surname')->get();
         $users = User::where(['deleted'=>0, 'role_id'=>2])->orderBy('name')->select('id', 'name', 'surname')->get();
@@ -53,7 +187,7 @@ class ProjectController extends HomeController
         $form_of_businesses = FormOfBusiness::where(['deleted'=>0])->select('id', 'title')->get();
         $countries = Countries::where(['deleted'=>0])->select('id', 'country')->get();
 
-        return view('backend.projects_for_project_manager')->with(['projects'=>$projects, 'project_managers'=>$project_managers, 'clients'=>$clients, 'project_list'=>$project_list, 'users'=>$users, 'client_roles'=>$client_roles, 'form_of_businesses'=>$form_of_businesses, 'countries'=>$countries, 'industries'=>$industries]);
+        return view('backend.projects_for_project_manager')->with(['projects'=>$projects, 'project_managers'=>$project_managers, 'clients'=>$clients, 'project_list'=>$project_list, 'users'=>$users, 'client_roles'=>$client_roles, 'form_of_businesses'=>$form_of_businesses, 'countries'=>$countries, 'industries'=>$industries, 'search_arr'=>$search_arr]);
     }
 
     //for manager
