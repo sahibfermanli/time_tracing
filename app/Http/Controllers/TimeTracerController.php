@@ -12,6 +12,7 @@ use App\Works;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,12 +21,24 @@ class TimeTracerController extends HomeController
     //for user
     public function get_time_tracer()
     {
-        $today = Carbon::today();
+        if (!empty(Input::get('date')) && Input::get('date') != ''  && Input::get('date') != null) {
+            $date = Input::get('date');
+
+            if ($date > Carbon::today()) {
+                Session::flash('message', 'You cannot select the date after this day!');
+                Session::flash('class', 'warning');
+                Session::flash('display', 'block');
+                $date = Carbon::today();
+            }
+        } else {
+            $date = Carbon::today();
+        }
+
         $fields = Fields::where(['deleted' => 0])->select('id', 'start_time', 'end_time')->orderBy('start_time')->limit(48)->get();
         $tasks = TaskUser::leftJoin('tasks as t', 'task_user.task_id', '=', 't.id')->where(['task_user.user_id' => Auth::id(), 't.deleted' => 0])->orderBy('t.task')->select('t.id', 't.task')->get();
         $non_billable_codes = NonBillableCodes::where(['deleted' => 0])->select('id', 'title')->get();
-        $full_fields = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0])->whereDate('works.created_at', $today)->select('works.field_id', 'works.work', 'works.color', 't.task')->get();
-        $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0])->whereDate('works.created_at', $today)->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'works.same_work', 'works.completed')->get();
+        $full_fields = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0])->whereDate('works.date', $date)->select('works.field_id', 'works.work', 'works.color', 't.task')->get();
+        $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0])->whereDate('works.date', $date)->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'works.same_work', 'works.completed')->get();
         $projects = TaskUser::leftJoin('tasks as t', 'task_user.task_id', '=', 't.id')
             ->leftJoin('projects as p', 't.project_id', '=', 'p.id')
             ->leftJoin('clients as c', 'p.client_id', '=', 'c.id')
@@ -36,9 +49,72 @@ class TimeTracerController extends HomeController
             ->select('p.id', 'p.project', 'c.name as client', 'fob.title as fob')
             ->get();
 
-        return view('backend.time_tracer')->with(['fields' => $fields, 'tasks' => $tasks, 'non_billable_codes' => $non_billable_codes, 'full_fields' => $full_fields, 'works' => $works, 'projects' => $projects]);
+        return view('backend.time_tracer')->with(['fields' => $fields, 'tasks' => $tasks, 'non_billable_codes' => $non_billable_codes, 'full_fields' => $full_fields, 'works' => $works, 'projects' => $projects, 'date'=>$date]);
     }
 
+    //for project manager
+    public function get_time_tracer_for_project_manager()
+    {
+        if (!empty(Input::get('date')) && Input::get('date') != ''  && Input::get('date') != null) {
+            $date = Input::get('date');
+
+            if ($date > Carbon::today()) {
+                Session::flash('message', 'You cannot select the date after this day!');
+                Session::flash('class', 'warning');
+                Session::flash('display', 'block');
+                $date = Carbon::today();
+            }
+        } else {
+            $date = Carbon::today();
+        }
+
+        $fields = Fields::where(['deleted' => 0])->select('id', 'start_time', 'end_time')->orderBy('start_time')->limit(48)->get();
+        $tasks = Tasks::leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->where(['tasks.deleted' => 0, 'p.deleted' => 0, 'p.project_manager_id' => Auth::id()])->orderBy('tasks.task')->select('tasks.id', 'tasks.task')->get();
+        $non_billable_codes = NonBillableCodes::where(['deleted' => 0])->select('id', 'title')->get();
+        $full_fields = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0])->whereDate('works.date', $date)->select('works.field_id', 'works.work', 'works.color', 't.task')->get();
+        $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0])->whereDate('works.date', $date)->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'works.same_work', 'works.completed')->get();
+        $projects = Projects::leftJoin('clients as c', 'projects.client_id', '=', 'c.id')
+            ->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')
+            ->where(['projects.deleted' => 0, 'projects.project_manager_id' => Auth::id()])
+            ->orderBy('projects.project')
+            ->select('projects.id', 'projects.project', 'c.name as client', 'fob.title as fob')
+            ->get();
+
+        return view('backend.time_tracer')->with(['fields' => $fields, 'tasks' => $tasks, 'non_billable_codes' => $non_billable_codes, 'full_fields' => $full_fields, 'works' => $works, 'projects' => $projects, 'date'=>$date]);
+    }
+
+    //for manager
+    public function get_time_tracer_for_manager()
+    {
+        if (!empty(Input::get('date')) && Input::get('date') != ''  && Input::get('date') != null) {
+            $date = Input::get('date');
+
+            if ($date > Carbon::today()) {
+                Session::flash('message', 'You cannot select the date after this day!');
+                Session::flash('class', 'warning');
+                Session::flash('display', 'block');
+                $date = Carbon::today();
+            }
+        } else {
+            $date = Carbon::today();
+        }
+
+        $fields = Fields::where(['deleted' => 0])->select('id', 'start_time', 'end_time')->orderBy('start_time')->limit(48)->get();
+        $tasks = Tasks::leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->where(['tasks.deleted' => 0, 'p.deleted' => 0])->orderBy('tasks.task')->select('tasks.id', 'tasks.task')->get();
+        $non_billable_codes = NonBillableCodes::where(['deleted' => 0])->select('id', 'title')->get();
+        $full_fields = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0])->whereDate('works.date', $date)->select('works.field_id', 'works.work', 'works.color', 't.task')->get();
+        $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0])->whereDate('works.date', $date)->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'works.same_work', 'works.completed')->get();
+        $projects = Projects::leftJoin('clients as c', 'projects.client_id', '=', 'c.id')
+            ->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')
+            ->where(['projects.deleted' => 0])
+            ->orderBy('projects.project')
+            ->select('projects.id', 'projects.project', 'c.name as client', 'fob.title as fob')
+            ->get();
+
+        return view('backend.time_tracer')->with(['fields' => $fields, 'tasks' => $tasks, 'non_billable_codes' => $non_billable_codes, 'full_fields' => $full_fields, 'works' => $works, 'projects' => $projects, 'date'=>$date]);
+    }
+
+    //post time tracer
     public function post_time_tracer(Request $request)
     {
         if ($request->type == 'add_work_with_field') {
@@ -92,17 +168,6 @@ class TimeTracerController extends HomeController
         return view('backend.tracer_for_chief', compact('projects', 'billable_sum', 'non_billable_sum'));
     }
 
-    public function post_tracer_for_chief(Request $request)
-    {
-        if ($request->type == 'show_tasks') {
-            return $this->show_tasks($request);
-        } else if ($request->type == 'show_works') {
-            return $this->show_works($request);
-        } else {
-            return response(['case' => 'error', 'title' => 'Oops!', 'content' => 'Operation not found!']);
-        }
-    }
-
     //for project manager
     public function get_tracer_for_project_manager()
     {
@@ -133,56 +198,38 @@ class TimeTracerController extends HomeController
         return view('backend.tracer_for_chief', compact('projects', 'billable_sum', 'non_billable_sum'));
     }
 
-    //for project manager
-    public function get_time_tracer_for_project_manager()
+    public function post_tracer_for_chief(Request $request)
     {
-        $today = Carbon::today();
-        $fields = Fields::where(['deleted' => 0])->select('id', 'start_time', 'end_time')->orderBy('start_time')->limit(48)->get();
-        $tasks = Tasks::leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->where(['tasks.deleted' => 0, 'p.deleted' => 0, 'p.project_manager_id' => Auth::id()])->orderBy('tasks.task')->select('tasks.id', 'tasks.task')->get();
-        $non_billable_codes = NonBillableCodes::where(['deleted' => 0])->select('id', 'title')->get();
-        $full_fields = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0])->whereDate('works.created_at', $today)->select('works.field_id', 'works.work', 'works.color', 't.task')->get();
-        $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0])->whereDate('works.created_at', $today)->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'works.same_work', 'works.completed')->get();
-        $projects = Projects::leftJoin('clients as c', 'projects.client_id', '=', 'c.id')
-            ->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')
-            ->where(['projects.deleted' => 0, 'projects.project_manager_id' => Auth::id()])
-            ->orderBy('projects.project')
-            ->select('projects.id', 'projects.project', 'c.name as client', 'fob.title as fob')
-            ->get();
-
-        return view('backend.time_tracer')->with(['fields' => $fields, 'tasks' => $tasks, 'non_billable_codes' => $non_billable_codes, 'full_fields' => $full_fields, 'works' => $works, 'projects' => $projects]);
-    }
-
-    //for manager
-    public function get_time_tracer_for_manager()
-    {
-        $today = Carbon::today();
-        $fields = Fields::where(['deleted' => 0])->select('id', 'start_time', 'end_time')->orderBy('start_time')->limit(48)->get();
-        $tasks = Tasks::leftJoin('projects as p', 'tasks.project_id', '=', 'p.id')->where(['tasks.deleted' => 0, 'p.deleted' => 0])->orderBy('tasks.task')->select('tasks.id', 'tasks.task')->get();
-        $non_billable_codes = NonBillableCodes::where(['deleted' => 0])->select('id', 'title')->get();
-        $full_fields = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0])->whereDate('works.created_at', $today)->select('works.field_id', 'works.work', 'works.color', 't.task')->get();
-        $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0])->whereDate('works.created_at', $today)->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'works.same_work', 'works.completed')->get();
-        $projects = Projects::leftJoin('clients as c', 'projects.client_id', '=', 'c.id')
-            ->leftJoin('form_of_business as fob', 'c.form_of_business_id', '=', 'fob.id')
-            ->where(['projects.deleted' => 0])
-            ->orderBy('projects.project')
-            ->select('projects.id', 'projects.project', 'c.name as client', 'fob.title as fob')
-            ->get();
-
-        return view('backend.time_tracer')->with(['fields' => $fields, 'tasks' => $tasks, 'non_billable_codes' => $non_billable_codes, 'full_fields' => $full_fields, 'works' => $works, 'projects' => $projects]);
+        if ($request->type == 'show_tasks') {
+            return $this->show_tasks($request);
+        } else if ($request->type == 'show_works') {
+            return $this->show_works($request);
+        } else {
+            return response(['case' => 'error', 'title' => 'Oops!', 'content' => 'Operation not found!']);
+        }
     }
 
     //complete works
     private function complete_works()
     {
         try {
-            $today = Carbon::today();
             $now = Carbon::now();
 
-            if (Works::where(['user_id' => Auth::id(), 'deleted' => 0, 'completed' => 0])->whereDate('created_at', $today)->count() < 48) {
+            if (!empty(Input::get('date')) && Input::get('date') != ''  && Input::get('date') != null) {
+                $date = Input::get('date');
+
+                if ($date > Carbon::today()) {
+                    return response(['case' => 'error', 'title' => 'Oops!', 'content' => 'You cannot select the date after this day!']);
+                }
+            } else {
+                $date = Carbon::today();
+            }
+
+            if (Works::where(['user_id' => Auth::id(), 'deleted' => 0, 'completed' => 0])->whereDate('date', $date)->count() < 48) {
                 return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'You cannot do this without filling the whole day!']);
             }
 
-            $complete = Works::where(['user_id' => Auth::id(), 'deleted' => 0, 'completed' => 0])->whereDate('created_at', $today)->update(['completed' => 1, 'completed_at' => $now]);
+            $complete = Works::where(['user_id' => Auth::id(), 'deleted' => 0, 'completed' => 0])->whereDate('date', $date)->update(['completed' => 1, 'completed_at' => $now]);
 
             if ($complete) {
                 $managers = User::where(['role_id' => 1])->select('send_mail', 'email', 'name', 'surname')->get();
@@ -281,8 +328,17 @@ class TimeTracerController extends HomeController
             return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
         }
         try {
-            $today = Carbon::today();
-            if (Works::where(['user_id' => Auth::id(), 'field_id' => $request->field_id])->whereDate('created_at', $today)->count() > 0) {
+            if (!empty(Input::get('date')) && Input::get('date') != ''  && Input::get('date') != null) {
+                $date = Input::get('date');
+
+                if ($date > Carbon::today()) {
+                    return response(['case' => 'error', 'title' => 'Oops!', 'content' => 'You cannot select the date after this day!']);
+                }
+            } else {
+                $date = Carbon::today();
+            }
+
+            if (Works::where(['user_id' => Auth::id(), 'field_id' => $request->field_id])->whereDate('date', $date)->count() > 0) {
                 return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'You have already added this field!']);
             }
 
@@ -294,7 +350,7 @@ class TimeTracerController extends HomeController
 
             $same_work = str_random(25) . time() . str_random(3) . microtime();
 
-            $request->merge(['user_id' => Auth::id(), 'same_work' => md5($same_work)]);
+            $request->merge(['user_id' => Auth::id(), 'same_work' => md5($same_work), 'date'=>$date]);
 
             $work = Works::create($request->all());
 
@@ -364,6 +420,16 @@ class TimeTracerController extends HomeController
             return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
         }
         try {
+            if (!empty(Input::get('date')) && Input::get('date') != ''  && Input::get('date') != null) {
+                $date = Input::get('date');
+
+                if ($date > Carbon::today()) {
+                    return response(['case' => 'error', 'title' => 'Oops!', 'content' => 'You cannot select the date after this day!']);
+                }
+            } else {
+                $date = Carbon::today();
+            }
+
             $start = $request->start_time;
             $end_time = strtotime($request->end_time) - 10 * 60;
             $end = date("H:i", $end_time);
@@ -373,7 +439,6 @@ class TimeTracerController extends HomeController
             $arr['task_id'] = $request->task_id;
             $arr['work'] = $request->work;
             $arr['color'] = $request->color;
-            $today = Carbon::today();
             $fields = Fields::where(['deleted' => 0])->whereTime('start_time', '>=', $start)->whereTime('start_time', '<=', $end)->select('id')->get();
 
             $same_work = str_random(25) . time() . str_random(3) . microtime();
@@ -383,8 +448,9 @@ class TimeTracerController extends HomeController
             $new_act_time = $task->act_time;
 
             foreach ($fields as $field) {
-                if (Works::where(['user_id' => Auth::id(), 'field_id' => $field->id])->whereDate('created_at', $today)->count() == 0) {
+                if (Works::where(['user_id' => Auth::id(), 'field_id' => $field->id])->whereDate('date', $date)->count() == 0) {
                     $arr['field_id'] = $field->id;
+                    $arr['date'] = $date;
                     if ($task->time * 60 < $new_act_time + 10) {
                         break;
                     }
@@ -479,12 +545,10 @@ class TimeTracerController extends HomeController
         try {
             $tasks = array();
 
-            if ($request->column == 'date') {
-                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0])->whereDate('works.created_at', $request->value)->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'works.same_work')->get();
-            } else if ($request->column == 'task') {
-                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0, 'works.task_id' => $request->value])->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'works.same_work')->get();
+            if ($request->column == 'task') {
+                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0, 'works.task_id' => $request->value])->orderByRaw('DATE(works.date)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.date', 'works.same_work')->get();
             } else if ($request->column == 'project') {
-                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0, 't.project_id' => $request->value])->orderByRaw('DATE(works.created_at)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.created_at', 'works.same_work')->get();
+                $works = Works::leftJoin('tasks as t', 'works.task_id', '=', 't.id')->leftJoin('fields as f', 'works.field_id', '=', 'f.id')->leftJoin('projects as p', 't.project_id', '=', 'p.id')->where(['works.user_id' => Auth::id(), 'works.deleted' => 0, 't.project_id' => $request->value])->orderByRaw('DATE(works.date)')->orderBy('f.start_time')->select('f.start_time', 'f.end_time', 'p.project', 'p.description as project_desc', 't.task', 'works.color', 'works.work', 'works.date', 'works.same_work')->get();
                 $tasks = Tasks::where(['deleted' => 0, 'project_id' => $request->value])->orderBy('task')->select('id', 'task')->get();
             } else {
                 return response(['case' => 'error', 'title' => 'Error!', 'content' => 'Column not found!']);

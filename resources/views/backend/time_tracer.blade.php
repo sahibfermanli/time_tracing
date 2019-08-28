@@ -27,6 +27,9 @@
                 <div class="form-group col-lg-3" style="display: inline-block;">
                     <button type="button" class="btn btn-primary btn-xs" id="work_btn" disabled onclick="add_work_with_time();">Add work</button>
                 </div>
+                <div class="form-group" style="display: inline-block; position: absolute; right: 0;">
+                    <input type="date" class="form-control" id="date_value" oninput="change_date(this);" value="{{substr($date, 0, 10)}}">
+                </div>
             </div>
 
             @php($field_no = 0)
@@ -78,9 +81,6 @@
                                 <option value="{{$task->id}}">{{$task->task}}</option>
                             @endforeach
                         </select>
-                    </div>
-                    <div class="form-group col-lg-3" style="display: inline-block; padding-left: 0 !important;">
-                        <input type="date" class="form-control form-control-sm" id="date_where" oninput="get_works_where(this, 'date');">
                     </div>
                     <div class="form-group col-lg-2" style="display: inline-block; padding-left: 0 !important;" id="chart-btn">
                         <button type="button" class="btn btn-primary btn-xs" onclick="show_chart();">Show chart</button>
@@ -309,6 +309,29 @@
                 }
             });
         });
+
+        function change_date(e) {
+            var currentDate;
+            var fullDate = new Date();
+            var twoDigitMonth = ((fullDate.getMonth().length+1) === 1)? (fullDate.getMonth()+1) : '0' + (fullDate.getMonth()+1);
+            currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+            let date = $(e).val();
+
+            if (date > currentDate) {
+                $("#date_value").val(currentDate);
+                swal(
+                    'Oops',
+                    'You cannot select the date after this day!',
+                    'warning'
+                );
+                return false;
+            }
+
+            let url;
+            url = window.location.pathname + '?date=' + date;
+
+            location.href = url;
+        }
 
         function complete_works() {
             swal({
@@ -582,7 +605,7 @@
 
                             tr = '<tr style="background-color: ' + work['color'] + '; color: black;">';
                             var row_id = '<th scope="row">' + row + '</th>';
-                            var date = '<td>' + work['created_at'].substr(0, 10) + '</td>';
+                            var date = '<td>' + work['date'].substr(0, 10) + '</td>';
                             var interval = '<td>' + start_time + ' - ' + end_time + '</td>';
                             var project = '<td title="' + work['project_desc'] + '">' + work['project'] + '</td>';
                             var task = '<td>' + work['task'] + '</td>';
