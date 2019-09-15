@@ -116,6 +116,13 @@ Route::group(['prefix'=>'/', 'middleware'=>'Login'], function () {
             Route::get('/', 'ProjectsLibraryController@get_projects');
             Route::post('/', 'ProjectsLibraryController@post_projects');
         });
+
+        Route::group(['prefix'=>'/report'], function () {
+            Route::get('/', 'ReportController@get_report');
+            Route::post('/change/client', 'ReportController@change_client')->name("report_change_client");
+            Route::post('/change/project', 'ReportController@change_project')->name("report_change_project");
+            Route::post('/show', 'ReportController@show_report')->name("show_report");
+        });
     });
 
 //project manager

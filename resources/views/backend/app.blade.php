@@ -186,6 +186,9 @@
                                 <a class="nav-link" href="/chief/tracer"><i class="fa fa-tasks"></i> Tracer</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="/chief/report"><i class="fa fa-tablets"></i> Report</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="/chief/client-roles"><i class="fa fa-globe"></i> Client roles</a>
                             </li>
                             <li class="nav-item">

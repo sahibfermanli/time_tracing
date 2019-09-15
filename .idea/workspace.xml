@@ -3,9 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="532745a1-a77a-4ad3-a881-6f6d0ffe1280" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TimeTracerController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TimeTracerController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Works.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Works.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/app.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/backend/time_tracer.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/time_tracer.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,8 +24,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/web.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="539">
-              <caret line="154" selection-start-line="154" selection-end-line="154" selection-end-column="53" />
+            <state relative-caret-position="420">
+              <caret line="123" column="83" selection-start-line="123" selection-start-column="72" selection-end-line="123" selection-end-column="83" />
             </state>
           </provider>
         </entry>
@@ -33,43 +33,78 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TimeTracerController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="208">
-              <caret line="92" column="85" selection-start-line="92" selection-start-column="43" selection-end-line="92" selection-end-column="85" />
+            <state relative-caret-position="255">
+              <caret line="179" column="12" selection-start-line="179" selection-start-column="12" selection-end-line="188" selection-end-column="13" />
               <folding>
                 <element signature="e#40#55#0#PHP" expanded="true" />
-                <element signature="e#3380#4762#0#PHP" />
-                <element signature="e#8707#9869#0#PHP" />
-                <element signature="e#4768#5164#0#PHP" />
-                <element signature="e#12112#13574#0#PHP" />
-                <element signature="e#13607#14582#0#PHP" />
-                <element signature="e#23167#23306#0#PHP" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/resources/views/backend/time_tracer.blade.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="123">
-              <caret line="320" column="48" selection-start-line="320" selection-start-column="48" selection-end-line="320" selection-end-column="48" />
-              <folding>
-                <element signature="e#414#472#0#HTML" expanded="true" />
-                <element signature="e#994#1024#0#HTML" expanded="true" />
-                <element signature="e#1300#1330#0#HTML" expanded="true" />
-                <element signature="e#1541#1581#0#HTML" expanded="true" />
-                <element signature="n#style#0;n#button#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Works.php">
+        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ReportController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" column="87" selection-start-line="9" selection-start-column="87" selection-end-line="9" selection-end-column="87" />
+            <state relative-caret-position="-206">
+              <caret line="95" column="47" lean-forward="true" selection-start-line="95" selection-start-column="47" selection-end-line="95" selection-end-column="47" />
+              <folding>
+                <element signature="e#40#56#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/resources/views/backend/report.blade.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="408">
+              <caret line="51" column="73" selection-start-line="51" selection-start-column="73" selection-end-line="51" selection-end-column="73" />
+              <folding>
+                <element signature="e#524#549#0#HTML" expanded="true" />
+                <element signature="e#3021#3043#0#HTML" expanded="true" />
+                <element signature="e#3091#3140#0#HTML" expanded="true" />
+                <element signature="e#3537#3586#0#HTML" expanded="true" />
+                <element signature="e#3771#3803#0#HTML" expanded="true" />
+                <element signature="e#3882#3914#0#HTML" expanded="true" />
+                <element signature="e#3989#4038#0#HTML" expanded="true" />
+                <element signature="e#4256#4286#0#HTML" expanded="true" />
+                <element signature="e#4406#4436#0#HTML" expanded="true" />
+                <element signature="e#3468#5824#0#HTML" />
+                <element signature="e#5861#7550#0#HTML" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/views/backend/tasks.blade.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="87" column="59" lean-forward="true" selection-start-line="87" selection-start-column="59" selection-end-line="87" selection-end-column="59" />
+              <folding>
+                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#i#0;n#span#0;n#td#0;n#!!top" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/js/search.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="60" column="9" selection-start-line="60" selection-start-column="9" selection-end-line="60" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/views/backend/tracer_for_chief.blade.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="191">
+              <caret line="173" column="7" lean-forward="true" selection-start-line="173" selection-start-column="7" selection-end-line="183" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -87,7 +122,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>show_team</find>
       <find>id=&quot;payment&quot;</find>
       <find>payment</find>
       <find>fix_payment</find>
@@ -117,6 +151,7 @@
       <find>-&gt;deleted == 0</find>
       <find>currencies</find>
       <find>change_date</find>
+      <find>')</find>
     </findStrings>
     <replaceStrings>
       <replace>user</replace>
@@ -143,8 +178,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/ProjectList.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/ClientRoleController.php" />
         <option value="$PROJECT_DIR$/app/ClientRoles.php" />
         <option value="$PROJECT_DIR$/app/ThirdParties.php" />
         <option value="$PROJECT_DIR$/app/UserLevels.php" />
@@ -172,7 +205,6 @@
         <option value="$PROJECT_DIR$/app/ActionLogs.php" />
         <option value="$PROJECT_DIR$/resources/views/layouts/app.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/backend/tracer_for_chief.blade.php" />
-        <option value="$PROJECT_DIR$/routes/web.php" />
         <option value="$PROJECT_DIR$/app/Http/Middleware/Login.php" />
         <option value="$PROJECT_DIR$/app/Http/Kernel.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/ProjectController_copy.php" />
@@ -189,11 +221,14 @@
         <option value="$PROJECT_DIR$/app/Http/Controllers/TaskController.php" />
         <option value="$PROJECT_DIR$/resources/views/backend/clients.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/backend/projects.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/backend/app.blade.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/Auth/LoginController.php" />
         <option value="$PROJECT_DIR$/app/Works.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/TimeTracerController.php" />
+        <option value="$PROJECT_DIR$/resources/views/backend/app.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/backend/time_tracer.blade.php" />
+        <option value="$PROJECT_DIR$/routes/web.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/ReportController.php" />
+        <option value="$PROJECT_DIR$/resources/views/backend/report.blade.php" />
       </list>
     </option>
   </component>
@@ -345,12 +380,6 @@
               <item name="timetracer" type="b2602c69:ProjectViewProjectNode" />
               <item name="timetracer" type="462c0819:PsiDirectoryNode" />
               <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="css" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="timetracer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="timetracer" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
               <item name="js" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -392,7 +421,7 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../audit" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/views/backend" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -404,15 +433,15 @@
     <property name="settings.editor.selected.configurable" value="Laravel.SettingsForm" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\projects\laravel\timetracer\public\js" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\projects\laravel\timetracer\app\Http\Controllers" />
       <recent name="D:\projects\laravel\timetracer\resources\views\backend" />
+      <recent name="D:\projects\laravel\timetracer\app\Http\Controllers" />
       <recent name="D:\projects\laravel\timetracer\public\css" />
       <recent name="D:\projects\laravel\timetracer\public\js" />
       <recent name="D:\projects\laravel\timetracer\public\images" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\projects\laravel\timetracer\public\js" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -546,7 +575,8 @@
       <workItem from="1566918921475" duration="2000" />
       <workItem from="1566918993994" duration="1270000" />
       <workItem from="1566973004057" duration="607000" />
-      <workItem from="1566978926255" duration="6295000" />
+      <workItem from="1566978926255" duration="7142000" />
+      <workItem from="1568576498019" duration="10264000" />
     </task>
     <task id="LOCAL-00001" summary="project update error solved">
       <created>1556259964662</created>
@@ -559,12 +589,12 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="437353000" />
+    <option name="totallyTimeSpent" value="448464000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22617246" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22919819" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info id="npm" order="3" side_tool="true" />
@@ -594,10 +624,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="project update error solved" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/Desktop/choosen/index.html" />
-    <entry file="file://$PROJECT_DIR$/public/js/jquery-3.2.1.min.js" />
-    <entry file="file://$PROJECT_DIR$/public/css/chosen.min.css" />
-    <entry file="file://$PROJECT_DIR$/public/js/chosen.jquery.min.js" />
     <entry file="file://$PROJECT_DIR$/storage/framework/sessions/J1uGerSsvraOdxMgfJtw1XEpePHPtlYJIpQk5rGO" />
     <entry file="file://$PROJECT_DIR$/storage/framework/sessions/.gitignore">
       <provider selected="true" editor-type-id="text-editor" />
@@ -627,13 +653,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
           <caret line="14" column="29" selection-start-line="14" selection-start-column="29" selection-end-line="14" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CategoryController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="18" column="5" lean-forward="true" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -685,13 +704,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-17">
           <caret line="26" column="30" selection-start-line="26" selection-start-column="30" selection-end-line="26" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Middleware/Chief.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="21" column="29" lean-forward="true" selection-start-line="18" selection-start-column="8" selection-end-line="21" selection-end-column="29" />
         </state>
       </provider>
     </entry>
@@ -781,30 +793,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/backend/tasks.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1059">
-          <caret line="45" column="56" selection-start-line="45" selection-start-column="45" selection-end-line="45" selection-end-column="56" />
-          <folding>
-            <element signature="e#2542#2567#0#HTML" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#i#0;n#span#0;n#td#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TaskController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="147" column="55" selection-start-line="147" selection-start-column="55" selection-end-line="147" selection-end-column="55" />
-          <folding>
-            <element signature="e#40#56#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/views/backend/projects.blade.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="273">
@@ -848,13 +836,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/backend/app.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="20" column="30" selection-start-line="20" selection-start-column="30" selection-end-line="20" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="539">
@@ -872,23 +853,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ClientController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
-          <caret line="41" column="9" lean-forward="true" selection-start-line="37" selection-start-column="8" selection-end-line="41" selection-end-column="9" />
-          <folding>
-            <element signature="e#40#59#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/web.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="539">
-          <caret line="154" selection-start-line="154" selection-end-line="154" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/Works.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
@@ -896,12 +860,111 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/backend/index.blade.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CategoryController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="18" column="5" lean-forward="true" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TaskController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="151" column="8" lean-forward="true" selection-start-line="151" selection-start-column="8" selection-end-line="153" selection-end-column="105" />
+          <folding>
+            <element signature="e#40#56#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/backend/app.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="188" column="96" selection-start-line="188" selection-start-column="96" selection-end-line="188" selection-end-column="96" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/backend/time_tracer.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="395">
+          <caret line="196" column="44" selection-start-line="196" selection-start-column="44" selection-end-line="196" selection-end-column="148" />
+          <folding>
+            <element signature="n#style#0;n#button#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Middleware/Chief.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="15" column="7" lean-forward="true" selection-start-line="15" selection-start-column="7" selection-end-line="15" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ClientController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="73" column="8" selection-start-line="73" selection-start-column="8" selection-end-line="91" selection-end-column="9" />
+          <folding>
+            <element signature="e#40#59#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TimeTracerController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="179" column="12" selection-start-line="179" selection-start-column="12" selection-end-line="188" selection-end-column="13" />
+          <folding>
+            <element signature="e#40#55#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/resources/views/backend/tracer_for_chief.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="35" selection-end-column="30" />
+        <state relative-caret-position="191">
+          <caret line="173" column="7" lean-forward="true" selection-start-line="173" selection-start-column="7" selection-end-line="183" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Middleware/Admin.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="7" column="6" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/web.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="123" column="83" selection-start-line="123" selection-start-column="72" selection-end-line="123" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ReportController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-206">
+          <caret line="95" column="47" lean-forward="true" selection-start-line="95" selection-start-column="47" selection-end-line="95" selection-end-column="47" />
           <folding>
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="e#40#56#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/backend/tasks.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="87" column="59" lean-forward="true" selection-start-line="87" selection-start-column="59" selection-end-line="87" selection-end-column="59" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#i#0;n#span#0;n#td#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -909,37 +972,26 @@
     <entry file="file://$PROJECT_DIR$/public/js/search.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
-          <caret line="40" column="9" selection-start-line="40" selection-start-column="9" selection-end-line="40" selection-end-column="9" />
+          <caret line="60" column="9" selection-start-line="60" selection-start-column="9" selection-end-line="60" selection-end-column="9" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TimeTracerController.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/backend/report.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="92" column="85" selection-start-line="92" selection-start-column="43" selection-end-line="92" selection-end-column="85" />
+        <state relative-caret-position="408">
+          <caret line="51" column="73" selection-start-line="51" selection-start-column="73" selection-end-line="51" selection-end-column="73" />
           <folding>
-            <element signature="e#40#55#0#PHP" expanded="true" />
-            <element signature="e#3380#4762#0#PHP" />
-            <element signature="e#8707#9869#0#PHP" />
-            <element signature="e#4768#5164#0#PHP" />
-            <element signature="e#12112#13574#0#PHP" />
-            <element signature="e#13607#14582#0#PHP" />
-            <element signature="e#23167#23306#0#PHP" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/backend/time_tracer.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="123">
-          <caret line="320" column="48" selection-start-line="320" selection-start-column="48" selection-end-line="320" selection-end-column="48" />
-          <folding>
-            <element signature="e#414#472#0#HTML" expanded="true" />
-            <element signature="e#994#1024#0#HTML" expanded="true" />
-            <element signature="e#1300#1330#0#HTML" expanded="true" />
-            <element signature="e#1541#1581#0#HTML" expanded="true" />
-            <element signature="n#style#0;n#button#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
+            <element signature="e#524#549#0#HTML" expanded="true" />
+            <element signature="e#3021#3043#0#HTML" expanded="true" />
+            <element signature="e#3091#3140#0#HTML" expanded="true" />
+            <element signature="e#3537#3586#0#HTML" expanded="true" />
+            <element signature="e#3771#3803#0#HTML" expanded="true" />
+            <element signature="e#3882#3914#0#HTML" expanded="true" />
+            <element signature="e#3989#4038#0#HTML" expanded="true" />
+            <element signature="e#4256#4286#0#HTML" expanded="true" />
+            <element signature="e#4406#4436#0#HTML" expanded="true" />
+            <element signature="e#3468#5824#0#HTML" />
+            <element signature="e#5861#7550#0#HTML" />
           </folding>
         </state>
       </provider>

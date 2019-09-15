@@ -648,7 +648,7 @@
                         if (column === 'project') {
                             var tasks_list = response.tasks;
                             var j = 0;
-                            var options = '<option value="">Tafgbsk</option>';
+                            var options = '<option value="">Task</option>';
                             for (j = 0; j < tasks_list.length; j++) {
                                 var task_item = tasks_list[j];
                                 var option = '<option value="' + task_item['id'] + '">' + task_item['task'] + '</option>';
