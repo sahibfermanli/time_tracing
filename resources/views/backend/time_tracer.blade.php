@@ -142,7 +142,7 @@
 
                             $tr = '<tr style="background-color:' . $work->color . '; color: black;">';
                             $tr .= '<th scope="row">' . $row . '</th>';
-                            $tr .= '<td>' . date_format($work->created_at, "Y-m-d") . '</td>';
+                            $tr .= '<td>' . date_format($work->date, "Y-m-d") . '</td>';
                             $tr .= '<td>' . $start_time . ' - ' . $end_time . '</td>';
                             $tr .= '<td title="' . $work->project_desc . '">' . $work->project . '</td>';
                             $tr .= '<td>' . $work->task . '</td>';
