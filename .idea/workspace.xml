@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="532745a1-a77a-4ad3-a881-6f6d0ffe1280" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/backend/time_tracer.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/time_tracer.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ReportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ReportController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/report.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/report.blade.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,7 +32,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TimeTracerController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1326">
+            <state relative-caret-position="896">
               <caret line="90" selection-start-line="90" selection-end-line="90" />
               <folding>
                 <element signature="e#40#55#0#PHP" expanded="true" />
@@ -40,11 +41,37 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ReportController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="298">
+              <caret line="174" column="31" lean-forward="true" selection-start-line="174" selection-start-column="31" selection-end-line="174" selection-end-column="31" />
+              <folding>
+                <element signature="e#40#56#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/resources/views/backend/report.blade.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="283" column="54" lean-forward="true" selection-start-line="283" selection-start-column="54" selection-end-line="284" selection-end-column="42" />
+              <folding>
+                <element signature="e#4954#5001#0#HTML" expanded="true" />
+                <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/views/backend/time_tracer.blade.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="344">
-              <caret line="121" column="51" lean-forward="true" selection-start-line="121" selection-start-column="51" selection-end-line="121" selection-end-column="51" />
+            <state relative-caret-position="293">
+              <caret line="142" column="63" selection-start-line="142" selection-start-column="39" selection-end-line="142" selection-end-column="63" />
               <folding>
                 <element signature="n#style#0;n#button#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
@@ -66,8 +93,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>id=&quot;payment&quot;</find>
-      <find>payment</find>
       <find>fix_payment</find>
       <find>echo</find>
       <find>add_new</find>
@@ -96,6 +121,8 @@
       <find>currencies</find>
       <find>change_date</find>
       <find>')</find>
+      <find>printcontent</find>
+      <find>w.work</find>
     </findStrings>
     <replaceStrings>
       <replace>user</replace>
@@ -114,6 +141,7 @@
       <replace>project</replace>
       <replace>-&gt;fob</replace>
       <replace>staff_id</replace>
+      <replace>print_content</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -170,9 +198,9 @@
         <option value="$PROJECT_DIR$/app/Http/Controllers/TimeTracerController.php" />
         <option value="$PROJECT_DIR$/resources/views/backend/app.blade.php" />
         <option value="$PROJECT_DIR$/routes/web.php" />
+        <option value="$PROJECT_DIR$/resources/views/backend/time_tracer.blade.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/ReportController.php" />
         <option value="$PROJECT_DIR$/resources/views/backend/report.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/backend/time_tracer.blade.php" />
       </list>
     </option>
   </component>
@@ -270,11 +298,10 @@
       <path value="$PROJECT_DIR$/vendor/opis/closure" />
     </include_path>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1382" />
-    <option name="height" value="754" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-7" />
+    <option name="width" value="1378" />
+    <option name="height" value="745" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
@@ -523,7 +550,9 @@
       <workItem from="1568576498019" duration="10573000" />
       <workItem from="1568616683639" duration="386000" />
       <workItem from="1568747793382" duration="2182000" />
-      <workItem from="1568787787593" duration="1111000" />
+      <workItem from="1568787787593" duration="2291000" />
+      <workItem from="1569866432190" duration="22000" />
+      <workItem from="1570462195700" duration="4225000" />
     </task>
     <task id="LOCAL-00001" summary="project update error solved">
       <created>1556259964662</created>
@@ -536,12 +565,13 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="452452000" />
+    <option name="totallyTimeSpent" value="457879000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
+    <frame x="-7" y="0" width="1378" height="745" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24054463" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19954476" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info id="npm" order="3" side_tool="true" />
@@ -555,7 +585,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.43317232" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.9259259" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.9259259" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" weight="0.32850242" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -624,13 +654,6 @@
           <folding>
             <element signature="e#40#60#0#PHP" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/backend/client_roles.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1751">
-          <caret line="38" column="50" selection-start-line="38" selection-start-column="50" selection-end-line="38" selection-end-column="50" />
         </state>
       </provider>
     </entry>
@@ -858,30 +881,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ReportController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1479">
-          <caret line="95" column="47" selection-start-line="95" selection-start-column="47" selection-end-line="95" selection-end-column="47" />
-          <folding>
-            <element signature="e#40#56#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/backend/report.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="51" column="73" selection-start-line="51" selection-start-column="73" selection-end-line="51" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/backend/tasks.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="539">
-          <caret line="87" column="59" selection-start-line="87" selection-start-column="59" selection-end-line="87" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/views/backend/tracer_for_chief.blade.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="539">
@@ -903,9 +902,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/backend/tasks.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-442">
+          <caret line="87" column="59" selection-start-line="87" selection-start-column="59" selection-end-line="87" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TimeTracerController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1326">
+        <state relative-caret-position="896">
           <caret line="90" selection-start-line="90" selection-end-line="90" />
           <folding>
             <element signature="e#40#55#0#PHP" expanded="true" />
@@ -915,10 +921,42 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/views/backend/time_tracer.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="121" column="51" lean-forward="true" selection-start-line="121" selection-start-column="51" selection-end-line="121" selection-end-column="51" />
+        <state relative-caret-position="293">
+          <caret line="142" column="63" selection-start-line="142" selection-start-column="39" selection-end-line="142" selection-end-column="63" />
           <folding>
             <element signature="n#style#0;n#button#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/backend/client_roles.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2459">
+          <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="50" selection-end-column="14" />
+          <folding>
+            <element signature="e#785#2093#0#HTML" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ReportController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="298">
+          <caret line="174" column="31" lean-forward="true" selection-start-line="174" selection-start-column="31" selection-end-line="174" selection-end-column="31" />
+          <folding>
+            <element signature="e#40#56#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/backend/report.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="283" column="54" lean-forward="true" selection-start-line="283" selection-start-column="54" selection-end-line="284" selection-end-column="42" />
+          <folding>
+            <element signature="e#4954#5001#0#HTML" expanded="true" />
+            <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
           </folding>
         </state>

@@ -103,29 +103,40 @@ class ReportController extends HomeController
                 ->leftJoin('projects as p', 't.project_id', '=', 'p.id')
                 ->where(['works.deleted' => 0, 't.deleted' => 0]);
 
+            $query1 = Works::leftJoin('fields as f', 'works.field_id', '=', 'f.id')
+                ->leftJoin('tasks as t', 'works.task_id', '=', 't.id')
+                ->leftJoin('projects as p', 't.project_id', '=', 'p.id')
+                ->leftJoin('users as u', 'works.user_id', '=', 'u.id')
+                ->where(['works.deleted' => 0, 't.deleted' => 0]);
+
             if (!empty($request->user_id) && $request->user_id != ''  && $request->user_id != null) {
                 $where_user_id = $request->user_id;
                 $query->where('works.user_id', $where_user_id);
+                $query1->where('works.user_id', $where_user_id);
             }
 
             if (!empty($request->client_id) && $request->client_id != ''  && $request->client_id != null) {
                 $where_client_id = $request->client_id;
                 $query->where('p.client_id', $where_client_id);
+                $query1->where('p.client_id', $where_client_id);
             }
 
             if (!empty($request->project_id) && $request->project_id != ''  && $request->project_id != null) {
                 $where_project_id = $request->project_id;
                 $query->where('t.project_id', $where_project_id);
+                $query1->where('t.project_id', $where_project_id);
             }
 
             if (!empty($request->task_id) && $request->task_id != ''  && $request->task_id != null) {
                 $where_task_id = $request->task_id;
                 $query->where('works.task_id', $where_task_id);
+                $query1->where('works.task_id', $where_task_id);
             }
 
             if (!empty($request->start_date) && $request->start_date != ''  && $request->start_date != null) {
                 $where_start_date = $request->start_date;
                 $query->where('works.date', '>=', $where_start_date);
+                $query1->where('works.date', '>=', $where_start_date);
             }
 
             if (!empty($request->end_date) && $request->end_date != ''  && $request->end_date != null) {
@@ -133,6 +144,7 @@ class ReportController extends HomeController
                 $where_end_date = new DateTime($where_end_date);
                 $where_end_date = $where_end_date->modify('+1 day');
                 $query->where('works.date', '<=', $where_end_date);
+                $query1->where('works.date', '<=', $where_end_date);
             }
 
             $billable = 0;
@@ -149,7 +161,22 @@ class ReportController extends HomeController
 
             $total = count($works);
 
-            return response(['case' => 'success', 'total'=>$total, 'billable'=>$billable, 'non_billable'=>$non_billable]);
+
+                $works_list = $query1->select(
+                    'works.date',
+                    'f.start_time',
+                    'f.end_time',
+                    'p.project',
+                    't.task',
+                    'works.work',
+                    'works.same_work',
+                    'works.color',
+                    'u.name',
+                    'u.surname'
+                )
+                ->get();
+
+            return response(['case' => 'success', 'total'=>$total, 'billable'=>$billable, 'non_billable'=>$non_billable, 'works'=>$works_list]);
         } catch (\Exception $exception) {
             return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
         }

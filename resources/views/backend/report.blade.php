@@ -20,22 +20,26 @@
                             <option value="{{$user->id}}">{{$user->name}} {{$user->surname}}</option>
                         @endforeach
                     </select>
-                    <select class="form-control search-input" id="client_id" style="min-width: 170px;" oninput="change_client(this);">
+                    <select class="form-control search-input" id="client_id" style="min-width: 170px;"
+                            oninput="change_client(this);">
                         <option value="">Client</option>
                         @foreach($clients as $client)
                             <option value="{{$client->id}}">{{$client->name}} {{$client->fob}}</option>
                         @endforeach
                     </select>
-                    <select class="form-control search-input" id="project_id" style="min-width: 170px;" oninput="change_project(this);">
+                    <select class="form-control search-input" id="project_id" style="min-width: 170px;"
+                            oninput="change_project(this);">
                         <option value="">Projects</option>
                         @foreach($projects as $project)
-                            <option value="{{$project->id}}">{{$project->project}} | {{$project->client}} {{$project->fob}}</option>
+                            <option value="{{$project->id}}">{{$project->project}}
+                                | {{$project->client}} {{$project->fob}}</option>
                         @endforeach
                     </select>
                     <select class="form-control search-input" id="task_id" style="min-width: 170px;">
                         <option value="">Task</option>
                         @foreach($tasks as $task)
-                            <option value="{{$task->id}}">{{$task->task}} | {{$project->project}} | {{$project->client}} {{$project->fob}}</option>
+                            <option value="{{$task->id}}">{{$task->task}} | {{$project->project}}
+                                | {{$project->client}} {{$project->fob}}</option>
                         @endforeach
                     </select>
                     <button type="button" class="btn btn-primary" onclick="show_report();">Search</button>
@@ -47,7 +51,7 @@
                 </div>
                 <div id="search-date-area" class="search-areas">
                     <label for="start_date">Start</label>
-                    <input type="date" id="start_date"class="form-control search-input start_date_search">
+                    <input type="date" id="start_date" class="form-control search-input start_date_search">
                     <label for="end_date">End</label>
                     <input type="date" id="end_date" class="form-control search-input end_date_search">
                 </div>
@@ -85,6 +89,25 @@
                 </div>
             </div>
         </div>
+
+        <div class="card-body d-none" id="works-table">
+            <span class="btn btn-warning btn-xs float-right mb-2" id="print" onclick="print_content('works-table')"><i class="fa fa-print"></i></span>
+            <table class="table table-bordered">
+                <thead>
+                <tr style="background-color: yellow; color: black;">
+                    <th scope="col">Date</th>
+                    <th scope="col">Interval</th>
+                    <th scope="col">Project</th>
+                    <th scope="col">Task</th>
+                    <th scope="col">Work</th>
+                    <th scope="col">User</th>
+                </tr>
+                </thead>
+                <tbody id="works-body">
+
+                </tbody>
+            </table>
+        </div>
     </div>
 @endsection
 
@@ -98,6 +121,20 @@
     <script src="/js/sweetalert2.min.js"></script>
 
     <script>
+        let table_show = false;
+
+        function print_content(el) {
+            if (table_show) {
+                let restore_page;
+                let print_content;
+                restore_page = document.body.innerHTML;
+                print_content = document.getElementById(el).innerHTML;
+                document.body.innerHTML = print_content;
+                window.print();
+                document.body.innerHTML = restore_page;
+            }
+        }
+
         function change_client(e) {
             let c_id = $(e).val();
 
@@ -128,7 +165,7 @@
                         var options = "<option value=''>Project</option>";
                         var option = '';
 
-                        for (i=0; i<projects.length; i++) {
+                        for (i = 0; i < projects.length; i++) {
                             var project = projects[i];
                             option = '<option value="' + project['id'] + '">' + project['project'] + '</option>';
                             options = options + option;
@@ -140,15 +177,14 @@
                         i = 0;
                         options = "<option value=''>Task</option>";
 
-                        for (i=0; i<tasks.length; i++) {
+                        for (i = 0; i < tasks.length; i++) {
                             var task = tasks[i];
                             option = '<option value="' + task['id'] + '">' + task['task'] + ' | ' + task['project'] + '</option>';
                             options = options + option;
                         }
 
                         $("#task_id").html(options);
-                    }
-                    else {
+                    } else {
                         swal(
                             response.title,
                             response.content,
@@ -187,15 +223,14 @@
                         var i = 0;
                         var options = "<option value=''>Task</option>";
 
-                        for (i=0; i<tasks.length; i++) {
+                        for (i = 0; i < tasks.length; i++) {
                             var task = tasks[i];
                             let option = '<option value="' + task['id'] + '">' + task['task'] + '</option>';
                             options = options + option;
                         }
 
                         $("#task_id").html(options);
-                    }
-                    else {
+                    } else {
                         swal(
                             response.title,
                             response.content,
@@ -247,6 +282,8 @@
                 success: function (response) {
                     swal.close();
                     if (response.case === 'success') {
+                        table_show = true;
+
                         let total = response.total;
                         let billable = response.billable;
                         let non_billable = response.non_billable;
@@ -256,8 +293,68 @@
                         $("#non_billable_time").html(calculate_time(non_billable));
 
                         $("#report").css("display", 'block');
-                    }
-                    else {
+
+                        let works = response.works;
+                        let i;
+                        let work;
+                        let date;
+                        let interval;
+                        let project;
+                        let task;
+                        let work_description;
+                        let user;
+                        let start_time = '??:??';
+                        let end_time = '??:??';
+                        let same_work = '';
+                        let tr = '';
+                        let body = '';
+                        let color = 'green';
+
+                        for (i = 0; i < works.length; i++) {
+                            work = works[i];
+
+                            end_time = work['end_time'].substr(0, 5);
+
+                            if (same_work !== work['same_work']) {
+                                same_work = work['same_work'];
+                                start_time = work['start_time'].substr(0, 5);
+
+                                body += tr;
+                            }
+
+                            date = work['date'];
+                            interval = start_time + '-' + end_time;
+                            project = work['project'];
+                            task = work['task'];
+                            work_description = work['work'];
+                            user = work['name'] + ' ' + work['surname'];
+
+                            if (work_description.length > 40) {
+                                work_description = work_description.substr(0, 40) + '...';
+                            }
+
+                            if (work['color'] === 'red') {
+                                color = 'green';
+                            } else {
+                                color = 'red';
+                            }
+
+                            tr = '<tr style="background-color: ' + color + '; color: black;">';
+                            tr += '<td>' + date + '</td>';
+                            tr += '<td>' + interval + '</td>';
+                            tr += '<td>' + project + '</td>';
+                            tr += '<td>' + task + '</td>';
+                            tr += '<td>' + work_description + '</td>';
+                            tr += '<td>' + user + '</td>';
+
+                        }
+
+                        body += tr;
+
+                        $("#works-body").html(body);
+
+                        $("#works-table").removeClass('d-none');
+                    } else {
                         swal(
                             response.title,
                             response.content,
