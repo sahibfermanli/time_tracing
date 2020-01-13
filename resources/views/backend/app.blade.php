@@ -246,6 +246,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/admin/users"><i class="fa fa-users"></i> Users</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/logs"><i class="fa fa-lock"></i> Logs</a>
+                            </li>
                         @elseif(Auth::user()->role() == 4)
                             {{--ProjectManager--}}
                             <li class="nav-item">

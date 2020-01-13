@@ -19,6 +19,10 @@ Route::group(['prefix'=>'/', 'middleware'=>'Login'], function () {
 
 //admin
     Route::group(['prefix'=>'/admin', 'middleware'=>'Admin'], function () {
+        Route::group(['prefix'=>'/logs'], function () {
+            Route::get('/', 'LogsController@get_logs');
+        });
+
         Route::group(['prefix'=>'/roles'], function () {
             Route::get('/', 'RoleController@get_roles');
             Route::post('/', 'RoleController@post_roles');

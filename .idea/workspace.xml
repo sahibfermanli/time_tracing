@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="532745a1-a77a-4ad3-a881-6f6d0ffe1280" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/timetracer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/timetracer.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ActionLogs.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/ActionLogs.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ClientController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ClientController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/backend/clients.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/clients.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/app.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -135,7 +133,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../courier-management-system-new" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/views/backend" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -147,15 +145,15 @@
     <property name="settings.editor.selected.configurable" value="Laravel.SettingsForm" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\projects\laravel\timetracer\public\js" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\projects\laravel\timetracer\resources\views\backend" />
       <recent name="D:\projects\laravel\timetracer\app\Http\Controllers" />
       <recent name="D:\projects\laravel\timetracer\public\css" />
       <recent name="D:\projects\laravel\timetracer\public\js" />
       <recent name="D:\projects\laravel\timetracer\public\images" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\projects\laravel\timetracer\public\js" />
     </key>
   </component>
   <component name="RunManager" selected="PHP Script.CategoryController.php">
@@ -303,7 +301,7 @@
       <workItem from="1578563303900" duration="1801000" />
       <workItem from="1578637568897" duration="44000" />
       <workItem from="1578655978290" duration="1418000" />
-      <workItem from="1578907722101" duration="1913000" />
+      <workItem from="1578907722101" duration="3470000" />
     </task>
     <task id="LOCAL-00001" summary="project update error solved">
       <created>1556259964662</created>
