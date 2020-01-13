@@ -305,10 +305,26 @@
                         location.reload();
                     }
                     else {
-                        $('#add-modal').modal('hide');
+                        let content_message = '';
+                        if (response.type === 'validation') {
+                            let validation_message = '';
+                            $.each(response.content, function(index, value)
+                            {
+                                if (value.length !== 0)
+                                {
+                                    for (let i = 0; i < value.length; i++) {
+                                        validation_message += value[i] + '\n';
+                                    }
+                                }
+                            });
+                            content_message = validation_message;
+                        } else {
+                            content_message = response.content;
+                            $('#add-modal').modal('hide');
+                        }
                         swal(
                             response.title,
-                            response.content,
+                            content_message,
                             response.case
                         );
                     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ActionLogs;
 use App\Categories;
 use App\Clients;
 use App\Countries;
@@ -229,7 +230,16 @@ class ClientController extends HomeController
             'zipcode' => ['required', 'string', 'max:20'],
         ]);
         if ($validator->fails()) {
-            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
+            $validate_arr = $validator->errors()->toArray();
+            $validate_str = json_encode($validator->errors()->toJson());
+            ActionLogs::create([
+                'user_id' => Auth::id(),
+                'action' => 'validate',
+                'table' => 'clients - add',
+                'error_str' => $validate_str,
+                'row_id' => 0
+            ]);
+            return response(['case' => 'warning', 'title' => 'Warning!', 'type'=>'validation', 'content' => $validate_arr]);
         }
         try {
             unset($request['id']);
@@ -252,6 +262,13 @@ class ClientController extends HomeController
             Session::flash('display', 'block');
             return response(['case' => 'success', 'title' => 'Success!', 'content' => 'Successful!']);
         } catch (\Exception $e) {
+            ActionLogs::create([
+                'user_id' => Auth::id(),
+                'action' => 'catch',
+                'table' => 'clients - add',
+                'error_str' => $e->getMessage(),
+                'row_id' => 0
+            ]);
             return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
         }
     }
@@ -272,7 +289,16 @@ class ClientController extends HomeController
             'zipcode' => ['required', 'string', 'max:20'],
         ]);
         if ($validator->fails()) {
-            return response(['case' => 'warning', 'title' => 'Warning!', 'content' => 'Fill in all required fields!']);
+            $validate_arr = $validator->errors()->toArray();
+            $validate_str = json_encode($validator->errors()->toJson());
+            ActionLogs::create([
+                'user_id' => Auth::id(),
+                'action' => 'validate',
+                'table' => 'clients - update',
+                'error_str' => $validate_str,
+                'row_id' => 0
+            ]);
+            return response(['case' => 'warning', 'title' => 'Warning!', 'type'=>'validation', 'content' => $validate_arr]);
         }
         try {
             unset($request['_token']);
@@ -294,6 +320,13 @@ class ClientController extends HomeController
             Session::flash('display', 'block');
             return response(['case' => 'success', 'title' => 'Success!', 'content' => 'Successful!']);
         } catch (\Exception $e) {
+            ActionLogs::create([
+                'user_id' => Auth::id(),
+                'action' => 'catch',
+                'table' => 'clients - update',
+                'error_str' => $e->getMessage(),
+                'row_id' => 0
+            ]);
             return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
         }
     }
@@ -313,6 +346,13 @@ class ClientController extends HomeController
 
             return response(['case' => 'success', 'title' => 'Success!', 'content' => 'Successful!', 'id'=>$request->id]);
         } catch (\Exception $e) {
+            ActionLogs::create([
+                'user_id' => Auth::id(),
+                'action' => 'catch',
+                'table' => 'clients - delete',
+                'error_str' => $e->getMessage(),
+                'row_id' => 0
+            ]);
             return response(['case' => 'error', 'title' => 'Error!', 'content' => 'An error occurred!']);
         }
     }
