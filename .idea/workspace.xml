@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="532745a1-a77a-4ad3-a881-6f6d0ffe1280" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/backend/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/app.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ClientController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ClientController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/clients.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/clients.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +133,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/views/backend" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../colibri" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -301,7 +301,9 @@
       <workItem from="1578563303900" duration="1801000" />
       <workItem from="1578637568897" duration="44000" />
       <workItem from="1578655978290" duration="1418000" />
-      <workItem from="1578907722101" duration="3470000" />
+      <workItem from="1578907722101" duration="3694000" />
+      <workItem from="1578942723450" duration="53000" />
+      <workItem from="1580111043840" duration="1695000" />
     </task>
     <task id="LOCAL-00001" summary="project update error solved">
       <created>1556259964662</created>
@@ -334,11 +336,15 @@
     <option name="LAST_COMMIT_MESSAGE" value="project update error solved" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="463" y="123" key="FileChooserDialogImpl" timestamp="1578907730850">
+    <state x="463" y="123" key="FileChooserDialogImpl" timestamp="1580111293233">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="463" y="123" key="FileChooserDialogImpl/0.0.1366.738/1366.0.1920.1050@0.0.1366.738" timestamp="1578658406191" />
-    <state x="463" y="123" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1578907730850" />
+    <state x="463" y="123" key="FileChooserDialogImpl/0.0.1366.738/1366.0.1920.1050@0.0.1366.738" timestamp="1580111293233" />
+    <state x="463" y="123" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1578942775257" />
+    <state x="2264" y="0" width="1038" height="1057" key="dock-window-1" timestamp="1580111642655">
+      <screen x="1366" y="0" width="1920" height="1050" />
+    </state>
+    <state x="2264" y="0" width="1038" height="1057" key="dock-window-1/0.0.1366.738/1366.0.1920.1050@0.0.1366.738" timestamp="1580111642655" />
     <state x="339" y="165" key="run.anything.popup" timestamp="1578909613378">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

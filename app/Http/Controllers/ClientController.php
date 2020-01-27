@@ -228,6 +228,15 @@ class ClientController extends HomeController
             'web_site' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255'],
             'zipcode' => ['required', 'string', 'max:20'],
+            'voen' => ['nullable', 'string', 'max:100'],
+            'account_no' => ['nullable', 'string', 'max:100'],
+            'bank_name' => ['nullable', 'string', 'max:255'],
+            'bank_voen' => ['nullable', 'string', 'max:100'],
+            'bank_code' => ['nullable', 'string', 'max:30'],
+            'bank_m_n' => ['nullable', 'string', 'max:100'],
+            'bank_swift' => ['nullable', 'string', 'max:50'],
+            'contract_no' => ['nullable', 'string', 'max:50'],
+            'contract_date' => ['nullable', 'date'],
         ]);
         if ($validator->fails()) {
             $validate_arr = $validator->errors()->toArray();
@@ -287,6 +296,15 @@ class ClientController extends HomeController
             'web_site' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255'],
             'zipcode' => ['required', 'string', 'max:20'],
+            'voen' => ['nullable', 'string', 'max:100'],
+            'account_no' => ['nullable', 'string', 'max:100'],
+            'bank_name' => ['nullable', 'string', 'max:255'],
+            'bank_voen' => ['nullable', 'string', 'max:100'],
+            'bank_code' => ['nullable', 'string', 'max:30'],
+            'bank_m_n' => ['nullable', 'string', 'max:100'],
+            'bank_swift' => ['nullable', 'string', 'max:50'],
+            'contract_no' => ['nullable', 'string', 'max:50'],
+            'contract_date' => ['nullable', 'date'],
         ]);
         if ($validator->fails()) {
             $validate_arr = $validator->errors()->toArray();

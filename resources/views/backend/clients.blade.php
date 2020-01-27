@@ -149,23 +149,23 @@
 
                                 <div class="row form-group">
                                     <div class="col-md-6 ml-auto">
-                                        <input id="name" type="text" required name="name" placeholder="Company name" class="form-control" maxlength="255">
+                                        <input id="name" type="text" required name="name" placeholder="* Company name" class="form-control" maxlength="255">
                                     </div>
                                     <div class="col-md-6 ml-auto" id="form_of_business_type">
                                         <select oninput="select_form_of_business();" name="form_of_business_id" id="form_of_business_id" class="form-control" required>
-                                            <option value="">Form of business</option>
+                                            <option value="">* Form of business</option>
                                             @foreach($form_of_businesses as $form_of_business)
                                                 <option value="{{$form_of_business->id}}">{{$form_of_business->title}}</option>
                                             @endforeach
                                             <option value="other">Other</option>
                                         </select>
-                                        <input id="form_of_business_text" type="text" name="form_of_business_text" placeholder="Form of business" class="form-control" style="display: none;">
+                                        <input id="form_of_business_text" type="text" name="form_of_business_text" placeholder="* Form of business" class="form-control" style="display: none;">
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-6 ml-auto">
                                         <select id="industry_id" class="form-control" required>
-                                            <option value="">Industry</option>
+                                            <option value="">* Industry</option>
                                             @foreach($industries as $industry)
                                                 <option value="{{$industry->id}}">{{$industry->category}}</option>
                                             @endforeach
@@ -173,77 +173,77 @@
                                     </div>
                                     <div class="col-md-6 ml-auto">
                                         <select name="category_id" id="category_id" class="form-control" disabled required>
-                                            <option value="">Select industry</option>
+                                            <option value="">* Select industry</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-6 ml-auto">
-                                        <input id="director" type="text" name="director" placeholder="Representative" class="form-control" required maxlength="255">
+                                        <input id="director" type="text" name="director" placeholder="* Representative" class="form-control" required maxlength="255">
                                     </div>
                                     <div class="col-md-6 ml-auto">
-                                        <input id="email" type="email" name="email" placeholder="E-mail" class="form-control" required maxlength="100" onchange="same_client_control(this, 'mail');">
+                                        <input id="email" type="email" name="email" placeholder="* E-mail" class="form-control" required maxlength="100" onchange="same_client_control(this, 'mail');">
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-6 ml-auto">
-                                        <input id="web_site" type="text" name="web_site" placeholder="WEB site" class="form-control" maxlength="255" required onchange="same_client_control(this, 'web');">
+                                        <input id="web_site" type="text" name="web_site" placeholder="* WEB site" class="form-control" maxlength="255" required onchange="same_client_control(this, 'web');">
                                     </div>
                                     <div class="col-md-6 ml-auto">
-                                        <input id="phone" type="text" name="phone" placeholder="Phone" class="form-control" required maxlength="20" onchange="same_client_control(this, 'tel');">
+                                        <input id="phone" type="text" name="phone" placeholder="* Phone" class="form-control" required maxlength="20" onchange="same_client_control(this, 'tel');">
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-6 ml-auto">
                                         <select name="country_id" id="country_id" class="form-control" required>
-                                            <option value="">Country</option>
+                                            <option value="">* Country</option>
                                             @foreach($countries as $country)
                                                 <option value="{{$country->id}}">{{$country->country}}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-6 ml-auto">
-                                        <input id="city" type="text" name="city" placeholder="city" class="form-control" required maxlength="100">
+                                        <input id="city" type="text" name="city" placeholder="* City" class="form-control" required maxlength="100">
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-6 ml-auto">
-                                        <input id="address" type="text" name="address" placeholder="Address" class="form-control" required maxlength="255" onchange="same_client_control(this, 'address');">
+                                        <input id="address" type="text" name="address" placeholder="* Address" class="form-control" required maxlength="255" onchange="same_client_control(this, 'address');">
                                     </div>
                                     <div class="col-md-6 ml-auto">
-                                        <input id="zipcode" type="text" name="zipcode" placeholder="Zip code" class="form-control" required maxlength="20">
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-6 ml-auto">
-                                        <input id="voen" type="text" name="voen" placeholder="TIN" class="form-control">
-                                    </div>
-                                    <div class="col-md-6 ml-auto">
-                                        <input id="account_no" type="text" name="account_no" placeholder="Account №" class="form-control">
+                                        <input id="zipcode" type="text" name="zipcode" placeholder="* Zip code" class="form-control" required maxlength="20">
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-6 ml-auto">
-                                        <input id="bank_name" type="text" name="bank_name" placeholder="Bank name" class="form-control">
+                                        <input id="voen" type="text" name="voen" placeholder="TIN" class="form-control" maxlength="100">
                                     </div>
                                     <div class="col-md-6 ml-auto">
-                                        <input id="bank_voen" type="text" name="bank_voen" placeholder="Bank TIN" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-6 ml-auto">
-                                        <input id="bank_code" type="text" name="bank_code" placeholder="Bank code" class="form-control">
-                                    </div>
-                                    <div class="col-md-6 ml-auto">
-                                        <input id="bank_m_n" type="text" name="bank_m_n" placeholder="Correspondent account" class="form-control">
+                                        <input id="account_no" type="text" name="account_no" placeholder="Account №" class="form-control" maxlength="100">
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-6 ml-auto">
-                                        <input id="bank_swift" type="text" name="bank_swift" placeholder="Bank SWIFT BIK" class="form-control">
+                                        <input id="bank_name" type="text" name="bank_name" placeholder="Bank name" class="form-control" maxlength="255">
                                     </div>
                                     <div class="col-md-6 ml-auto">
-                                        <input id="contract_no" type="text" name="contract_no" placeholder="Contract №" class="form-control">
+                                        <input id="bank_voen" type="text" name="bank_voen" placeholder="Bank TIN" class="form-control" maxlength="100">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-6 ml-auto">
+                                        <input id="bank_code" type="text" name="bank_code" placeholder="Bank code" class="form-control" maxlength="30">
+                                    </div>
+                                    <div class="col-md-6 ml-auto">
+                                        <input id="bank_m_n" type="text" name="bank_m_n" placeholder="Correspondent account" class="form-control" maxlength="100">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-6 ml-auto">
+                                        <input id="bank_swift" type="text" name="bank_swift" placeholder="Bank SWIFT BIK" class="form-control" maxlength="50">
+                                    </div>
+                                    <div class="col-md-6 ml-auto">
+                                        <input id="contract_no" type="text" name="contract_no" placeholder="Contract №" class="form-control" maxlength="50">
                                     </div>
                                 </div>
                                 <div class="row form-group">
@@ -601,7 +601,7 @@
         $('#industry_id').change(function () {
             var up_category_id = $(this).val();
             if (up_category_id === 0 || up_category_id === '') {
-                var category_option = "<option value=''>Select industry</option>";
+                var category_option = "<option value=''>* Select industry</option>";
                 $('#category_id').html(category_option);
             }
             else {
