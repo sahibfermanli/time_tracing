@@ -218,7 +218,7 @@ class ClientController extends HomeController
     private function add_client(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'form_of_business_id' => ['required', 'integer'],
+            'form_of_business_id' => ['nullable', 'integer'],
             'country_id' => ['required', 'integer'],
             'city' => ['required', 'string', 'max:100'],
             'director' => ['required', 'string', 'max:255'],
@@ -286,7 +286,7 @@ class ClientController extends HomeController
     private function update_client(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'form_of_business_id' => ['required', 'integer'],
+            'form_of_business_id' => ['nullable', 'integer'],
             'country_id' => ['required', 'integer'],
             'city' => ['required', 'string', 'max:100'],
             'director' => ['required', 'string', 'max:255'],
